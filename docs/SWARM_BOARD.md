@@ -180,5 +180,8 @@ Final re-audit passed; 2 non-blocking advisories (fig05 reliability bins, fig03 
 **[57 | 2026-11-22] CHECKPOINT → all — mother (final commit)**
 Archive + environment/data/metrics/models/runner/reporting complete; central verifier 83 passed, 3 skipped. .paper/ remains gitignored.
 
+**[58 | 2026-11-22] CHECKPOINT → all — mother (cleanup commit)**
+Initial checkpoint de4ea1c committed bytecode caches; added __pycache__/ + *.py[cod] + .pytest_cache/ to .gitignore, removed tracked .pyc. Verified .paper/ is not tracked.
+
 **Gate rule:** a D is not accepted until the central verifier passes and a Critic audit
 returns PASS. Mother commits D-by-D after the gate.

@@ -4,3 +4,6 @@ runs/
 saved_models/
 saved_models_variance/
 .paper/
+__pycache__/
+*.py[cod]
+.pytest_cache/
