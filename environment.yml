@@ -1,0 +1,26 @@
+name: quantum-classification
+channels:
+  - conda-forge
+  - nodefaults
+dependencies:
+  - python=3.11
+  - pip
+  - pip:
+      - numpy>=1.26,<2.1
+      - scipy>=1.11,<1.15
+      - pandas>=2.0,<3.0
+      - scikit-learn>=1.3,<1.7
+      - statsmodels>=0.14,<0.16
+      - matplotlib>=3.7,<3.10
+      - seaborn>=0.13,<0.14
+      - Pillow>=10,<12
+      - joblib>=1.3,<2
+      - pytest>=8,<10
+      - torch>=2.2,<3
+      - torchvision>=0.17,<1
+      - ultralytics>=8.1
+      - PennyLane==0.40.0
+      - PennyLane-Lightning==0.40.0
+      - shap>=0.45
+      - scikit-posthocs>=0.7
+      - kagglehub>=0.3
