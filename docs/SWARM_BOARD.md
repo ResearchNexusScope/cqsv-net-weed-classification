@@ -252,5 +252,38 @@ _data_plan helper aligns subset_files/per_class/adaptation_per_class; provenance
 **[81 | 2026-11-22] CHECKPOINT → all — mother (final QML commit)**
 QML core/training/improvement accepted; smoke, full 5-epoch run, and 3-config ablation completed with real data; model card generated from real metrics. Central verifier 123 passed/12 skipped; quantum verifier 47 passed. .paper/ private and untracked.
 
+**[82 | 2026-11-22] DECISION → all — mother (plant-pretrained backbone)**
+User flagged generic/random hybrid head. Research selected `cpoisson/plantnet300k-resnet18` (Apache-2.0, 45 MB, 306k plant images, 1081 species); weights verified locally (512-d features). Dispatching PLANT-D01/02/03.
+
+**[83 | 2026-11-22] REPORT → all — plant-pretrained backbone integrated**
+PLANT-D01 core, D02 CLI/feature-loader adaptation, D03 research note delivered; `qmlpipe/__init__.py` integrated by mother. Central verifier running.
+
+**[84 | 2026-11-22] TEST → PLANT-D02 — mother (central verifier FAIL, 1 test)**
+158 passed, 12 skipped, 1 failed: synthetic Trunked fixture expected a projection head that the real legacy path does not apply. Test-fixture fix dispatched.
+
+**[85 | 2026-11-22] DONE_VERIFIED → PLANT-D01..D03 — mother (verifiers GREEN)**
+PlantNet ResNet18 backbone integrated into qmlpipe and CLIs; research note committed. Central 159 passed/12 skipped; quantum 47 passed. Real PlantNet QML run running.
+
+**[86 | 2026-11-22] BLOCKER → PLANT-D01 — mother (real run shape mismatch)**
+QMLConfig lacks classical_dim; plantnet 512-d features hit Linear(1280→1024). Add field + validation + test.
+
+**[87 | 2026-11-22] FIX → mother (hardcoded projection width)**
+`models/classical.py:113` hardcoded Linear(1280→feature_dim), ignoring cfg.classical_dim; fixed to use config. Verified build_feature_extractor(plantnet,512) now yields Linear(512→1024). Real run re-started.
+
+**[88 | 2026-11-22] DONE_VERIFIED → PLANT — mother (real run GREEN, honest comparison)**
+PlantNet ResNet18-backed QML run: val 0.603, OOD n=400 acc 0.500, AUC 0.441, F1 0.0 (single-class prediction). ImageNet-backed: acc 0.4275, AUC 0.375, F1 0.499. No advantage claim; F1 collapse recorded.
+
+**[89 | 2026-11-22] FIX → mother (backward compatibility)**
+`models/classical.py` used cfg.classical_dim unconditionally; legacy ExperimentConfig lacks it. Fallback to 1280 preserves committed ImageNet behaviour while QMLConfig uses 512/1280. Central verifier re-running.
+
+**[90 | 2026-11-22] DONE_VERIFIED → mother (threshold diagnosis)**
+Saved PlantNet QML checkpoint scores span 0.403–0.446; default threshold predicts class 0 only. Best F1 0.667 occurs at threshold 0 (all class 1), best balanced accuracy 0.5025 — no usable separation. Journal and ledger updated.
+
+**[91 | 2026-11-22] DONE_VERIFIED → all — mother (final central verifier GREEN)**
+160 passed, 12 skipped after backward-compatibility fix. Final quantum verifier re-run in progress; checkpoint pending.
+
+**[92 | 2026-11-22] CHECKPOINT → all — mother (final plant-pretrained closeout)**
+PlantNet ResNet18 backbone selected, implemented, Critic-passed, and run on real data. ImageNet control recorded honestly (acc 0.4275/F1 0.499); PlantNet (acc 0.500/F1 0.000, no usable separation). Central verifier 160 passed/12 skipped; quantum verifier 47 passed. Journal updated; .paper/ private and untracked.
+
 **Gate rule:** a D is not accepted until the central verifier passes and a Critic audit
 returns PASS. Mother commits D-by-D after the gate.

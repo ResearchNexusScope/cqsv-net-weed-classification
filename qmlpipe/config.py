@@ -30,6 +30,7 @@ _ALLOWED_EMBEDDINGS = frozenset({"amplitude", "angle"})
 _ALLOWED_ANSATZE = frozenset({"strongly_entangling", "basic_entangler"})
 _ALLOWED_DEVICES = frozenset({"default.qubit", "lightning.qubit"})
 _ALLOWED_OPTIMIZERS = frozenset({"adamw", "adam", "sgd", "spsa"})
+_ALLOWED_BACKBONES = frozenset({"plantnet", "imagenet"})
 
 
 def _env_int(name: str, default: int) -> int:
@@ -86,6 +87,7 @@ class QMLConfig:
     projection_dim: int = 1024
     noise_depolarizing: float | None = None
     output_dir: str = "results/qml"
+    backbone: str = "plantnet"
 
     # ------------------------------------------------------------------ properties
     @property
@@ -127,6 +129,7 @@ class QMLConfig:
             projection_dim=_env_int("QML_PROJECTION_DIM", 1024),
             noise_depolarizing=_env_opt_float("QML_NOISE_DEPOLARIZING"),
             output_dir=_env_str("QML_OUTPUT_DIR", "results/qml"),
+            backbone=_env_str("QML_BACKBONE", "plantnet").lower(),
         )
 
     # ------------------------------------------------------------------ serialisation
@@ -186,6 +189,11 @@ class QMLConfig:
             problems.append(
                 f"optimizer={self.optimizer!r} must be one of "
                 f"{sorted(_ALLOWED_OPTIMIZERS)}."
+            )
+        if self.backbone not in _ALLOWED_BACKBONES:
+            problems.append(
+                f"backbone={self.backbone!r} must be one of "
+                f"{sorted(_ALLOWED_BACKBONES)}."
             )
         if self.shots is not None and int(self.shots) <= 0:
             problems.append("shots must be None (analytic) or a positive integer.")

@@ -113,7 +113,13 @@ class EfficientNetFeatures(nn.Module):
         backbone = tv_models.efficientnet_b0(weights=None)
         self.features = backbone.features
         self.avgpool = backbone.avgpool
-        self.projection = nn.Linear(1280, int(cfg.feature_dim))
+        # Input width follows the configured backbone: EfficientNet-B0 emits
+        # 1280-d features; plant-pretrained ResNet18 emits 512-d.
+        # QMLConfig carries classical_dim (512 for plantnet, 1280 for imagenet);
+        # legacy ExperimentConfig predates it and always used 1280-d EfficientNet
+        # features, so keep that as the backward-compatible default.
+        input_dim = int(getattr(cfg, "classical_dim", 1280))
+        self.projection = nn.Linear(input_dim, int(cfg.feature_dim))
         self.feature_dim = int(cfg.feature_dim)
 
         # Freeze the trunk *permanently* and keep it in eval mode.

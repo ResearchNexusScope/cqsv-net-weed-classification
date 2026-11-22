@@ -119,7 +119,30 @@ def build_backbone(device: torch.device):
     return model, preprocess
 
 
-def make_feature_loader(backbone, preprocess, device):
+def call_feature_extractor(extractor, batch):
+    """Return unit-L2 features for a prepared batch from either backed shape.
+
+    * The legacy ImageNet EfficientNet-B0 exposes ``.features``/``.avgpool``;
+      that path is preserved verbatim so committed ImageNet results stay
+      reproducible (it is L2-normalised here).
+    * The frozen PlantNet module has no such attributes and returns its
+      L2-normalised features directly from ``forward``; we simply call it.
+
+    Both branches therefore yield L2-normalised feature vectors.
+    """
+    if hasattr(extractor, "features") and hasattr(extractor, "avgpool"):
+        features = extractor.features(batch)
+        features = extractor.avgpool(features).flatten(1)
+        return F.normalize(features, p=2, dim=1)
+    return extractor(batch)
+
+
+def make_feature_loader(extractor, preprocess, device):
+    """Build a cached, leak-free feature loader for any supported backbone."""
+    # Frozen extractors are static; keeping them on the batch device avoids a
+    # CPU/CUDA mismatch for backbones built without an explicit ``.to(device)``.
+    if hasattr(extractor, "to"):
+        extractor = extractor.to(device)
     cache = {}
 
     def loader(samples, cfg, split):
@@ -138,9 +161,7 @@ def make_feature_loader(backbone, preprocess, device):
                 tensors.append(preprocess(image))
             batch = torch.stack(tensors).to(device)
             with torch.no_grad():
-                features = backbone.features(batch)
-                features = backbone.avgpool(features).flatten(1)
-                features = F.normalize(features, p=2, dim=1)
+                features = call_feature_extractor(extractor, batch)
             arrays = features.cpu().numpy().astype(np.float32)
             for (key, _), array in zip(missing, arrays):
                 cache[key] = array
@@ -162,12 +183,20 @@ def make_fitted_baseline(X_fit, y_fit):
     return CallablePredictor(predict)
 
 
-def main() -> int:
+def main(argv=None) -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--output-dir", default="results/real_run")
     parser.add_argument("--oor-per-class", type=int, default=200)
     parser.add_argument("--runs", type=int, default=1)
-    args = parser.parse_args()
+    # Default stays "imagenet" so previously committed real-run results remain
+    # reproducible; pass --backbone plantnet for the frozen PlantNet trunk.
+    parser.add_argument(
+        "--backbone",
+        choices=("plantnet", "imagenet"),
+        default="imagenet",
+        help="frozen feature backbone (default imagenet for legacy parity)",
+    )
+    args = parser.parse_args(argv)
 
     kaggle_root = os.environ["KAGGLE_DATA_DIR"]
     prepare_ninja_subset()
@@ -179,9 +208,15 @@ def main() -> int:
     manifest = SubsetManifest(base_manifest, ood)
     print(f"manifest built in {time.time()-t0:.1f}s; ood test crops={len(ood)}")
 
+    from qmlpipe.config import QMLConfig
+    from qmlpipe.plant_backbone import build_backbone_extractor
+
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-    backbone, preprocess = build_backbone(device)
-    feature_loader = make_feature_loader(backbone, preprocess, device)
+    extractor, preprocess = build_backbone_extractor(
+        args.backbone, QMLConfig(backbone=args.backbone)
+    )
+    feature_loader = make_feature_loader(extractor, preprocess, device)
+    print(f"feature backbone: {args.backbone} (frozen; L2-normalised features)")
 
     # Pre-train the classical baseline once on real Kaggle training features.
     train_samples = manifest.splits[Split.TRAIN].samples

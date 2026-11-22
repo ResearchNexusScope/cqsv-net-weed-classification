@@ -1,0 +1,85 @@
+{
+  "backbone": {
+    "feature_dim": 512,
+    "frozen": true,
+    "license": "Apache-2.0",
+    "name": "plantnet",
+    "note": "Feature backbone is frozen (no weights are updated during training).",
+    "repo_id": "cpoisson/plantnet300k-resnet18",
+    "weights_file": "plantnet_resnet18.pth"
+  },
+  "command": "python scripts/train_qml.py --backbone plantnet --output-dir results\\qml_plantnet --epochs 5",
+  "commit_hash": "7aa8150de4d3834375ba6e3985cc8177cfb6aea3",
+  "config": {
+    "ansatz": "strongly_entangling",
+    "backbone": "plantnet",
+    "batch_size": 32,
+    "classical_dim": 512,
+    "device_name": "default.qubit",
+    "embedding": "amplitude",
+    "epochs": 5,
+    "layers": 2,
+    "learning_rate": 0.001,
+    "noise_depolarizing": null,
+    "optimizer": "adamw",
+    "output_dir": "results\\qml_plantnet",
+    "patience": 3,
+    "projection_dim": 1024,
+    "qubits": 10,
+    "seed": 42,
+    "shots": null,
+    "weight_decay": 0.0
+  },
+  "data": {
+    "adaptation_per_class": 200,
+    "counts": {
+      "ood": 400,
+      "train": 1594,
+      "val": 199
+    },
+    "ninja_subset_files": 1200,
+    "ood_per_class": 200,
+    "paths": {
+      "kaggle_dir": "C:\\Users\\sugee\\.cache\\kagglehub\\datasets\\aminelaatam\\weed-classification\\versions\\2\\CornWeed",
+      "ninja_ann_dir": "C:\\Users\\sugee\\.cache\\kagglehub\\datasets\\oranaivo\\maize-weed-image-dataset-ninja\\versions\\1\\ds\\ann",
+      "ninja_img_dir": "C:\\Users\\sugee\\.cache\\kagglehub\\datasets\\oranaivo\\maize-weed-image-dataset-ninja\\versions\\1\\ds\\img"
+    }
+  },
+  "generated_at": "2026-11-22T17:07:17.486518+00:00",
+  "packages": {
+    "numpy": "2.0.2",
+    "pennylane": "0.40.0",
+    "pennylane-lightning": "0.40.0",
+    "scikit-learn": "1.9.1",
+    "scipy": "1.17.1",
+    "torch": "2.15.0+xpu",
+    "torchvision": "0.29.2"
+  },
+  "plan": {
+    "ansatz": "strongly_entangling",
+    "backbone": "plantnet",
+    "batch_size": 32,
+    "classical_dim": 512,
+    "device_name": "default.qubit",
+    "embedding": "amplitude",
+    "epochs": 5,
+    "feature_dim": 1024,
+    "layers": 2,
+    "learning_rate": 0.001,
+    "noise_depolarizing": null,
+    "optimizer": "adamw",
+    "output_dir": "results\\qml_plantnet",
+    "patience": 3,
+    "projection_dim": 1024,
+    "qubits": 10,
+    "seed": 42,
+    "shots": null,
+    "weight_decay": 0.0
+  },
+  "python_version": "3.11.9",
+  "schema_version": "1.0",
+  "warnings": [
+    "transfer QNN's image extractor replaced by its own projection so the model consumes cached feature-loader vectors (no double extraction)",
+    "feature backbone 'plantnet' is frozen; its weights are not updated during training"
+  ]
+}

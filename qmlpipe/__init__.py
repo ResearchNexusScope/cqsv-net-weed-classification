@@ -20,6 +20,15 @@ from .train import evaluate, seed_everything, train
 from .evaluate import compare_models, evaluate_qsvc
 from .ablate import ablation_grid, run_ablation, summarize_ablation
 from .model_card import build_model_card
+from .plant_backbone import (
+    PLANTNET_CLASSES,
+    PLANTNET_FEATURE_DIM,
+    PLANTNET_REPO_ID,
+    PLANTNET_WEIGHTS_FILE,
+    build_backbone_extractor,
+    build_plantnet_extractor,
+    plantnet_preprocess,
+)
 
 __all__ = [
     "QMLConfig",
@@ -40,4 +49,11 @@ __all__ = [
     "run_ablation",
     "summarize_ablation",
     "build_model_card",
+    "PLANTNET_REPO_ID",
+    "PLANTNET_WEIGHTS_FILE",
+    "PLANTNET_FEATURE_DIM",
+    "PLANTNET_CLASSES",
+    "build_plantnet_extractor",
+    "plantnet_preprocess",
+    "build_backbone_extractor",
 ]

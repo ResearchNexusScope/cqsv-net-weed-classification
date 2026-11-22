@@ -3,7 +3,8 @@
 All dataset locations come from ``KAGGLE_DATA_DIR`` / ``NINJA_ANN_DIR`` /
 ``NINJA_IMG_DIR``; no developer path is embedded.  Features are produced by the
 same helpers as ``scripts/run_real_benchmark.py`` (``prepare_ninja_subset``,
-``cap_ood_by_group``, ``build_backbone``, ``make_feature_loader``), so the OOD
+``cap_ood_by_group``, ``make_feature_loader``), with the frozen feature backbone
+selected through ``qmlpipe.plant_backbone.build_backbone_extractor``, so the OOD
 crop cap is applied per source-image group and no crop leaks across splits.
 
 The heavy dependencies (torch, torchvision, PennyLane, the dataset modules) are
@@ -50,8 +51,18 @@ CONFIG_KEYS = frozenset(
         "noise_depolarizing",
         "projection_dim",
         "classical_dim",
+        "backbone",
     }
 )
+
+# Local mirror of QMLConfig's allowed backbones so dry-run validation needs no
+# heavy import (the config module itself is standard-library only).
+ALLOWED_BACKBONES = frozenset({"plantnet", "imagenet"})
+
+# Raw (pre-projection) feature width emitted by each frozen backbone.  The
+# feature-fed QNN projection consumes this many inputs, so ``classical_dim``
+# defaults to the selected backbone's width (overridable via config-json).
+BACKBONE_FEATURE_DIM = {"plantnet": 512, "imagenet": 1280}
 
 OUTPUT_FILES = ("history.json", "metrics.json", "checkpoints/best.pt", "provenance.json")
 
@@ -72,6 +83,12 @@ def _build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--epochs", type=int, help="training epochs")
     parser.add_argument("--lr", type=float, help="learning rate")
     parser.add_argument("--output-dir", help="run output directory")
+    parser.add_argument(
+        "--backbone",
+        choices=("plantnet", "imagenet"),
+        default=None,
+        help="frozen feature backbone (default plantnet; may also be set via --config-json)",
+    )
     parser.add_argument(
         "--smoke",
         action="store_true",
@@ -114,11 +131,14 @@ def _resolve_plan(args: argparse.Namespace) -> tuple[dict, list[str]]:
 
     qubits = int(choose(args.qubits, "qubits", 10))
     feature_dim = 2 ** qubits
+    backbone = str(choose(args.backbone, "backbone", "plantnet"))
     plan: dict[str, Any] = {
         "qubits": qubits,
         "feature_dim": feature_dim,
         "projection_dim": int(choose(None, "projection_dim", feature_dim)),
-        "classical_dim": int(choose(None, "classical_dim", 1280)),
+        "classical_dim": int(
+            choose(None, "classical_dim", BACKBONE_FEATURE_DIM.get(backbone, 1280))
+        ),
         "layers": int(choose(args.layers, "layers", 2)),
         "embedding": str(choose(args.embedding, "embedding", "amplitude")),
         "ansatz": str(choose(None, "ansatz", "strongly_entangling")),
@@ -135,6 +155,7 @@ def _resolve_plan(args: argparse.Namespace) -> tuple[dict, list[str]]:
         ),
         "seed": int(choose(None, "seed", os.getenv("QC_SEED", "42"))),
         "noise_depolarizing": choose(None, "noise_depolarizing", None),
+        "backbone": backbone,
     }
     if args.smoke:
         warnings.append("smoke mode: subset capped, epochs forced to 1")
@@ -164,6 +185,8 @@ def _validate_plan(plan: dict) -> list[str]:
         problems.append("patience must be >= 1")
     if str(plan["embedding"]).strip() == "":
         problems.append("embedding must be a non-empty string")
+    if str(plan["backbone"]) not in ALLOWED_BACKBONES:
+        problems.append(f"backbone must be one of {sorted(ALLOWED_BACKBONES)}")
     return problems
 
 
@@ -295,6 +318,30 @@ def _data_plan(smoke: bool) -> dict:
     }
 
 
+def _backbone_provenance(name: str, feature_dim: int) -> dict:
+    """Build the provenance block for the selected frozen feature backbone.
+
+    ``feature_dim`` is the *detected* width of the extracted vectors (read from
+    the real feature tensor), not a hardcoded claim.  PlantNet-specific
+    repository/weights/license metadata is attached only for that backbone; the
+    heavy ``plant_backbone`` module is imported lazily here so ``--dry-run``
+    never touches torch/HF.
+    """
+    info: dict[str, Any] = {
+        "name": str(name),
+        "feature_dim": int(feature_dim),
+        "frozen": True,
+        "note": "Feature backbone is frozen (no weights are updated during training).",
+    }
+    if str(name) == "plantnet":
+        from qmlpipe import plant_backbone
+
+        info["repo_id"] = plant_backbone.PLANTNET_REPO_ID
+        info["weights_file"] = plant_backbone.PLANTNET_WEIGHTS_FILE
+        info["license"] = "Apache-2.0"
+    return info
+
+
 def _prepare_data(plan: dict, smoke: bool) -> dict:
     """Build leak-free train/val/OOD loaders and record the data provenance."""
     import numpy as np
@@ -304,9 +351,9 @@ def _prepare_data(plan: dict, smoke: bool) -> dict:
     from data import build_splits
     from data.splits import Split
     from experiments.config import ExperimentConfig
+    from qmlpipe.plant_backbone import build_backbone_extractor
     from scripts.run_real_benchmark import (
         SubsetManifest,
-        build_backbone,
         cap_ood_by_group,
         make_feature_loader,
         prepare_ninja_subset,
@@ -349,8 +396,9 @@ def _prepare_data(plan: dict, smoke: bool) -> dict:
     manifest = SubsetManifest(base_manifest, ood_samples)
 
     torch_device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-    backbone, preprocess = build_backbone(torch_device)
-    feature_loader = make_feature_loader(backbone, preprocess, torch_device)
+    backbone_name = str(plan["backbone"])
+    extractor, preprocess = build_backbone_extractor(backbone_name, _build_config(plan))
+    feature_loader = make_feature_loader(extractor, preprocess, torch_device)
 
     def tensor_split(samples: Any, name: str):
         if not samples:
@@ -404,6 +452,11 @@ def _prepare_data(plan: dict, smoke: bool) -> dict:
         "subset_files": subset_files,
         "ood_per_class": per_class,
         "adaptation_per_class": int(data_scope["adaptation_per_class"]),
+        "backbone_name": backbone_name,
+        "backbone_feature_dim": int(X_train.shape[1]),
+        "backbone_provenance": _backbone_provenance(
+            backbone_name, int(X_train.shape[1])
+        ),
         "warnings": warnings,
     }
 
@@ -475,6 +528,10 @@ def main(argv: list[str] | None = None) -> int:
         return 2
 
     all_warnings = list(warnings) + list(bundle["warnings"])
+    all_warnings.append(
+        f"feature backbone '{bundle['backbone_name']}' is frozen; its weights "
+        "are not updated during training"
+    )
     commit = _git_commit_hash()
     _write_json(
         output_dir / "metrics.json",
@@ -511,6 +568,7 @@ def main(argv: list[str] | None = None) -> int:
                 "ood_per_class": bundle["ood_per_class"],
                 "adaptation_per_class": bundle["adaptation_per_class"],
             },
+            "backbone": bundle["backbone_provenance"],
             "command": "python scripts/train_qml.py " + " ".join(argv or sys.argv[1:]),
             "generated_at": datetime.now(timezone.utc).isoformat(),
             "warnings": all_warnings,
