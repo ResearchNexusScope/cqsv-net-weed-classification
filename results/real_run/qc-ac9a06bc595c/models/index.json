@@ -1,0 +1,22 @@
+{
+  "logreg_effnet": {
+    "adapter": "CallablePredictor",
+    "checkpoint_hash": "not_available"
+  },
+  "qsvc_no_mixing_control": {
+    "adapter": "KernelSVMPredictor",
+    "checkpoint_hash": "not_available"
+  },
+  "qsvc_quantum_kernel": {
+    "adapter": "KernelSVMPredictor",
+    "checkpoint_hash": "not_available"
+  },
+  "svc_poly2_classical": {
+    "adapter": "KernelSVMPredictor",
+    "checkpoint_hash": "not_available"
+  },
+  "svc_rbf": {
+    "adapter": "KernelSVMPredictor",
+    "checkpoint_hash": "not_available"
+  }
+}

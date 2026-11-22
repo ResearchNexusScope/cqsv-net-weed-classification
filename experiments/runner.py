@@ -562,14 +562,17 @@ def resolve_config(
     qsvc_seeds = SeedSequence([base.seed, base.seed_offset]).spawn(base.qsvc_runs)
     for index in range(int(base.qsvc_runs)):
         seed_map[f"qsvc_run_{index}"] = int(qsvc_seeds[index].generate_state(1)[0])
-    model_seeds = SeedSequence([base.seed, 0x4D4F444C]).spawn(32)
-    cursor = 0
-    for model_id in _evaluate.QSVC_MODEL_IDS:
-        for index in range(seeds_per_model):
+    # Each key depends only on its own (master seed, tag, model index, seed
+    # index) entropy, so a value is invariant to seeds_per_model / pool size.
+    # Unlike SeedSequence.spawn(n), adding more seeds never shifts existing
+    # keys. Model-major order and key names are unchanged.
+    for model_index, model_id in enumerate(_evaluate.QSVC_MODEL_IDS):
+        for index in range(int(seeds_per_model)):
             seed_map[f"model_{model_id}_seed_{index}"] = int(
-                model_seeds[cursor].generate_state(1)[0]
+                SeedSequence(
+                    [base.seed, 0x4D4F444C, int(model_index), int(index)]
+                ).generate_state(1)[0]
             )
-            cursor += 1
 
     return ResolvedConfig(
         config=base,

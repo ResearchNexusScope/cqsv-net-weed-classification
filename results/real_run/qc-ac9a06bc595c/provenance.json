@@ -1,0 +1,56 @@
+{
+  "config_hash": "ac9a06bc595cdaca43a8d7ad23b79573b426b0aaa86313891bb82e0734cc6766",
+  "data_manifest_hash": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a",
+  "env_checksum_sha256": "38626ba6209bdb6837cf431ea35b03559961f07f1aba427afa469c72298c1cb1",
+  "experiment_id": "real_ood_benchmark",
+  "git_commit_sha": "2f559037e0e5145a4ee7dc29d10bb0c36980c6ff",
+  "legacy_qsvc_seed_mapping": {
+    "legacy_random_state": [
+      "run_idx*42",
+      "run_idx*123",
+      "run_idx*456"
+    ],
+    "seed_offset": 42
+  },
+  "master_seed": 42,
+  "packages": {
+    "numpy": "2.4.4",
+    "pandas": "3.0.2",
+    "pennylane": "not installed",
+    "scipy": "1.17.1",
+    "sklearn": "1.8.0",
+    "torch": "2.11.0+cpu",
+    "torchvision": "0.26.0+cpu"
+  },
+  "python_version": "3.14.3",
+  "run_id": "qc-ac9a06bc595c",
+  "schema_version": "1.0",
+  "seed_map": {
+    "bootstrap": 1482307210,
+    "env": 2380395804,
+    "experiment_calibration": 133196093,
+    "experiment_main_ood": 3156653282,
+    "experiment_noise_robustness": 1590882901,
+    "experiment_qsvc_mixed_variance": 3791093363,
+    "experiment_significance": 3659861536,
+    "figures": 1522491106,
+    "master": 42,
+    "model_qsvc_no_mixing_control_seed_0": 4117357061,
+    "model_qsvc_quantum_kernel_seed_0": 2557711187,
+    "model_svc_linear_seed_0": 1542441602,
+    "model_svc_poly2_classical_seed_0": 105792259,
+    "model_svc_rbf_seed_0": 1906998437,
+    "noise": 2139355196,
+    "qsvc_run_0": 2010681460,
+    "verification": 2210599807
+  },
+  "source_artifact_hashes": {
+    "raw/predictions.csv": "56d75115f806b5f074daafb99f9a2f80cd31c53ab2044dd949d152a5a08a1a70",
+    "raw/run_summaries.csv": "60b757d09d3615c3deb89d20c8674a67a50465da817332d2a57ef1ae333bac05"
+  },
+  "warnings": [
+    "logreg_effnet prediction failed (ValueError: This LogisticRegression estimator requires y to be passed, but the target y is None.); arm skipped",
+    "PennyLane is not installed; used classical (A@B.T)^2 oracle",
+    "PennyLane is not installed; used classical (A@B.T)^2 oracle"
+  ]
+}

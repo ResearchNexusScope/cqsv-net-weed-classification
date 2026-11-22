@@ -1,0 +1,31 @@
+{
+  "output_dir": "C:\\Users\\sugee\\Github\\SugeethJSA\\Quantum_Classification\\results\\real_run\\qc-ac9a06bc595c",
+  "outputs": {
+    "config.json": "1f5ede5ca9f974a4c29fb21997f03c08717531aded41abf7b56d0b52224f583e",
+    "logs/runner.log": "b9f0588c8296c0535a979b47eefeb6c7a71f83fa5f4b5538487f15ce2f4f7778",
+    "metrics/metrics.csv": "3f0ac6b52e5b02e3c4af4542dd2779f80f75a5b41b139b235c5af8569a9fd630",
+    "metrics/metrics.json": "95409e6104c0421e7608edd2d763e65e6f792a69f159d38ee16144180c83f84d",
+    "models/index.json": "1e1d4cc215e9fa435e19a11bf60d4da42ebea3bee006db60c7004d9f6bb90c9a",
+    "provenance.json": "e0fbe7e97d87f742df3bc8c338deb3516b791e3e278059b2c9e1dbb742f4a345",
+    "raw/predictions.csv": "e265c457e636f5462cb0c41a01eef14acce3f21b48a6b172e2f0e954ea42fbca",
+    "raw/predictions.parquet": "a37cbd831c2a3db294a4ce63ad272615442f1f7ceccdeb12f5c67814e691dcdb",
+    "raw/run_summaries.csv": "85f2a2671a843164528c2465776b6aeecab90868254fa2444001c4b0e3964495"
+  },
+  "run_id": "qc-ac9a06bc595c",
+  "schema_version": "1.0",
+  "stages": [
+    "config",
+    "data",
+    "models",
+    "raw",
+    "metrics",
+    "figures",
+    "manifest"
+  ],
+  "status": "complete",
+  "warnings": [
+    "logreg_effnet prediction failed (ValueError: This LogisticRegression estimator requires y to be passed, but the target y is None.); arm skipped",
+    "PennyLane is not installed; used classical (A@B.T)^2 oracle",
+    "PennyLane is not installed; used classical (A@B.T)^2 oracle"
+  ]
+}

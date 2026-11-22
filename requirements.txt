@@ -19,6 +19,7 @@ ultralytics>=8.1
 # Quantum simulation (exact pins: documented PennyLane 0.40 line)
 PennyLane==0.40.0
 PennyLane-Lightning==0.40.0
+autoray==0.7.0  # 0.11.x breaks PennyLane 0.40 (NumpyMimic API removed)
 
 # Diagnostics and statistics
 shap>=0.45

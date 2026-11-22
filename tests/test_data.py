@@ -248,6 +248,37 @@ def test_ninja_parse_polygon_and_filter(tmp_path: Path) -> None:
     assert samples == sorted(samples, key=lambda s: (s.group_id, s.bbox, s.label))
 
 
+def test_ninja_annotation_stem_includes_image_extension(tmp_path: Path) -> None:
+    """Regression: real mirror uses ``X.jpg.json`` for image ``X.jpg``.
+
+    The annotation stem is ``X.jpg`` while the image stem is ``X``; lookup must
+    resolve via the full filename while group_id stays ``Path(img_path).stem``.
+    """
+    images = tmp_path / "img"
+    ann = tmp_path / "ann"
+    images.mkdir(parents=True, exist_ok=True)
+    ann.mkdir(parents=True, exist_ok=True)
+    (images / "X.jpg").write_bytes(_png_bytes(64, 64, seed=7))
+    (ann / "X.jpg.json").write_text(
+        json.dumps(
+            {
+                "objects": [
+                    {
+                        "classTitle": "maize",
+                        "points": {"exterior": [[1, 2], [11, 12]]},
+                    }
+                ]
+            }
+        ),
+        encoding="utf-8",
+    )
+    samples = parse_ninja_annotations(ann, images)
+    assert len(samples) == 1
+    assert samples[0].group_id == "X"
+    assert samples[0].bbox == (1, 2, 11, 12)
+    assert samples[0].source is Source.NINJA
+
+
 # --- T6 --------------------------------------------------------------------
 def test_ninja_group_quota_no_cross_contamination(built) -> None:
     manifest, cfg, root = built

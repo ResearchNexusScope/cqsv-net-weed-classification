@@ -1,0 +1,15 @@
+{
+  "caption": "Pre-registered paired differences (n=10 runs).",
+  "caption_numbers": {
+    "n": 10
+  },
+  "figure_id": "fig04_significance_forest",
+  "source_metric_keys": [
+    "comparisons.*.pair",
+    "comparisons.*.mean_difference",
+    "comparisons.*.ci95_low",
+    "comparisons.*.ci95_high",
+    "comparisons.*.p_raw",
+    "comparisons.*.p_holm"
+  ]
+}

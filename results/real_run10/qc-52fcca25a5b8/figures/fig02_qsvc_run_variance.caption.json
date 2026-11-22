@@ -1,0 +1,22 @@
+{
+  "caption": "qsvc_mixed_variance: accuracy 49.60% +/- 3.24% (n=10 runs, bootstrap 95% CI 48.00%-51.61%).",
+  "caption_numbers": {
+    "ci95": [
+      0.48,
+      0.5161
+    ],
+    "hi": 0.94005,
+    "lo": 0.882,
+    "mean": 0.496,
+    "n": 10,
+    "std": 0.0323865541
+  },
+  "figure_id": "fig02_qsvc_run_variance",
+  "source_metric_keys": [
+    "aggregates.qsvc_quantum_kernel.accuracy.values",
+    "aggregates.qsvc_quantum_kernel.accuracy.mean",
+    "aggregates.qsvc_quantum_kernel.accuracy.std",
+    "aggregates.qsvc_quantum_kernel.accuracy.ci95_low",
+    "aggregates.qsvc_quantum_kernel.accuracy.ci95_high"
+  ]
+}

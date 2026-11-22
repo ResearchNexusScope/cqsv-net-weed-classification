@@ -183,5 +183,74 @@ Archive + environment/data/metrics/models/runner/reporting complete; central ver
 **[58 | 2026-11-22] CHECKPOINT → all — mother (cleanup commit)**
 Initial checkpoint de4ea1c committed bytecode caches; added __pycache__/ + *.py[cod] + .pytest_cache/ to .gitignore, removed tracked .pyc. Verified .paper/ is not tracked.
 
+**[59 | 2026-11-22] BLOCKER → QC-I02 — mother (real-data parser bug)**
+Kaggle Ninja mirror names annotations `X.jpg.json` vs images `X.jpg`; stem lookup drops all 46,336 boxes. Parser + regression test fix dispatched.
+
+**[60 | 2026-11-22] BLOCKER → QC-I05 — mother (real-data seed pool bug)**
+resolve_config spawns only 32 model seeds; 10 runs × 5 QSVC models need 50. Fix + regression test dispatched.
+
+**[61 | 2026-11-22] TEST → QC-I05 — mother (verifier FAIL, 1 test)**
+SeedSequence.spawn(n) is not prefix-stable; regression test's stability assertion was wrong. Independent per-index seed derivation dispatched.
+
+**[62 | 2026-11-22] TEST → QC-I05 — mother (verifier FAIL, same test)**
+Cursor-based derivation still shifts keys when seeds_per_model changes. Derive by (model_index, seed_index) instead.
+
+**[63 | 2026-11-22] DONE_VERIFIED → all — mother (REAL RESULTS)**
+10-run real benchmark on Kaggle CornWeed + DatasetNinja subset completed; verifier 85 passed/3 skipped after two real-data bug fixes (Ninja filename matching, seed derivation). Tables/figures generated from metrics.json; .paper/ untouched.
+
+**[64 | 2026-11-22] REQUEST → QML-D01 — mother (QML core)**
+Owner writes qmlpipe/config.py, models.py, kernel.py + tests/test_qmlpipe_core.py only.
+
+**[65 | 2026-11-22] REQUEST → QML-D02 — mother (QML training)**
+Owner writes qmlpipe/train.py, evaluate.py, scripts/train_qml.py + tests/test_qmlpipe_train.py only.
+
+**[66 | 2026-11-22] REQUEST → QML-D03 — mother (QML improvement scope)**
+Owner writes qmlpipe/ablate.py, model_card.py, docs/QML_IMPROVEMENT_PLAN.md + tests/test_qmlpipe_ablate.py only.
+
+**[67 | 2026-11-22] REPORT → QML-D01 — QML-D01 (core layer delivered)**
+qmlpipe config/models/kernel + tests. Honest degradations: noise channel not applied (warns), lightning QNN falls back to default.qubit. Mother added tools/verify_quantum.py for exact-pin execution.
+
+**[68 | 2026-11-22] REPORT → QML-D03 — QML-D03 (improvement scope delivered)**
+ablate.py (bounded 72-config grid), model_card.py, docs/QML_IMPROVEMENT_PLAN.md, tests. Documented signature boundary: train/eval need wrappers for run_ablation; failures recorded honestly.
+
+**[69 | 2026-11-22] TEST → QML-D02 — mother (central verifier FAIL, 1 test)**
+120 passed, 9 skipped, 1 failed: CLI silently ignored unknown config key feature_dim. Reject unknown keys with exit 2; fix dispatched.
+
+**[70 | 2026-11-22] REPORT → QML-D02 — QML-D02 (CLI validation fix applied)**
+Unknown config keys now rejected with exit 2; feature_dim remains derived from qubits. Tests updated. Central verifier re-running.
+
+**[71 | 2026-11-22] DONE_VERIFIED → QML-D01 — critic (PASS, advisories only)**
+Central verifier green (122 passed, 9 skipped). Quantum verifier found TorchLayer `inputs` signature bug; fixed with shots degradation. Re-verify pending.
+
+**[72 | 2026-11-22] DONE_VERIFIED → QML-D02 — critic (PASS, advisories only)**
+Training/evaluation/CLI accepted. Feature-fed transfer substitution disclosed in provenance; dry-run writes nothing; unknown config keys rejected.
+
+**[73 | 2026-11-22] CRITIC → QML-D03 — critic (FAIL, 1 blocker)**
+Model card missing improvement-plan cross-reference. Fix dispatched; re-audit pending.
+
+**[74 | 2026-11-22] DONE_VERIFIED → QML-D03 — critic (PASS)**
+Model card improvement-plan cross-reference added; re-audit passed. All QML Critic gates now PASS. Quantum verifier re-running after TorchLayer/torchvision fixes.
+
+**[75 | 2026-11-22] TEST → QML-D01 — mother (quantum verifier FAIL, 1 test)**
+43 passed, 1 failed: introspection dummy weight shape wrong for BasicEntanglerLayers. Ansatz-aware shape fix dispatched.
+
+**[76 | 2026-11-22] DONE_VERIFIED → all QML Ds — mother (quantum verifier GREEN)**
+Python 3.11 exact pins: PennyLane 0.40.0 / Lightning 0.40.0 / autoray 0.7.0; 46 qmlpipe tests passed. Real QML smoke training running.
+
+**[77 | 2026-11-22] BLOCKER → QML-D02 — mother (smoke data plan mismatch)**
+Smoke capped Ninja to 8 source images/2 per class but left adaptation_per_class=200; data prep failed. Quota alignment fix dispatched.
+
+**[78 | 2026-11-22] REPORT → QML-D02 — QML-D02 (smoke plan fix applied)**
+_data_plan helper aligns subset_files/per_class/adaptation_per_class; provenance records scope. Smoke run re-running.
+
+**[79 | 2026-11-22] DONE_VERIFIED → QML — mother (smoke run GREEN)**
+4 artifacts written; OOD n_samples=4; provenance records 8 Ninja source images / 2 per class. Full 5-epoch QML run started.
+
+**[80 | 2026-11-22] DONE_VERIFIED → QML — mother (full run GREEN)**
+5 epochs, best epoch 4; val acc 0.804; OOD n=400 acc 0.4275, AUC 0.375 — honest negative result vs classical baselines. 4 artifacts written. 3-config ablation running.
+
+**[81 | 2026-11-22] CHECKPOINT → all — mother (final QML commit)**
+QML core/training/improvement accepted; smoke, full 5-epoch run, and 3-config ablation completed with real data; model card generated from real metrics. Central verifier 123 passed/12 skipped; quantum verifier 47 passed. .paper/ private and untracked.
+
 **Gate rule:** a D is not accepted until the central verifier passes and a Critic audit
 returns PASS. Mother commits D-by-D after the gate.

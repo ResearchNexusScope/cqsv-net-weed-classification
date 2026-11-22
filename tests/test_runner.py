@@ -250,6 +250,54 @@ def test_no_data_provider_is_a_loud_error_not_a_fabricated_result(
     assert not (cfg.output_dir / "raw" / "predictions.csv").exists()
 
 
+def test_seed_pool_covers_every_model_at_full_run_count(
+    base_config: ExperimentConfig, tmp_path: Path
+) -> None:
+    """Regression: 5 QSVC arms x 10 seeds needs 50 pool-size-stable seeds."""
+    argv = [
+        "run",
+        "--seed", str(base_config.seed),
+        "--output-dir", str(tmp_path / "full-seed-pool"),
+        "--runs", str(max(base_config.qsvc_runs, 10)),
+        "--dry-run",
+    ]
+    spec = runner.ExperimentSpec(
+        experiment_id=runner.QSVC_EXPERIMENT,
+        experiments=(runner.QSVC_EXPERIMENT,),
+        model_ids=evaluate.QSVC_MODEL_IDS,
+        seeds_per_model=10,
+    )
+    cfg = runner.resolve_config(argv, config=base_config, spec=spec)
+
+    assert cfg.config.qsvc_runs == max(base_config.qsvc_runs, 10)
+    all_seeds: list[int] = []
+    for model_id in evaluate.QSVC_MODEL_IDS:
+        for index in range(spec.seeds_per_model):
+            key = f"model_{model_id}_seed_{index}"
+            assert key in cfg.seed_map
+            assert isinstance(cfg.seed_map[key], int)
+            all_seeds.append(cfg.seed_map[key])
+    assert len(set(all_seeds)) == len(all_seeds)
+    assert cfg.seed_map["model_qsvc_quantum_kernel_seed_9"] in all_seeds
+
+    # Pool-size independence: the SAME keys derived at 5 seeds/model must be
+    # identical at 10 seeds/model (entropy is keyed by model index + seed index,
+    # not by a pool position or spawn(n) child).
+    smaller = runner.ExperimentSpec(
+        experiment_id=runner.QSVC_EXPERIMENT,
+        experiments=(runner.QSVC_EXPERIMENT,),
+        model_ids=evaluate.QSVC_MODEL_IDS,
+        seeds_per_model=5,
+    )
+    smaller_cfg = runner.resolve_config(argv, config=base_config, spec=smaller)
+    compared = 0
+    for key, value in smaller_cfg.seed_map.items():
+        if key.startswith("model_"):
+            assert cfg.seed_map[key] == value
+            compared += 1
+    assert compared == len(evaluate.QSVC_MODEL_IDS) * smaller.seeds_per_model
+
+
 # --------------------------------------------------------------------------- noise experiment
 def test_noise_rows_are_seeded_paired_and_reportable(
     base_config: ExperimentConfig, tmp_path: Path

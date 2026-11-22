@@ -1,0 +1,64 @@
+{
+  "commit_hash": "2f559037e0e5145a4ee7dc29d10bb0c36980c6ff",
+  "config": {
+    "ansatz": "strongly_entangling",
+    "batch_size": 32,
+    "classical_dim": 1280,
+    "device_name": "default.qubit",
+    "embedding": "angle",
+    "epochs": 2,
+    "layers": 2,
+    "learning_rate": 0.001,
+    "noise_depolarizing": null,
+    "optimizer": "adamw",
+    "output_dir": "results\\qml_ablate_q10l2_angle",
+    "patience": 3,
+    "projection_dim": 1024,
+    "qubits": 10,
+    "seed": 42,
+    "shots": null,
+    "weight_decay": 0.0
+  },
+  "experiment_id": "qmlpipe_transfer_qnn",
+  "ood": {
+    "accuracy": 0.5425,
+    "auc": 0.578425,
+    "calibration": {
+      "brier_score": 0.24847756140591848,
+      "ece": 0.026207038685679442,
+      "n_bins": 10,
+      "n_samples": 400
+    },
+    "confusion_matrix": [
+      [
+        94,
+        106
+      ],
+      [
+        77,
+        123
+      ]
+    ],
+    "f1": 0.5734265734265734,
+    "iou_class0": 0.33935018050541516,
+    "iou_class1": 0.4019607843137255,
+    "log_loss": 0.6901042225529068,
+    "macro_iou": 0.37065548240957036,
+    "n_samples": 400,
+    "precision": 0.537117903930131,
+    "recall": 0.615,
+    "support": 400
+  },
+  "schema_version": "1.0",
+  "training": {
+    "best_epoch": 1,
+    "best_val_accuracy": 0.9195979899497487,
+    "best_val_loss": 0.5510366364340087,
+    "early_stopped": false,
+    "epochs_run": 2,
+    "optimizer": "adamw"
+  },
+  "warnings": [
+    "transfer QNN's image extractor replaced by its own projection so the model consumes cached feature-loader vectors (no double extraction)"
+  ]
+}

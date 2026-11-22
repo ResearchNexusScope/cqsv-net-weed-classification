@@ -38,6 +38,27 @@ mamba env create -f environment.yml
 
 The DatasetNinja paths must be supplied through `NINJA_ANN_DIR` and `NINJA_IMG_DIR`.
 
+## Quantum ML pipeline (`qmlpipe/`, 2026-11-22)
+
+A dedicated QML training layer is included with scope for training and improvement:
+
+- `qmlpipe/config.py` — `QMLConfig` (qubits, layers, embedding, ansatz, device, shots,
+  optimizer, patience, noise) with validation and env overrides
+- `qmlpipe/models.py` — amplitude/angle embedding, StronglyEntangling/BasicEntangler
+  ansätze, Pauli-Z readout, frozen EfficientNet feature extractor
+- `qmlpipe/kernel.py` — real `lightning.qubit` quantum kernel, classical `(A@B.T)²`
+  oracle, symmetry/PSD diagnostics; explicit no-quantum-advantage statement
+- `qmlpipe/train.py` / `qmlpipe/evaluate.py` — seeded training, scheduler, early
+  stopping, best-checkpointing, honest metrics (n / std / CI), QSVC evaluation
+- `qmlpipe/ablate.py` / `qmlpipe/model_card.py` — bounded 72-config ablation grid
+  and a model card that renders `not measured` rather than inventing numbers
+- `scripts/train_qml.py` — real-data CLI; reuse the leak-free data helpers
+- `docs/QML_IMPROVEMENT_PLAN.md` — prioritized P0–P7 improvement roadmap
+
+Exact-pin environment: Python 3.11, PennyLane 0.40.0, PennyLane-Lightning 0.40.0,
+`autoray==0.7.0`, numpy 2.0.2. Run `python tools/verify_quantum.py` for the real
+quantum tests; `tools/verify_central.py` runs under Python 3.14 and checks clean skips.
+
 ## Implementation status (2026-11-22)
 
 All layers accepted after Critic gates: environment, data, metrics, models,

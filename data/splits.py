@@ -432,7 +432,11 @@ def _parse_ninja(
     if img_root.is_dir():
         for path in sorted(img_root.rglob("*")):
             if path.is_file() and path.suffix.lower() in _IMAGE_EXTS:
+                # The Kaggle Ninja mirror names annotations ``X.jpg.json``
+                # while the image is ``X.jpg``.  Index both the stem and the
+                # full filename so either annotation convention resolves.
                 by_stem.setdefault(Path(path).stem, path)
+                by_stem.setdefault(path.name, path)
 
     samples: list[Sample] = []
     stats = {
@@ -450,7 +454,7 @@ def _parse_ninja(
         # Advisory: the SAME stem (Path(...).stem) is used for grouping,
         # annotation lookup and sample ids -- never a basename in one place.
         stem = Path(ann_file).stem
-        image_path = by_stem.get(stem)
+        image_path = by_stem.get(stem) or by_stem.get(Path(stem).stem)
         if image_path is None:
             continue
         matched_stems.add(stem)

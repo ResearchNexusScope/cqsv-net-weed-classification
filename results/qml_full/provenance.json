@@ -1,0 +1,73 @@
+{
+  "command": "python scripts/train_qml.py --output-dir results\\qml_full --epochs 5",
+  "commit_hash": "2f559037e0e5145a4ee7dc29d10bb0c36980c6ff",
+  "config": {
+    "ansatz": "strongly_entangling",
+    "batch_size": 32,
+    "classical_dim": 1280,
+    "device_name": "default.qubit",
+    "embedding": "amplitude",
+    "epochs": 5,
+    "layers": 2,
+    "learning_rate": 0.001,
+    "noise_depolarizing": null,
+    "optimizer": "adamw",
+    "output_dir": "results\\qml_full",
+    "patience": 3,
+    "projection_dim": 1024,
+    "qubits": 10,
+    "seed": 42,
+    "shots": null,
+    "weight_decay": 0.0
+  },
+  "data": {
+    "adaptation_per_class": 200,
+    "counts": {
+      "ood": 400,
+      "train": 1594,
+      "val": 199
+    },
+    "ninja_subset_files": 1200,
+    "ood_per_class": 200,
+    "paths": {
+      "kaggle_dir": "C:\\Users\\sugee\\.cache\\kagglehub\\datasets\\aminelaatam\\weed-classification\\versions\\2\\CornWeed",
+      "ninja_ann_dir": "C:\\Users\\sugee\\.cache\\kagglehub\\datasets\\oranaivo\\maize-weed-image-dataset-ninja\\versions\\1\\ds\\ann",
+      "ninja_img_dir": "C:\\Users\\sugee\\.cache\\kagglehub\\datasets\\oranaivo\\maize-weed-image-dataset-ninja\\versions\\1\\ds\\img"
+    }
+  },
+  "generated_at": "2026-11-22T11:33:14.285659+00:00",
+  "packages": {
+    "numpy": "2.0.2",
+    "pennylane": "0.40.0",
+    "pennylane-lightning": "0.40.0",
+    "scikit-learn": "1.9.1",
+    "scipy": "1.17.1",
+    "torch": "2.15.0+xpu",
+    "torchvision": "0.29.2"
+  },
+  "plan": {
+    "ansatz": "strongly_entangling",
+    "batch_size": 32,
+    "classical_dim": 1280,
+    "device_name": "default.qubit",
+    "embedding": "amplitude",
+    "epochs": 5,
+    "feature_dim": 1024,
+    "layers": 2,
+    "learning_rate": 0.001,
+    "noise_depolarizing": null,
+    "optimizer": "adamw",
+    "output_dir": "results\\qml_full",
+    "patience": 3,
+    "projection_dim": 1024,
+    "qubits": 10,
+    "seed": 42,
+    "shots": null,
+    "weight_decay": 0.0
+  },
+  "python_version": "3.11.9",
+  "schema_version": "1.0",
+  "warnings": [
+    "transfer QNN's image extractor replaced by its own projection so the model consumes cached feature-loader vectors (no double extraction)"
+  ]
+}

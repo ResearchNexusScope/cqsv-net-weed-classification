@@ -1,0 +1,26 @@
+{
+  "caption": "noise_robustness: accuracy 48.80% +/- 0.60% (n=10 runs, bootstrap 95% CI 48.45%-49.13%).",
+  "caption_numbers": {
+    "ci95": [
+      0.48449375,
+      0.49125
+    ],
+    "delta": 0.422,
+    "hi": 0.47605,
+    "lo": 0.3758,
+    "mean": 0.488,
+    "n": 10,
+    "sigma": 0.2,
+    "std": 0.005986095
+  },
+  "figure_id": "fig03_noise_robustness",
+  "source_metric_keys": [
+    "noise_table.*.sigma_noisy",
+    "noise_table.*.accuracy_noisy.mean",
+    "noise_table.*.accuracy_noisy.ci95_low",
+    "noise_table.*.accuracy_noisy.ci95_high",
+    "noise_table.*.delta.mean",
+    "noise_table.*.delta.ci95_low",
+    "noise_table.*.delta.ci95_high"
+  ]
+}

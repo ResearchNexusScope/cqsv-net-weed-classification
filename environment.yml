@@ -21,6 +21,7 @@ dependencies:
       - ultralytics>=8.1
       - PennyLane==0.40.0
       - PennyLane-Lightning==0.40.0
+      - autoray==0.7.0
       - shap>=0.45
       - scikit-posthocs>=0.7
       - kagglehub>=0.3

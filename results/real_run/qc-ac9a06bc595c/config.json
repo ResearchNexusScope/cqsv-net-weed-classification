@@ -1,0 +1,132 @@
+{
+  "config": {
+    "adaptation_per_class": 200,
+    "batch_size": 32,
+    "epochs": 15,
+    "feature_dim": 1024,
+    "hflip_prob": 0.5,
+    "image_size": 128,
+    "jitter": 0.1,
+    "kaggle_dataset": "aminelaatam/weed-classification",
+    "learning_rate": 0.001,
+    "n_qubits": 10,
+    "ninja_ann_dir": "C:\\Users\\sugee\\AppData\\Local\\Temp\\qc_ninja_subset_vod8s8gh\\ann",
+    "ninja_img_dir": "C:\\Users\\sugee\\AppData\\Local\\Temp\\qc_ninja_subset_vod8s8gh\\img",
+    "norm_mean": [
+      0.485,
+      0.456,
+      0.406
+    ],
+    "norm_std": [
+      0.229,
+      0.224,
+      0.225
+    ],
+    "output_dir": "results\\real_run",
+    "qnn_layers": 2,
+    "qsvc_runs": 1,
+    "qsvc_source_per_run": 50,
+    "qsvc_target_adaptation_per_run": 50,
+    "qsvc_test_per_run": 50,
+    "rotation_degrees": 15,
+    "scale_range": [
+      0.9,
+      1.1
+    ],
+    "seed": 42,
+    "seed_offset": 42,
+    "vflip_prob": 0.2,
+    "weight_decay": 0.0
+  },
+  "config_hash": "ac9a06bc595cdaca43a8d7ad23b79573b426b0aaa86313891bb82e0734cc6766",
+  "data_manifest_hash": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a",
+  "dataset_table": [
+    {
+      "categories": 2,
+      "dataset": "kaggle",
+      "dim_reduction": 1024,
+      "patch_size": 128,
+      "test": 200,
+      "training": 1594,
+      "validation": 199
+    },
+    {
+      "categories": 2,
+      "dataset": "ninja",
+      "dim_reduction": 1024,
+      "patch_size": 128,
+      "test": 400,
+      "training": 400,
+      "validation": ""
+    }
+  ],
+  "experiment_id": "real_ood_benchmark",
+  "options": {
+    "bootstrap_n": 200,
+    "bootstrap_seed": 1482307210,
+    "comparison_pairs": [
+      [
+        "qsvc_quantum_kernel",
+        "svc_poly2_classical"
+      ]
+    ],
+    "noise_draws": 1,
+    "seeds_per_model": 1,
+    "sigma_grid": [
+      0.0
+    ]
+  },
+  "pipeline_table": [
+    {
+      "index": 1,
+      "model": "logreg_effnet",
+      "pipeline_description": "CallablePredictor; checkpoint=not_available"
+    },
+    {
+      "index": 2,
+      "model": "qsvc_no_mixing_control",
+      "pipeline_description": "KernelSVMPredictor; checkpoint=not_available"
+    },
+    {
+      "index": 3,
+      "model": "qsvc_quantum_kernel",
+      "pipeline_description": "KernelSVMPredictor; checkpoint=not_available"
+    },
+    {
+      "index": 4,
+      "model": "svc_poly2_classical",
+      "pipeline_description": "KernelSVMPredictor; checkpoint=not_available"
+    },
+    {
+      "index": 5,
+      "model": "svc_rbf",
+      "pipeline_description": "KernelSVMPredictor; checkpoint=not_available"
+    }
+  ],
+  "run_id": "qc-ac9a06bc595c",
+  "schema_version": "1.0",
+  "seed_map": {
+    "bootstrap": 1482307210,
+    "env": 2380395804,
+    "experiment_calibration": 133196093,
+    "experiment_main_ood": 3156653282,
+    "experiment_noise_robustness": 1590882901,
+    "experiment_qsvc_mixed_variance": 3791093363,
+    "experiment_significance": 3659861536,
+    "figures": 1522491106,
+    "master": 42,
+    "model_qsvc_no_mixing_control_seed_0": 4117357061,
+    "model_qsvc_quantum_kernel_seed_0": 2557711187,
+    "model_svc_linear_seed_0": 1542441602,
+    "model_svc_poly2_classical_seed_0": 105792259,
+    "model_svc_rbf_seed_0": 1906998437,
+    "noise": 2139355196,
+    "qsvc_run_0": 2010681460,
+    "verification": 2210599807
+  },
+  "warnings": [
+    "logreg_effnet prediction failed (ValueError: This LogisticRegression estimator requires y to be passed, but the target y is None.); arm skipped",
+    "PennyLane is not installed; used classical (A@B.T)^2 oracle",
+    "PennyLane is not installed; used classical (A@B.T)^2 oracle"
+  ]
+}

@@ -1,0 +1,9 @@
+run_id=qc-ac9a06bc595c
+experiment_id=real_ood_benchmark
+config_hash=ac9a06bc595cdaca43a8d7ad23b79573b426b0aaa86313891bb82e0734cc6766
+stages=config,data,models,raw,metrics,figures,manifest
+skipped_units=1
+WARNING logreg_effnet prediction failed (ValueError: This LogisticRegression estimator requires y to be passed, but the target y is None.); arm skipped
+WARNING PennyLane is not installed; used classical (A@B.T)^2 oracle
+WARNING PennyLane is not installed; used classical (A@B.T)^2 oracle
+finished_utc=2026-11-22T04:15:48.038125+00:00

@@ -1,0 +1,6 @@
+#,Model,Pipeline Description
+1,logreg_effnet,CallablePredictor; checkpoint=not_available
+2,qsvc_no_mixing_control,KernelSVMPredictor; checkpoint=not_available
+3,qsvc_quantum_kernel,KernelSVMPredictor; checkpoint=not_available
+4,svc_poly2_classical,KernelSVMPredictor; checkpoint=not_available
+5,svc_rbf,KernelSVMPredictor; checkpoint=not_available
