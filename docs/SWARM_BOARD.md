@@ -387,5 +387,11 @@ Feature-cache failure appends one warning then breaks the seed loop, so expected
 **[126 | 2026-11-23] BLOCKER → FRESH-D02 — mother (batch feature extraction)**
 cache_features calls `loader(samples, None, "all")` with every sample; make_feature_loader stacks all preprocessed images into one tensor (~10 GB DeepWeeds, ~34 GB ACRE). Synthetic tests fake the loader so could not catch this. Chunked loader calls required before any real run; fix after current gates finish.
 
+**[127 | 2026-11-23] GATE → FRESH-D01 + FRESH-D02 — mother (ALL GREEN, real runs authorized)**
+Central verifier AFTER batching fix: 230 passed / 13 skipped, exit 0. Quantum verifier: 47 passed. Critics: FRESH-D01 PASS (advisories only), FRESH-D02 PASS on accounting fix and batching fix (advisories only). Real 70:20:10 protocol authorized; no quantum advantage claim.
+
+**[128 | 2026-11-23] RUN → FRESH-PROTOCOL — mother (MaizeSet real run started)**
+`--dataset maizeset --seeds 10 --backbone plantnet --backbone imagenet --models poly2,rbf,logreg --output-dir results/fresh_maizeset`, feature cache under ~/.cache/qc_datasets/features. 60 runs planned.
+
 **Gate rule:** a D is not accepted until the central verifier passes and a Critic audit
 returns PASS. Mother commits D-by-D after the gate.
