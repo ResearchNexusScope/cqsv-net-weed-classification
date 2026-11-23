@@ -126,6 +126,50 @@ def test_holm_ordering_and_decision_rule() -> None:
     assert guarded[2]["p_holm"] is None
 
 
+def test_cap_train_is_bounded_stratified_and_deterministic() -> None:
+    rng = np.random.default_rng(7)
+    X = rng.normal(size=(40, 3))
+    y = np.asarray([0] * 20 + [1] * 20)
+    X_sub, y_sub, meta = fp.cap_train(X, y, 6, seed=3)
+
+    assert X_sub.shape == (6, 3)
+    assert y_sub.shape == (6,)
+    assert set(np.unique(y_sub)) == {0, 1}
+    assert meta["train_cap"] == 6
+    assert meta["train_size_before"] == 40
+    assert meta["train_size_after"] == 6
+    assert meta["class_counts_before"] == {"0": 20, "1": 20}
+    assert sum(meta["class_counts_after"].values()) == 6
+    assert all(count > 0 for count in meta["class_counts_after"].values())
+    assert meta["cap_applied"] is True
+
+    X_again, y_again, meta_again = fp.cap_train(X, y, 6, seed=3)
+    np.testing.assert_array_equal(X_again, X_sub)
+    np.testing.assert_array_equal(y_again, y_sub)
+    assert meta_again == meta
+
+
+def test_cap_train_varies_with_seed_and_is_noop_when_not_needed() -> None:
+    rng = np.random.default_rng(8)
+    X = rng.normal(size=(30, 2))
+    y = np.asarray([0] * 10 + [1] * 20)
+
+    X_a, _, _ = fp.cap_train(X, y, 8, seed=1)
+    X_b, _, _ = fp.cap_train(X, y, 8, seed=2)
+    assert X_a.shape == X_b.shape == (8, 2)
+    assert not np.array_equal(X_a, X_b)
+
+    X_n, y_n, meta_n = fp.cap_train(X, y, 100, seed=1)
+    assert X_n is X and y_n is y
+    assert meta_n["cap_applied"] is False
+    assert meta_n["train_size_after"] == 30
+    assert meta_n["class_counts_after"] == meta_n["class_counts_before"]
+
+    X_zero, y_zero, meta_zero = fp.cap_train(X, y, 0, seed=1)
+    assert X_zero is X and y_zero is y
+    assert meta_zero["cap_applied"] is False
+
+
 # --------------------------------------------------------------------------- #
 # Classical arm                                                                #
 # --------------------------------------------------------------------------- #
@@ -541,6 +585,74 @@ def test_run_protocol_cache_failure_skips_every_remaining_run(monkeypatch, tmp_p
     assert sum(entry["status"] == "succeeded" for entry in manifest) == 6
     assert sum(entry["status"] == "skipped_cache_failure" for entry in manifest) == 6
     assert "exact_mcnemar" in provenance["comparison_notes"]
+
+
+def test_run_protocol_applies_train_cap_but_keeps_test_full(monkeypatch, tmp_path) -> None:
+    pytest.importorskip("sklearn.svm")
+    pytest.importorskip("scipy")
+
+    rng = np.random.default_rng(9)
+    X_train = rng.normal(size=(40, 4))
+    y_train = np.asarray([0] * 20 + [1] * 20)
+    X_test = rng.normal(size=(12, 4))
+    y_test = np.asarray([0] * 6 + [1] * 6)
+
+    def fake_cache(dataset, backbone, root=None, cache_dir=None, *, seed=42,
+                   ratios=fp.DEFAULT_RATIOS, force=False):
+        return {
+            "X": {"train": X_train, "test": X_test},
+            "y": {"train": y_train, "test": y_test},
+            "groups": {"train": ["g0"], "test": ["g1"]},
+            "cache_path": "fake-cache.npz",
+            "cache_hit": True,
+            "provenance": {"split": {"seed": seed}},
+        }
+
+    monkeypatch.setattr(fp, "cache_features", fake_cache)
+    result = fp.run_protocol(
+        "maizeset",
+        backbones=["plantnet"],
+        seeds=2,
+        models=["poly2"],
+        output_dir=str(tmp_path / "capped"),
+        train_cap=6,
+    )
+    metrics = json.loads(Path(result["metrics_path"]).read_text(encoding="utf-8"))
+    provenance = json.loads(Path(result["provenance_path"]).read_text(encoding="utf-8"))
+
+    assert len(metrics["runs"]) == 2
+    for run in metrics["runs"]:
+        assert run["metrics"]["n_train"] == 6
+        assert run["metrics"]["n"] == 12  # TEST never capped
+        assert sum(map(sum, run["metrics"]["confusion_matrix"])) == 12
+        assert run["train_cap"]["train_cap"] == 6
+        assert run["train_cap"]["train_size_before"] == 40
+        assert run["train_cap"]["train_size_after"] == 6
+        assert run["train_cap"]["cap_applied"] is True
+        assert set(run["train_cap"]["class_counts_after"].values()) == {3}
+    assert provenance["config"]["train_cap"] == 6
+    note = provenance["comparison_notes"]["train_subsampling"]
+    assert "TRAIN subsampled to at most 6 rows per seed" in note["note"]
+    assert "TEST split remains full and sealed" in note["note"]
+    assert note["claim_boundary"] == "No performance claim is made from this cap."
+    assert all(
+        entry["train_cap"]["train_size_after"] == 6
+        for entry in provenance["run_manifest"]
+    )
+
+    # Default cap=0 reproduces the uncapped behaviour exactly.
+    uncapped = fp.run_protocol(
+        "maizeset",
+        backbones=["plantnet"],
+        seeds=1,
+        models=["poly2"],
+        output_dir=str(tmp_path / "uncapped"),
+    )
+    uncapped_metrics = json.loads(
+        Path(uncapped["metrics_path"]).read_text(encoding="utf-8")
+    )
+    assert uncapped_metrics["runs"][0]["metrics"]["n_train"] == 40
+    assert uncapped_metrics["runs"][0]["train_cap"]["cap_applied"] is False
 
 
 # --------------------------------------------------------------------------- #

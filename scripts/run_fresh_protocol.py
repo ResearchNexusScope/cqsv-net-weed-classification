@@ -50,6 +50,12 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--root", default=None, help="optional dataset root directory")
     parser.add_argument("--alpha", type=float, default=0.05)
     parser.add_argument(
+        "--train-cap",
+        type=int,
+        default=0,
+        help="cap TRAIN rows per seed (0 = no cap; default 0)",
+    )
+    parser.add_argument(
         "--dry-run",
         action="store_true",
         help="print the plan only; no downloads, training or writes",
@@ -73,6 +79,7 @@ def main(argv=None) -> int:
         "cache_dir": args.cache_dir,
         "root": args.root,
         "alpha": float(args.alpha),
+        "train_cap": args.train_cap,
         "runs_planned": args.seeds * len(backbones) * len(models),
         "claim_boundary": (
             "Classical controls and paired statistics only; no QNN arm and no quantum "
@@ -94,6 +101,7 @@ def main(argv=None) -> int:
         cache_dir=args.cache_dir,
         root=args.root,
         alpha=float(args.alpha),
+        train_cap=args.train_cap,
     )
     print(
         json.dumps(

@@ -43,6 +43,7 @@ __all__ = [
     "paired_comparison",
     "holm_adjust",
     "cache_features",
+    "cap_train",
     "run_svm_arm",
     "run_protocol",
 ]
@@ -795,6 +796,96 @@ def _environment_pins() -> dict:
     }
 
 
+def _class_counts(y) -> dict[str, int]:
+    """Class label (as string, for JSON) -> integer count."""
+    values, counts = np.unique(np.asarray(y), return_counts=True)
+    return {str(value): int(count) for value, count in zip(values, counts)}
+
+
+def cap_train(X, y, cap: int, seed: int):
+    """Deterministically cap TRAIN rows with class-stratified sampling.
+
+    When ``cap > 0`` and ``len(y) > cap``, at most ``cap`` rows are selected
+    with ``numpy.random.default_rng(seed)``.  The budget is allocated across
+    classes in proportion to their sizes with a one-row minimum per class
+    (when ``cap`` is at least the number of classes), largest-remainder
+    tie-breaking and deterministic index tie-breaks.  Selected rows are sorted
+    back into original TRAIN order, so a fixed ``seed`` reproduces the exact
+    same subset and different seeds give different subsets.
+
+    This helper never touches the test split.  It returns ``(X_sub, y_sub,
+    meta)`` where ``meta`` records ``train_cap``, ``train_size_before``,
+    ``train_size_after``, ``class_counts_before``, ``class_counts_after``,
+    ``cap_applied`` and a human-readable note.  For ``cap <= 0`` or
+    ``len(y) <= cap`` the original ``X`` and ``y`` objects are returned
+    untouched with ``cap_applied=False`` metadata.
+    """
+    cap_int = int(cap)
+    n = int(len(np.asarray(y)))
+    counts_before = _class_counts(y)
+    meta: dict[str, Any] = {
+        "train_cap": cap_int,
+        "train_size_before": n,
+        "train_size_after": n,
+        "class_counts_before": dict(counts_before),
+        "class_counts_after": dict(counts_before),
+        "cap_applied": False,
+        "note": "no cap applied (cap<=0 or train size <= cap)",
+    }
+    if cap_int <= 0 or n <= cap_int:
+        return X, y, meta
+
+    X_arr = np.asarray(X)
+    y_arr = np.asarray(y)
+    classes, counts = np.unique(y_arr, return_counts=True)
+    k = len(classes)
+    if cap_int < k:
+        # Cannot retain one row per class; keep the largest classes.
+        order = sorted(range(k), key=lambda i: (-int(counts[i]), i))
+        alloc = np.zeros(k, dtype=int)
+        for index in order[:cap_int]:
+            alloc[index] = 1
+    else:
+        alloc = np.ones(k, dtype=int)
+        remaining = cap_int - k
+        raw = remaining * (counts / counts.sum())
+        floors = np.floor(raw).astype(int)
+        alloc += floors
+        leftover = int(remaining - floors.sum())
+        order = sorted(range(k), key=lambda i: (-(float(raw[i]) - int(floors[i])), i))
+        for index in order[:leftover]:
+            alloc[index] += 1
+        for index in range(k):
+            alloc[index] = min(alloc[index], int(counts[index]))
+        deficit = cap_int - int(alloc.sum())
+        while deficit > 0:
+            candidates = [index for index in order if alloc[index] < int(counts[index])]
+            if not candidates:
+                break
+            alloc[candidates[0]] += 1
+            deficit -= 1
+
+    rng = np.random.default_rng(int(seed))
+    chosen: list[np.ndarray] = []
+    for cls, take in zip(classes, alloc):
+        if take <= 0:
+            continue
+        candidates = np.flatnonzero(y_arr == cls)
+        chosen.append(rng.choice(candidates, size=int(take), replace=False))
+    selected = np.concatenate(chosen) if chosen else np.empty(0, dtype=int)
+    selected.sort()  # preserve original TRAIN row order
+    X_sub, y_sub = X_arr[selected], y_arr[selected]
+    meta.update(
+        {
+            "train_size_after": int(len(y_sub)),
+            "class_counts_after": _class_counts(y_sub),
+            "cap_applied": True,
+            "note": f"stratified TRAIN subsample to at most {cap_int} rows (seed {int(seed)})",
+        }
+    )
+    return X_sub, y_sub, meta
+
+
 def run_protocol(
     dataset: str,
     backbones: Sequence[str] = ("plantnet", "imagenet"),
@@ -808,6 +899,7 @@ def run_protocol(
     boot_B: int = BOOT_B,
     boot_seed: int = BOOT_SEED,
     ratios: Sequence[float] = DEFAULT_RATIOS,
+    train_cap: int = 0,
 ) -> dict:
     """Loop seeds x backbones x classical models and write additive artifacts.
 
@@ -816,9 +908,12 @@ def run_protocol(
     ``skipped_cache_failure``.  Skipped rows carry the original exception type
     and message and no metric values; all counts derive from that manifest, so
     a failed cache build can never silently drop the remaining seeds of a
-    backbone.  ``metrics.json`` and ``provenance.json`` are written to
-    ``output_dir`` (or a fresh child directory if they already exist).  Both
-    carry ``claim_boundary`` stating that no quantum advantage is asserted.
+    backbone.  ``train_cap`` (default 0) optionally bounds the TRAIN rows per
+    seed via :func:`cap_train`; TEST is never subsampled and no performance
+    claim is made from the cap.  ``metrics.json`` and ``provenance.json`` are
+    written to ``output_dir`` (or a fresh child directory if they already
+    exist).  Both carry ``claim_boundary`` stating that no quantum advantage
+    is asserted.
     """
     seed_list = _normalize_seeds(seeds)
     model_list = list(dict.fromkeys(str(model) for model in models))
@@ -893,6 +988,11 @@ def run_protocol(
                         "groups": cached.get("groups"),
                     }
                 )
+                # Same capped TRAIN budget for every arm of this seed; TEST
+                # remains full and sealed. cap=0 is a byte-for-byte no-op.
+                X_fit, y_fit, cap_meta = cap_train(
+                    cached["X"]["train"], cached["y"]["train"], train_cap, seed
+                )
             except Exception as exc:
                 # This backbone cannot be featurised.  Finalise EVERY remaining
                 # (seed, model) tuple for it with the original error, so the
@@ -904,10 +1004,11 @@ def run_protocol(
                 break
             for model in model_list:
                 entry = manifest[manifest_index[(backbone, seed, model)]]
+                entry["train_cap"] = cap_meta
                 try:
                     arm = run_svm_arm(
-                        cached["X"]["train"],
-                        cached["y"]["train"],
+                        X_fit,
+                        y_fit,
                         cached["X"]["test"],
                         cached["y"]["test"],
                         model,
@@ -931,6 +1032,7 @@ def run_protocol(
                 "seed": entry["seed"],
                 "model": entry["model"],
                 "status": "ok",
+                "train_cap": entry.get("train_cap"),
                 "metrics": run_metrics[key],
             }
         )
@@ -1037,6 +1139,7 @@ def run_protocol(
         "ratios": [float(value) for value in ratios],
         "alpha": float(alpha),
         "bootstrap": {"B": int(boot_B), "seed": int(boot_seed)},
+        "train_cap": int(train_cap),
         "protocol": "fresh_protocol.v1",
     }
     counts = {
@@ -1078,6 +1181,7 @@ def run_protocol(
                 "model": entry["model"],
                 "status": entry["status"],
                 "stage": entry["stage"],
+                "train_cap": entry.get("train_cap"),
                 "error_type": entry["error_type"],
                 "error": entry["error"],
             }
@@ -1090,6 +1194,18 @@ def run_protocol(
                 "paired per-image predictions are not retained, so Wilcoxon is the "
                 "secondary paired test"
             ),
+            "train_subsampling": {
+                "cap": int(train_cap),
+                "note": (
+                    f"TRAIN subsampled to at most {train_cap} rows per seed for "
+                    "computational feasibility; TEST split remains full and sealed; "
+                    "this limits the fitted model's data budget, not the n=10 seed "
+                    "replication."
+                    if int(train_cap) > 0
+                    else "No TRAIN subsampling applied (train_cap=0); full TRAIN used."
+                ),
+                "claim_boundary": "No performance claim is made from this cap.",
+            },
         },
         "warnings": warnings,
         "additive": True,
