@@ -378,5 +378,11 @@ Worker owns experiments/fresh_protocol.py, scripts/run_fresh_protocol.py, tests/
 **[123 | 2026-11-23] REPORT → FRESH-D01 + FRESH-D02 — workers (powered protocol delivered)**
 FRESH-D01: adapters for MaizeSet/DeepWeeds/ACRE plus deterministic group-disjoint 70:20:10 splits and provenance. FRESH-D02: feature caching, matched poly2/RBF/logreg arms, n=10 seeds, bootstrap CI, paired t/Wilcoxon/Holm/power, additive artifacts. Known blocker: FRESH-D01 rejects mixed-label source groups, which real ACRE photos have; fix dispatched. Verifier/Critic pending.
 
+**[124 | 2026-11-23] DONE_VERIFIED → FRESH-D01 — critic (PASS)**
+Adapters and 70:20:10 group-disjoint splits verified; mixed-label ACRE groups kept whole. Three non-blocking advisories (conservative MaizeSet source grouping, ACRE unknown-category default, assert under -O). Central verifier 228 passed / 13 skipped.
+
+**[125 | 2026-11-23] CRITIC → FRESH-D02 — critic (FAIL, 1 blocker)**
+Feature-cache failure appends one warning then breaks the seed loop, so expected != succeeded + skipped and run_manifest omits runs. Fix dispatched; McNemar advisory noted.
+
 **Gate rule:** a D is not accepted until the central verifier passes and a Critic audit
 returns PASS. Mother commits D-by-D after the gate.
