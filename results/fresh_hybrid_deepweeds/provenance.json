@@ -1,0 +1,391 @@
+{
+  "additive": true,
+  "architecture": {
+    "classical_branch": "nn.Linear(D, hidden) -> nn.ReLU()",
+    "description": "classical branch Linear(feature_dim -> hidden) -> ReLU; quantum branch Linear(feature_dim -> 2**qubits) adapter -> qmlpipe.models.build_qnn with reduced qubits, amplitude embedding and trainable StronglyEntanglingLayers emitting 2 logits; final Linear(concat([classical_hidden, quantum_logits]) -> 2).",
+    "fusion": "nn.Linear(hidden + 2, 2) on the concatenation of both branch outputs",
+    "hybrid_evidence": "classical, quantum adapter, quantum circuit weights and the fusion layer all contain trainable parameters and receive gradients; the classical branch is absent from a pure QNN, so both paths are required at inference.",
+    "quantum_backend": "PennyLane default.qubit, interface='torch', diff_method='backprop', analytic (shots=None); CPU simulation only",
+    "quantum_branch": "nn.Linear(D, 2**qubits) -> build_qnn(qubits, layers, amplitude embedding, strongly_entangling ansatz) -> 2 logits",
+    "type": "parallel-concatenation hybrid (classical compression + variational quantum head)"
+  },
+  "claim_boundary": "HYBRID-D01 diagnostic arm on the frozen fresh 70:20:10 grouped splits. classical branch Linear(feature_dim -> hidden) -> ReLU; quantum branch Linear(feature_dim -> 2**qubits) adapter -> qmlpipe.models.build_qnn with reduced qubits, amplitude embedding and trainable StronglyEntanglingLayers emitting 2 logits; final Linear(concat([classical_hidden, quantum_logits]) -> 2). Both branches are trainable and both contribute to the fused classifier; this is a hybrid model, not a pure QNN and not a parameter-free quantum kernel. All quantum execution is CPU simulation (default.qubit, analytic); no quantum advantage is asserted and no speed or hardware claim is made. Paired comparisons are reported with Holm correction and decisions are computed from the data; they are evidence for or against a difference, not a licence to claim an advantage without the full matched-control and Critic gate. TEST is sealed and scored once; failures are recorded as warnings and never fabricated.",
+  "comparison_notes": {
+    "direction": "hybrid - baseline (positive means hybrid higher)",
+    "exact_mcnemar": "not computed: only one scalar accuracy per seed is retained",
+    "multiplicity": "Holm step-down across all comparisons in this artifact",
+    "no_advantage_claim": "Decisions are statistical descriptions of the paired seed vectors. No quantum advantage is asserted from a CPU simulation or from this single hybrid arm.",
+    "primary_test": "paired_t_test (scipy.stats.ttest_rel, two-sided)",
+    "secondary_test": "Wilcoxon signed-rank"
+  },
+  "config": {
+    "alpha": 0.05,
+    "architecture": {
+      "classical_branch": "nn.Linear(D, hidden) -> nn.ReLU()",
+      "description": "classical branch Linear(feature_dim -> hidden) -> ReLU; quantum branch Linear(feature_dim -> 2**qubits) adapter -> qmlpipe.models.build_qnn with reduced qubits, amplitude embedding and trainable StronglyEntanglingLayers emitting 2 logits; final Linear(concat([classical_hidden, quantum_logits]) -> 2).",
+      "fusion": "nn.Linear(hidden + 2, 2) on the concatenation of both branch outputs",
+      "hybrid_evidence": "classical, quantum adapter, quantum circuit weights and the fusion layer all contain trainable parameters and receive gradients; the classical branch is absent from a pure QNN, so both paths are required at inference.",
+      "quantum_backend": "PennyLane default.qubit, interface='torch', diff_method='backprop', analytic (shots=None); CPU simulation only",
+      "quantum_branch": "nn.Linear(D, 2**qubits) -> build_qnn(qubits, layers, amplitude embedding, strongly_entangling ansatz) -> 2 logits",
+      "type": "parallel-concatenation hybrid (classical compression + variational quantum head)"
+    },
+    "backbone": "plantnet",
+    "backend": "PennyLane default.qubit, interface='torch', diff_method='backprop', analytic (shots=None); CPU simulation only",
+    "bootstrap": {
+      "B": 2000,
+      "seed": 42
+    },
+    "cache_dir": "C:\\Users\\sugee\\.cache\\qc_datasets\\features",
+    "classical_results": "C:\\Users\\sugee\\Github\\SugeethJSA\\Quantum_Classification\\results\\fresh_deepweeds\\metrics.json",
+    "dataset": "deepweeds",
+    "epochs": 3,
+    "layers": 2,
+    "protocol": "fresh_hybrid.v1",
+    "qnn_results": "C:\\Users\\sugee\\Github\\SugeethJSA\\Quantum_Classification\\results\\fresh_qnn_deepweeds",
+    "qubits": 4,
+    "root": null,
+    "seeds": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9
+    ],
+    "train_cap": 2000
+  },
+  "dataset": "deepweeds",
+  "environment": {
+    "commit_hash": null,
+    "note": "versions are those importable in the executing interpreter; no installs performed",
+    "packages": {
+      "numpy": "2.0.2",
+      "pennylane": "0.40.0",
+      "scikit-learn": "1.9.1",
+      "scipy": "1.17.1",
+      "statsmodels": "0.15.0",
+      "torch": "2.15.0+xpu"
+    },
+    "platform": "Windows-10-10.0.19045-SP0",
+    "python": "3.11.9",
+    "python_executable": "C:\\Users\\sugee\\AppData\\Local\\Programs\\Python\\Python311\\python.exe"
+  },
+  "run_manifest": [
+    {
+      "backbone": "plantnet",
+      "dataset": "deepweeds",
+      "grad_norms": {
+        "classical": 0.05210144126283048,
+        "quantum": 0.12380349024503821
+      },
+      "seed": 0,
+      "status": "ok",
+      "train_cap": {
+        "cap_applied": true,
+        "class_counts_after": {
+          "0": 1045,
+          "1": 955
+        },
+        "class_counts_before": {
+          "0": 6403,
+          "1": 5853
+        },
+        "note": "stratified TRAIN subsample to at most 2000 rows (seed 0)",
+        "train_cap": 2000,
+        "train_size_after": 2000,
+        "train_size_before": 12256
+      },
+      "trainable_parameter_counts": {
+        "classical": 32832,
+        "fusion": 134,
+        "quantum": 8242,
+        "total": 41208
+      }
+    },
+    {
+      "backbone": "plantnet",
+      "dataset": "deepweeds",
+      "grad_norms": {
+        "classical": 0.05586462443311535,
+        "quantum": 0.0920884263773944
+      },
+      "seed": 1,
+      "status": "ok",
+      "train_cap": {
+        "cap_applied": true,
+        "class_counts_after": {
+          "0": 1045,
+          "1": 955
+        },
+        "class_counts_before": {
+          "0": 6402,
+          "1": 5854
+        },
+        "note": "stratified TRAIN subsample to at most 2000 rows (seed 1)",
+        "train_cap": 2000,
+        "train_size_after": 2000,
+        "train_size_before": 12256
+      },
+      "trainable_parameter_counts": {
+        "classical": 32832,
+        "fusion": 134,
+        "quantum": 8242,
+        "total": 41208
+      }
+    },
+    {
+      "backbone": "plantnet",
+      "dataset": "deepweeds",
+      "grad_norms": {
+        "classical": 0.05035878624669785,
+        "quantum": 0.2380916649698026
+      },
+      "seed": 2,
+      "status": "ok",
+      "train_cap": {
+        "cap_applied": true,
+        "class_counts_after": {
+          "0": 1038,
+          "1": 962
+        },
+        "class_counts_before": {
+          "0": 6362,
+          "1": 5894
+        },
+        "note": "stratified TRAIN subsample to at most 2000 rows (seed 2)",
+        "train_cap": 2000,
+        "train_size_after": 2000,
+        "train_size_before": 12256
+      },
+      "trainable_parameter_counts": {
+        "classical": 32832,
+        "fusion": 134,
+        "quantum": 8242,
+        "total": 41208
+      }
+    },
+    {
+      "backbone": "plantnet",
+      "dataset": "deepweeds",
+      "grad_norms": {
+        "classical": 0.06983525322504211,
+        "quantum": 0.10388503951713868
+      },
+      "seed": 3,
+      "status": "ok",
+      "train_cap": {
+        "cap_applied": true,
+        "class_counts_after": {
+          "0": 1032,
+          "1": 968
+        },
+        "class_counts_before": {
+          "0": 6327,
+          "1": 5929
+        },
+        "note": "stratified TRAIN subsample to at most 2000 rows (seed 3)",
+        "train_cap": 2000,
+        "train_size_after": 2000,
+        "train_size_before": 12256
+      },
+      "trainable_parameter_counts": {
+        "classical": 32832,
+        "fusion": 134,
+        "quantum": 8242,
+        "total": 41208
+      }
+    },
+    {
+      "backbone": "plantnet",
+      "dataset": "deepweeds",
+      "grad_norms": {
+        "classical": 0.08009213889861215,
+        "quantum": 0.21360158078325517
+      },
+      "seed": 4,
+      "status": "ok",
+      "train_cap": {
+        "cap_applied": true,
+        "class_counts_after": {
+          "0": 1044,
+          "1": 956
+        },
+        "class_counts_before": {
+          "0": 6397,
+          "1": 5859
+        },
+        "note": "stratified TRAIN subsample to at most 2000 rows (seed 4)",
+        "train_cap": 2000,
+        "train_size_after": 2000,
+        "train_size_before": 12256
+      },
+      "trainable_parameter_counts": {
+        "classical": 32832,
+        "fusion": 134,
+        "quantum": 8242,
+        "total": 41208
+      }
+    },
+    {
+      "backbone": "plantnet",
+      "dataset": "deepweeds",
+      "grad_norms": {
+        "classical": 0.06428801584330819,
+        "quantum": 0.06001033589741255
+      },
+      "seed": 5,
+      "status": "ok",
+      "train_cap": {
+        "cap_applied": true,
+        "class_counts_after": {
+          "0": 1043,
+          "1": 957
+        },
+        "class_counts_before": {
+          "0": 6394,
+          "1": 5862
+        },
+        "note": "stratified TRAIN subsample to at most 2000 rows (seed 5)",
+        "train_cap": 2000,
+        "train_size_after": 2000,
+        "train_size_before": 12256
+      },
+      "trainable_parameter_counts": {
+        "classical": 32832,
+        "fusion": 134,
+        "quantum": 8242,
+        "total": 41208
+      }
+    },
+    {
+      "backbone": "plantnet",
+      "dataset": "deepweeds",
+      "grad_norms": {
+        "classical": 0.09229977781366006,
+        "quantum": 0.056604148237160354
+      },
+      "seed": 6,
+      "status": "ok",
+      "train_cap": {
+        "cap_applied": true,
+        "class_counts_after": {
+          "0": 1048,
+          "1": 952
+        },
+        "class_counts_before": {
+          "0": 6425,
+          "1": 5831
+        },
+        "note": "stratified TRAIN subsample to at most 2000 rows (seed 6)",
+        "train_cap": 2000,
+        "train_size_after": 2000,
+        "train_size_before": 12256
+      },
+      "trainable_parameter_counts": {
+        "classical": 32832,
+        "fusion": 134,
+        "quantum": 8242,
+        "total": 41208
+      }
+    },
+    {
+      "backbone": "plantnet",
+      "dataset": "deepweeds",
+      "grad_norms": {
+        "classical": 0.0650114274457237,
+        "quantum": 0.09838435133581808
+      },
+      "seed": 7,
+      "status": "ok",
+      "train_cap": {
+        "cap_applied": true,
+        "class_counts_after": {
+          "0": 1038,
+          "1": 962
+        },
+        "class_counts_before": {
+          "0": 6364,
+          "1": 5892
+        },
+        "note": "stratified TRAIN subsample to at most 2000 rows (seed 7)",
+        "train_cap": 2000,
+        "train_size_after": 2000,
+        "train_size_before": 12256
+      },
+      "trainable_parameter_counts": {
+        "classical": 32832,
+        "fusion": 134,
+        "quantum": 8242,
+        "total": 41208
+      }
+    },
+    {
+      "backbone": "plantnet",
+      "dataset": "deepweeds",
+      "grad_norms": {
+        "classical": 0.08120153945445734,
+        "quantum": 0.16596430173159424
+      },
+      "seed": 8,
+      "status": "ok",
+      "train_cap": {
+        "cap_applied": true,
+        "class_counts_after": {
+          "0": 1038,
+          "1": 962
+        },
+        "class_counts_before": {
+          "0": 6362,
+          "1": 5894
+        },
+        "note": "stratified TRAIN subsample to at most 2000 rows (seed 8)",
+        "train_cap": 2000,
+        "train_size_after": 2000,
+        "train_size_before": 12256
+      },
+      "trainable_parameter_counts": {
+        "classical": 32832,
+        "fusion": 134,
+        "quantum": 8242,
+        "total": 41208
+      }
+    },
+    {
+      "backbone": "plantnet",
+      "dataset": "deepweeds",
+      "grad_norms": {
+        "classical": 0.08531660299940567,
+        "quantum": 0.08965642914380786
+      },
+      "seed": 9,
+      "status": "ok",
+      "train_cap": {
+        "cap_applied": true,
+        "class_counts_after": {
+          "0": 1037,
+          "1": 963
+        },
+        "class_counts_before": {
+          "0": 6352,
+          "1": 5904
+        },
+        "note": "stratified TRAIN subsample to at most 2000 rows (seed 9)",
+        "train_cap": 2000,
+        "train_size_after": 2000,
+        "train_size_before": 12256
+      },
+      "trainable_parameter_counts": {
+        "classical": 32832,
+        "fusion": 134,
+        "quantum": 8242,
+        "total": 41208
+      }
+    }
+  ],
+  "schema": "fresh_hybrid.provenance.v1",
+  "warnings": []
+}

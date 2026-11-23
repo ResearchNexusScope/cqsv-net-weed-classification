@@ -1,0 +1,1280 @@
+{
+  "accounting_invariant": true,
+  "aggregates": {
+    "plantnet/hybrid": {
+      "accuracy": {
+        "boot_B": 2000,
+        "boot_seed": 42,
+        "ci95_high": 0.7715034266133638,
+        "ci95_low": 0.761279268989149,
+        "mean": 0.7664762992575671,
+        "model": "plantnet/hybrid",
+        "n": 10,
+        "std": 0.008642135251012881,
+        "values": [
+          0.7567104511707595,
+          0.7789834380354084,
+          0.7784123358081096,
+          0.7652769845802398,
+          0.7515705311250714,
+          0.7664191890348372,
+          0.7624214734437464,
+          0.7647058823529411,
+          0.7721302113078241,
+          0.7681324957167333
+        ]
+      },
+      "auc": {
+        "boot_B": 2000,
+        "boot_seed": 42,
+        "ci95_high": 0.8552591262935074,
+        "ci95_low": 0.8454705034921534,
+        "mean": 0.8504537256874082,
+        "model": "plantnet/hybrid",
+        "n": 10,
+        "std": 0.008122262485493085,
+        "values": [
+          0.8438157269828346,
+          0.8565589286600155,
+          0.8608642197667953,
+          0.845598981168316,
+          0.8339325907241745,
+          0.8558094431549672,
+          0.8474461417939679,
+          0.8583383159659214,
+          0.8492408861748952,
+          0.8529320224821955
+        ]
+      },
+      "f1": {
+        "boot_B": 2000,
+        "boot_seed": 42,
+        "ci95_high": 0.7704756190288712,
+        "ci95_low": 0.7588901659345062,
+        "mean": 0.7643827949765301,
+        "model": "plantnet/hybrid",
+        "n": 10,
+        "std": 0.009991894287377621,
+        "values": [
+          0.7661909989023051,
+          0.7829500841278744,
+          0.7723004694835681,
+          0.7557932263814616,
+          0.7552054023635341,
+          0.7540589296452195,
+          0.7744034707158352,
+          0.7587822014051522,
+          0.7684271619268718,
+          0.7557160048134778
+        ]
+      },
+      "n_runs": 10,
+      "precision": {
+        "boot_B": 2000,
+        "boot_seed": 42,
+        "ci95_high": 0.7614599521721988,
+        "ci95_low": 0.73593644813257,
+        "mean": 0.7483231134564519,
+        "model": "plantnet/hybrid",
+        "n": 10,
+        "std": 0.021500978017357817,
+        "values": [
+          0.7308900523560209,
+          0.7505376344086021,
+          0.7777777777777778,
+          0.7765567765567766,
+          0.7254054054054054,
+          0.7609223300970874,
+          0.7190332326283988,
+          0.7578947368421053,
+          0.7266739846322722,
+          0.7575392038600723
+        ]
+      },
+      "recall": {
+        "boot_B": 2000,
+        "boot_seed": 42,
+        "ci95_high": 0.803448735228004,
+        "ci95_low": 0.7628370313937155,
+        "mean": 0.7829108333851298,
+        "model": "plantnet/hybrid",
+        "n": 10,
+        "std": 0.03504606278094592,
+        "values": [
+          0.8050749711649365,
+          0.8182883939038686,
+          0.7668997668997669,
+          0.7361111111111112,
+          0.7875586854460094,
+          0.7473182359952324,
+          0.8390129259694477,
+          0.7596717467760844,
+          0.8152709359605911,
+          0.7539015606242497
+        ]
+      },
+      "seeds": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ]
+    }
+  },
+  "architecture": {
+    "classical_branch": "nn.Linear(D, hidden) -> nn.ReLU()",
+    "description": "classical branch Linear(feature_dim -> hidden) -> ReLU; quantum branch Linear(feature_dim -> 2**qubits) adapter -> qmlpipe.models.build_qnn with reduced qubits, amplitude embedding and trainable StronglyEntanglingLayers emitting 2 logits; final Linear(concat([classical_hidden, quantum_logits]) -> 2).",
+    "fusion": "nn.Linear(hidden + 2, 2) on the concatenation of both branch outputs",
+    "hybrid_evidence": "classical, quantum adapter, quantum circuit weights and the fusion layer all contain trainable parameters and receive gradients; the classical branch is absent from a pure QNN, so both paths are required at inference.",
+    "quantum_backend": "PennyLane default.qubit, interface='torch', diff_method='backprop', analytic (shots=None); CPU simulation only",
+    "quantum_branch": "nn.Linear(D, 2**qubits) -> build_qnn(qubits, layers, amplitude embedding, strongly_entangling ansatz) -> 2 logits",
+    "type": "parallel-concatenation hybrid (classical compression + variational quantum head)"
+  },
+  "claim_boundary": "HYBRID-D01 diagnostic arm on the frozen fresh 70:20:10 grouped splits. classical branch Linear(feature_dim -> hidden) -> ReLU; quantum branch Linear(feature_dim -> 2**qubits) adapter -> qmlpipe.models.build_qnn with reduced qubits, amplitude embedding and trainable StronglyEntanglingLayers emitting 2 logits; final Linear(concat([classical_hidden, quantum_logits]) -> 2). Both branches are trainable and both contribute to the fused classifier; this is a hybrid model, not a pure QNN and not a parameter-free quantum kernel. All quantum execution is CPU simulation (default.qubit, analytic); no quantum advantage is asserted and no speed or hardware claim is made. Paired comparisons are reported with Holm correction and decisions are computed from the data; they are evidence for or against a difference, not a licence to claim an advantage without the full matched-control and Critic gate. TEST is sealed and scored once; failures are recorded as warnings and never fabricated.",
+  "comparisons": [
+    {
+      "alpha": 0.05,
+      "backbone": "plantnet",
+      "baseline_values": [
+        0.8960593946316391,
+        0.8972015990862364,
+        0.9046259280411194,
+        0.9023415191319246,
+        0.9091947458595089,
+        0.9011993146773273,
+        0.9029126213592233,
+        0.9046259280411194,
+        0.9114791547687036,
+        0.912621359223301
+      ],
+      "boot_B": 2000,
+      "boot_seed": 42,
+      "ci95_high": -0.13146630496858938,
+      "ci95_low": -0.14380354083380928,
+      "cohens_dz": -13.189980973683179,
+      "comparison_source": "C:\\Users\\sugee\\Github\\SugeethJSA\\Quantum_Classification\\results\\fresh_deepweeds\\metrics.json",
+      "decision": "inconclusive",
+      "decision_reason": "descriptive: power<0.8 or unavailable",
+      "df": 9,
+      "direction": "hybrid - baseline (positive means hybrid higher)",
+      "hybrid_values": [
+        0.7567104511707595,
+        0.7789834380354084,
+        0.7784123358081096,
+        0.7652769845802398,
+        0.7515705311250714,
+        0.7664191890348372,
+        0.7624214734437464,
+        0.7647058823529411,
+        0.7721302113078241,
+        0.7681324957167333
+      ],
+      "mean_difference": -0.1377498572244432,
+      "metric": "accuracy",
+      "multiplicity": {
+        "alpha": 0.05,
+        "m": 2,
+        "method": "holm"
+      },
+      "n": 10,
+      "p_holm": 2.6093705693374517e-11,
+      "p_raw": 1.3046852846687258e-11,
+      "pair": [
+        "hybrid",
+        "plantnet/poly2_committed"
+      ],
+      "power_at_observed_dz": null,
+      "primary_test": "paired_t_test (scipy.stats.ttest_rel, two-sided)",
+      "secondary_tests": {
+        "wilcoxon_signed_rank": {
+          "note": null,
+          "p": 0.001953125
+        }
+      },
+      "seeds": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "t_statistic": -41.71038217112429,
+      "wilcoxon_note": null,
+      "wilcoxon_p": 0.001953125
+    },
+    {
+      "alpha": 0.05,
+      "backbone": "plantnet",
+      "baseline_values": [
+        0.48715019988577957,
+        0.5128498001142204,
+        0.44545973729297544,
+        0.5585379782981154,
+        0.48657909765848084,
+        0.5379782981153627,
+        0.5157053112507138,
+        0.4802969731581953,
+        0.46373500856653344,
+        0.5562535693889206
+      ],
+      "boot_B": 2000,
+      "boot_seed": 42,
+      "ci95_high": 0.2850970873786407,
+      "ci95_low": 0.23876927470017129,
+      "cohens_dz": 6.483831534347804,
+      "comparison_source": "C:\\Users\\sugee\\Github\\SugeethJSA\\Quantum_Classification\\results\\fresh_qnn_deepweeds",
+      "decision": "inconclusive",
+      "decision_reason": "descriptive: power<0.8 or unavailable",
+      "df": 9,
+      "direction": "hybrid - baseline (positive means hybrid higher)",
+      "hybrid_values": [
+        0.7567104511707595,
+        0.7789834380354084,
+        0.7784123358081096,
+        0.7652769845802398,
+        0.7515705311250714,
+        0.7664191890348372,
+        0.7624214734437464,
+        0.7647058823529411,
+        0.7721302113078241,
+        0.7681324957167333
+      ],
+      "mean_difference": 0.26202170188463736,
+      "metric": "accuracy",
+      "multiplicity": {
+        "alpha": 0.05,
+        "m": 2,
+        "method": "holm"
+      },
+      "n": 10,
+      "p_holm": 7.29031292803076e-09,
+      "p_raw": 7.29031292803076e-09,
+      "pair": [
+        "hybrid",
+        "plantnet/pure_qnn"
+      ],
+      "power_at_observed_dz": null,
+      "primary_test": "paired_t_test (scipy.stats.ttest_rel, two-sided)",
+      "secondary_tests": {
+        "wilcoxon_signed_rank": {
+          "note": null,
+          "p": 0.001953125
+        }
+      },
+      "seeds": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "t_statistic": 20.503675613363328,
+      "wilcoxon_note": null,
+      "wilcoxon_p": 0.001953125
+    }
+  ],
+  "config": {
+    "alpha": 0.05,
+    "architecture": {
+      "classical_branch": "nn.Linear(D, hidden) -> nn.ReLU()",
+      "description": "classical branch Linear(feature_dim -> hidden) -> ReLU; quantum branch Linear(feature_dim -> 2**qubits) adapter -> qmlpipe.models.build_qnn with reduced qubits, amplitude embedding and trainable StronglyEntanglingLayers emitting 2 logits; final Linear(concat([classical_hidden, quantum_logits]) -> 2).",
+      "fusion": "nn.Linear(hidden + 2, 2) on the concatenation of both branch outputs",
+      "hybrid_evidence": "classical, quantum adapter, quantum circuit weights and the fusion layer all contain trainable parameters and receive gradients; the classical branch is absent from a pure QNN, so both paths are required at inference.",
+      "quantum_backend": "PennyLane default.qubit, interface='torch', diff_method='backprop', analytic (shots=None); CPU simulation only",
+      "quantum_branch": "nn.Linear(D, 2**qubits) -> build_qnn(qubits, layers, amplitude embedding, strongly_entangling ansatz) -> 2 logits",
+      "type": "parallel-concatenation hybrid (classical compression + variational quantum head)"
+    },
+    "backbone": "plantnet",
+    "backend": "PennyLane default.qubit, interface='torch', diff_method='backprop', analytic (shots=None); CPU simulation only",
+    "bootstrap": {
+      "B": 2000,
+      "seed": 42
+    },
+    "cache_dir": "C:\\Users\\sugee\\.cache\\qc_datasets\\features",
+    "classical_results": "C:\\Users\\sugee\\Github\\SugeethJSA\\Quantum_Classification\\results\\fresh_deepweeds\\metrics.json",
+    "dataset": "deepweeds",
+    "epochs": 3,
+    "layers": 2,
+    "protocol": "fresh_hybrid.v1",
+    "qnn_results": "C:\\Users\\sugee\\Github\\SugeethJSA\\Quantum_Classification\\results\\fresh_qnn_deepweeds",
+    "qubits": 4,
+    "root": null,
+    "seeds": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9
+    ],
+    "train_cap": 2000
+  },
+  "dataset": "deepweeds",
+  "n_runs_expected": 10,
+  "n_runs_skipped": 0,
+  "n_runs_succeeded": 10,
+  "runs": [
+    {
+      "backbone": "plantnet",
+      "dataset": "deepweeds",
+      "history": {
+        "batch_size": 32,
+        "class_weight": "balanced",
+        "classical_grad_norm": 0.05210144126283048,
+        "epochs": [
+          {
+            "epoch": 0,
+            "n_batches": 20,
+            "train_loss": 0.6833895444869995,
+            "val_accuracy": 0.6870359794403198,
+            "val_loss": 0.6638846397399902
+          },
+          {
+            "epoch": 1,
+            "n_batches": 20,
+            "train_loss": 0.6355269849300385,
+            "val_accuracy": 0.7161621930325528,
+            "val_loss": 0.6203334331512451
+          },
+          {
+            "epoch": 2,
+            "n_batches": 20,
+            "train_loss": 0.5914188683032989,
+            "val_accuracy": 0.7527127355796688,
+            "val_loss": 0.5669463276863098
+          }
+        ],
+        "final_val_accuracy": 0.7527127355796688,
+        "final_val_loss": 0.5669463276863098,
+        "learning_rate": 0.001,
+        "max_batches_per_epoch": 20,
+        "n_features": 512,
+        "n_train": 2000,
+        "n_val": 3502,
+        "parameter_counts": {
+          "classical": 32832,
+          "fusion": 134,
+          "quantum": 8242,
+          "total": 41208
+        },
+        "quantum_grad_norm": 0.12380349024503821,
+        "seed": 0,
+        "test_labels_used": false,
+        "train_loss": 0.5914188683032989,
+        "weight_decay": 0.0001
+      },
+      "metrics": {
+        "accuracy": 0.7567104511707595,
+        "architecture": "classical branch Linear(feature_dim -> hidden) -> ReLU; quantum branch Linear(feature_dim -> 2**qubits) adapter -> qmlpipe.models.build_qnn with reduced qubits, amplitude embedding and trainable StronglyEntanglingLayers emitting 2 logits; final Linear(concat([classical_hidden, quantum_logits]) -> 2).",
+        "auc": 0.8438157269828346,
+        "confusion_matrix": [
+          [
+            627,
+            257
+          ],
+          [
+            169,
+            698
+          ]
+        ],
+        "f1": 0.7661909989023051,
+        "iou_class0": 0.5954415954415955,
+        "iou_class1": 0.6209964412811388,
+        "macro_iou": 0.6082190183613672,
+        "model": "hybrid",
+        "n": 1751,
+        "n_test_rows": 1751,
+        "precision": 0.7308900523560209,
+        "recall": 0.8050749711649365,
+        "score_kind": "softmax_proba",
+        "seed": 0,
+        "test_evaluations": 1
+      },
+      "seed": 0,
+      "status": "ok",
+      "train_cap": {
+        "cap_applied": true,
+        "class_counts_after": {
+          "0": 1045,
+          "1": 955
+        },
+        "class_counts_before": {
+          "0": 6403,
+          "1": 5853
+        },
+        "note": "stratified TRAIN subsample to at most 2000 rows (seed 0)",
+        "train_cap": 2000,
+        "train_size_after": 2000,
+        "train_size_before": 12256
+      }
+    },
+    {
+      "backbone": "plantnet",
+      "dataset": "deepweeds",
+      "history": {
+        "batch_size": 32,
+        "class_weight": "balanced",
+        "classical_grad_norm": 0.05586462443311535,
+        "epochs": [
+          {
+            "epoch": 0,
+            "n_batches": 20,
+            "train_loss": 0.6793300896883011,
+            "val_accuracy": 0.6878926327812679,
+            "val_loss": 0.6608737111091614
+          },
+          {
+            "epoch": 1,
+            "n_batches": 20,
+            "train_loss": 0.6325827717781067,
+            "val_accuracy": 0.7447173043974872,
+            "val_loss": 0.6151096820831299
+          },
+          {
+            "epoch": 2,
+            "n_batches": 20,
+            "train_loss": 0.5794797390699387,
+            "val_accuracy": 0.7821245002855511,
+            "val_loss": 0.5579134225845337
+          }
+        ],
+        "final_val_accuracy": 0.7821245002855511,
+        "final_val_loss": 0.5579134225845337,
+        "learning_rate": 0.001,
+        "max_batches_per_epoch": 20,
+        "n_features": 512,
+        "n_train": 2000,
+        "n_val": 3502,
+        "parameter_counts": {
+          "classical": 32832,
+          "fusion": 134,
+          "quantum": 8242,
+          "total": 41208
+        },
+        "quantum_grad_norm": 0.0920884263773944,
+        "seed": 1,
+        "test_labels_used": false,
+        "train_loss": 0.5794797390699387,
+        "weight_decay": 0.0001
+      },
+      "metrics": {
+        "accuracy": 0.7789834380354084,
+        "architecture": "classical branch Linear(feature_dim -> hidden) -> ReLU; quantum branch Linear(feature_dim -> 2**qubits) adapter -> qmlpipe.models.build_qnn with reduced qubits, amplitude embedding and trainable StronglyEntanglingLayers emitting 2 logits; final Linear(concat([classical_hidden, quantum_logits]) -> 2).",
+        "auc": 0.8565589286600155,
+        "confusion_matrix": [
+          [
+            666,
+            232
+          ],
+          [
+            155,
+            698
+          ]
+        ],
+        "f1": 0.7829500841278744,
+        "iou_class0": 0.6324786324786325,
+        "iou_class1": 0.6433179723502304,
+        "macro_iou": 0.6378983024144314,
+        "model": "hybrid",
+        "n": 1751,
+        "n_test_rows": 1751,
+        "precision": 0.7505376344086021,
+        "recall": 0.8182883939038686,
+        "score_kind": "softmax_proba",
+        "seed": 1,
+        "test_evaluations": 1
+      },
+      "seed": 1,
+      "status": "ok",
+      "train_cap": {
+        "cap_applied": true,
+        "class_counts_after": {
+          "0": 1045,
+          "1": 955
+        },
+        "class_counts_before": {
+          "0": 6402,
+          "1": 5854
+        },
+        "note": "stratified TRAIN subsample to at most 2000 rows (seed 1)",
+        "train_cap": 2000,
+        "train_size_after": 2000,
+        "train_size_before": 12256
+      }
+    },
+    {
+      "backbone": "plantnet",
+      "dataset": "deepweeds",
+      "history": {
+        "batch_size": 32,
+        "class_weight": "balanced",
+        "classical_grad_norm": 0.05035878624669785,
+        "epochs": [
+          {
+            "epoch": 0,
+            "n_batches": 20,
+            "train_loss": 0.6768411487340927,
+            "val_accuracy": 0.7164477441462022,
+            "val_loss": 0.6507422924041748
+          },
+          {
+            "epoch": 1,
+            "n_batches": 20,
+            "train_loss": 0.6253334164619446,
+            "val_accuracy": 0.7555682467161622,
+            "val_loss": 0.5963746309280396
+          },
+          {
+            "epoch": 2,
+            "n_batches": 20,
+            "train_loss": 0.5717635169625283,
+            "val_accuracy": 0.7707024557395774,
+            "val_loss": 0.5429229736328125
+          }
+        ],
+        "final_val_accuracy": 0.7707024557395774,
+        "final_val_loss": 0.5429229736328125,
+        "learning_rate": 0.001,
+        "max_batches_per_epoch": 20,
+        "n_features": 512,
+        "n_train": 2000,
+        "n_val": 3502,
+        "parameter_counts": {
+          "classical": 32832,
+          "fusion": 134,
+          "quantum": 8242,
+          "total": 41208
+        },
+        "quantum_grad_norm": 0.2380916649698026,
+        "seed": 2,
+        "test_labels_used": false,
+        "train_loss": 0.5717635169625283,
+        "weight_decay": 0.0001
+      },
+      "metrics": {
+        "accuracy": 0.7784123358081096,
+        "architecture": "classical branch Linear(feature_dim -> hidden) -> ReLU; quantum branch Linear(feature_dim -> 2**qubits) adapter -> qmlpipe.models.build_qnn with reduced qubits, amplitude embedding and trainable StronglyEntanglingLayers emitting 2 logits; final Linear(concat([classical_hidden, quantum_logits]) -> 2).",
+        "auc": 0.8608642197667953,
+        "confusion_matrix": [
+          [
+            705,
+            188
+          ],
+          [
+            200,
+            658
+          ]
+        ],
+        "f1": 0.7723004694835681,
+        "iou_class0": 0.6450137236962489,
+        "iou_class1": 0.6290630975143403,
+        "macro_iou": 0.6370384106052946,
+        "model": "hybrid",
+        "n": 1751,
+        "n_test_rows": 1751,
+        "precision": 0.7777777777777778,
+        "recall": 0.7668997668997669,
+        "score_kind": "softmax_proba",
+        "seed": 2,
+        "test_evaluations": 1
+      },
+      "seed": 2,
+      "status": "ok",
+      "train_cap": {
+        "cap_applied": true,
+        "class_counts_after": {
+          "0": 1038,
+          "1": 962
+        },
+        "class_counts_before": {
+          "0": 6362,
+          "1": 5894
+        },
+        "note": "stratified TRAIN subsample to at most 2000 rows (seed 2)",
+        "train_cap": 2000,
+        "train_size_after": 2000,
+        "train_size_before": 12256
+      }
+    },
+    {
+      "backbone": "plantnet",
+      "dataset": "deepweeds",
+      "history": {
+        "batch_size": 32,
+        "class_weight": "balanced",
+        "classical_grad_norm": 0.06983525322504211,
+        "epochs": [
+          {
+            "epoch": 0,
+            "n_batches": 20,
+            "train_loss": 0.6823053270578384,
+            "val_accuracy": 0.7170188463735009,
+            "val_loss": 0.66242516040802
+          },
+          {
+            "epoch": 1,
+            "n_batches": 20,
+            "train_loss": 0.639729380607605,
+            "val_accuracy": 0.7515705311250714,
+            "val_loss": 0.6101123690605164
+          },
+          {
+            "epoch": 2,
+            "n_batches": 20,
+            "train_loss": 0.5830420255661011,
+            "val_accuracy": 0.7747001713306682,
+            "val_loss": 0.548215389251709
+          }
+        ],
+        "final_val_accuracy": 0.7747001713306682,
+        "final_val_loss": 0.548215389251709,
+        "learning_rate": 0.001,
+        "max_batches_per_epoch": 20,
+        "n_features": 512,
+        "n_train": 2000,
+        "n_val": 3502,
+        "parameter_counts": {
+          "classical": 32832,
+          "fusion": 134,
+          "quantum": 8242,
+          "total": 41208
+        },
+        "quantum_grad_norm": 0.10388503951713868,
+        "seed": 3,
+        "test_labels_used": false,
+        "train_loss": 0.5830420255661011,
+        "weight_decay": 0.0001
+      },
+      "metrics": {
+        "accuracy": 0.7652769845802398,
+        "architecture": "classical branch Linear(feature_dim -> hidden) -> ReLU; quantum branch Linear(feature_dim -> 2**qubits) adapter -> qmlpipe.models.build_qnn with reduced qubits, amplitude embedding and trainable StronglyEntanglingLayers emitting 2 logits; final Linear(concat([classical_hidden, quantum_logits]) -> 2).",
+        "auc": 0.845598981168316,
+        "confusion_matrix": [
+          [
+            704,
+            183
+          ],
+          [
+            228,
+            636
+          ]
+        ],
+        "f1": 0.7557932263814616,
+        "iou_class0": 0.6313901345291479,
+        "iou_class1": 0.6074498567335244,
+        "macro_iou": 0.6194199956313362,
+        "model": "hybrid",
+        "n": 1751,
+        "n_test_rows": 1751,
+        "precision": 0.7765567765567766,
+        "recall": 0.7361111111111112,
+        "score_kind": "softmax_proba",
+        "seed": 3,
+        "test_evaluations": 1
+      },
+      "seed": 3,
+      "status": "ok",
+      "train_cap": {
+        "cap_applied": true,
+        "class_counts_after": {
+          "0": 1032,
+          "1": 968
+        },
+        "class_counts_before": {
+          "0": 6327,
+          "1": 5929
+        },
+        "note": "stratified TRAIN subsample to at most 2000 rows (seed 3)",
+        "train_cap": 2000,
+        "train_size_after": 2000,
+        "train_size_before": 12256
+      }
+    },
+    {
+      "backbone": "plantnet",
+      "dataset": "deepweeds",
+      "history": {
+        "batch_size": 32,
+        "class_weight": "balanced",
+        "classical_grad_norm": 0.08009213889861215,
+        "epochs": [
+          {
+            "epoch": 0,
+            "n_batches": 20,
+            "train_loss": 0.6862374007701874,
+            "val_accuracy": 0.6978869217589948,
+            "val_loss": 0.6643762588500977
+          },
+          {
+            "epoch": 1,
+            "n_batches": 20,
+            "train_loss": 0.6485775530338287,
+            "val_accuracy": 0.731296402055968,
+            "val_loss": 0.6233881711959839
+          },
+          {
+            "epoch": 2,
+            "n_batches": 20,
+            "train_loss": 0.5932663142681122,
+            "val_accuracy": 0.7664191890348372,
+            "val_loss": 0.5724809169769287
+          }
+        ],
+        "final_val_accuracy": 0.7664191890348372,
+        "final_val_loss": 0.5724809169769287,
+        "learning_rate": 0.001,
+        "max_batches_per_epoch": 20,
+        "n_features": 512,
+        "n_train": 2000,
+        "n_val": 3502,
+        "parameter_counts": {
+          "classical": 32832,
+          "fusion": 134,
+          "quantum": 8242,
+          "total": 41208
+        },
+        "quantum_grad_norm": 0.21360158078325517,
+        "seed": 4,
+        "test_labels_used": false,
+        "train_loss": 0.5932663142681122,
+        "weight_decay": 0.0001
+      },
+      "metrics": {
+        "accuracy": 0.7515705311250714,
+        "architecture": "classical branch Linear(feature_dim -> hidden) -> ReLU; quantum branch Linear(feature_dim -> 2**qubits) adapter -> qmlpipe.models.build_qnn with reduced qubits, amplitude embedding and trainable StronglyEntanglingLayers emitting 2 logits; final Linear(concat([classical_hidden, quantum_logits]) -> 2).",
+        "auc": 0.8339325907241745,
+        "confusion_matrix": [
+          [
+            645,
+            254
+          ],
+          [
+            181,
+            671
+          ]
+        ],
+        "f1": 0.7552054023635341,
+        "iou_class0": 0.5972222222222222,
+        "iou_class1": 0.6066907775768535,
+        "macro_iou": 0.6019564998995379,
+        "model": "hybrid",
+        "n": 1751,
+        "n_test_rows": 1751,
+        "precision": 0.7254054054054054,
+        "recall": 0.7875586854460094,
+        "score_kind": "softmax_proba",
+        "seed": 4,
+        "test_evaluations": 1
+      },
+      "seed": 4,
+      "status": "ok",
+      "train_cap": {
+        "cap_applied": true,
+        "class_counts_after": {
+          "0": 1044,
+          "1": 956
+        },
+        "class_counts_before": {
+          "0": 6397,
+          "1": 5859
+        },
+        "note": "stratified TRAIN subsample to at most 2000 rows (seed 4)",
+        "train_cap": 2000,
+        "train_size_after": 2000,
+        "train_size_before": 12256
+      }
+    },
+    {
+      "backbone": "plantnet",
+      "dataset": "deepweeds",
+      "history": {
+        "batch_size": 32,
+        "class_weight": "balanced",
+        "classical_grad_norm": 0.06428801584330819,
+        "epochs": [
+          {
+            "epoch": 0,
+            "n_batches": 20,
+            "train_loss": 0.6875930100679397,
+            "val_accuracy": 0.6741861793260994,
+            "val_loss": 0.6730488538742065
+          },
+          {
+            "epoch": 1,
+            "n_batches": 20,
+            "train_loss": 0.6526253461837769,
+            "val_accuracy": 0.7198743575099943,
+            "val_loss": 0.6313827037811279
+          },
+          {
+            "epoch": 2,
+            "n_batches": 20,
+            "train_loss": 0.6098329275846481,
+            "val_accuracy": 0.7621359223300971,
+            "val_loss": 0.5815089344978333
+          }
+        ],
+        "final_val_accuracy": 0.7621359223300971,
+        "final_val_loss": 0.5815089344978333,
+        "learning_rate": 0.001,
+        "max_batches_per_epoch": 20,
+        "n_features": 512,
+        "n_train": 2000,
+        "n_val": 3502,
+        "parameter_counts": {
+          "classical": 32832,
+          "fusion": 134,
+          "quantum": 8242,
+          "total": 41208
+        },
+        "quantum_grad_norm": 0.06001033589741255,
+        "seed": 5,
+        "test_labels_used": false,
+        "train_loss": 0.6098329275846481,
+        "weight_decay": 0.0001
+      },
+      "metrics": {
+        "accuracy": 0.7664191890348372,
+        "architecture": "classical branch Linear(feature_dim -> hidden) -> ReLU; quantum branch Linear(feature_dim -> 2**qubits) adapter -> qmlpipe.models.build_qnn with reduced qubits, amplitude embedding and trainable StronglyEntanglingLayers emitting 2 logits; final Linear(concat([classical_hidden, quantum_logits]) -> 2).",
+        "auc": 0.8558094431549672,
+        "confusion_matrix": [
+          [
+            715,
+            197
+          ],
+          [
+            212,
+            627
+          ]
+        ],
+        "f1": 0.7540589296452195,
+        "iou_class0": 0.6361209964412812,
+        "iou_class1": 0.6052123552123552,
+        "macro_iou": 0.6206666758268182,
+        "model": "hybrid",
+        "n": 1751,
+        "n_test_rows": 1751,
+        "precision": 0.7609223300970874,
+        "recall": 0.7473182359952324,
+        "score_kind": "softmax_proba",
+        "seed": 5,
+        "test_evaluations": 1
+      },
+      "seed": 5,
+      "status": "ok",
+      "train_cap": {
+        "cap_applied": true,
+        "class_counts_after": {
+          "0": 1043,
+          "1": 957
+        },
+        "class_counts_before": {
+          "0": 6394,
+          "1": 5862
+        },
+        "note": "stratified TRAIN subsample to at most 2000 rows (seed 5)",
+        "train_cap": 2000,
+        "train_size_after": 2000,
+        "train_size_before": 12256
+      }
+    },
+    {
+      "backbone": "plantnet",
+      "dataset": "deepweeds",
+      "history": {
+        "batch_size": 32,
+        "class_weight": "balanced",
+        "classical_grad_norm": 0.09229977781366006,
+        "epochs": [
+          {
+            "epoch": 0,
+            "n_batches": 20,
+            "train_loss": 0.685954424738884,
+            "val_accuracy": 0.6627641347801256,
+            "val_loss": 0.6748467087745667
+          },
+          {
+            "epoch": 1,
+            "n_batches": 20,
+            "train_loss": 0.6579847902059555,
+            "val_accuracy": 0.7252998286693318,
+            "val_loss": 0.635699987411499
+          },
+          {
+            "epoch": 2,
+            "n_batches": 20,
+            "train_loss": 0.6172769069671631,
+            "val_accuracy": 0.7509994288977727,
+            "val_loss": 0.5888913869857788
+          }
+        ],
+        "final_val_accuracy": 0.7509994288977727,
+        "final_val_loss": 0.5888913869857788,
+        "learning_rate": 0.001,
+        "max_batches_per_epoch": 20,
+        "n_features": 512,
+        "n_train": 2000,
+        "n_val": 3502,
+        "parameter_counts": {
+          "classical": 32832,
+          "fusion": 134,
+          "quantum": 8242,
+          "total": 41208
+        },
+        "quantum_grad_norm": 0.056604148237160354,
+        "seed": 6,
+        "test_labels_used": false,
+        "train_loss": 0.6172769069671631,
+        "weight_decay": 0.0001
+      },
+      "metrics": {
+        "accuracy": 0.7624214734437464,
+        "architecture": "classical branch Linear(feature_dim -> hidden) -> ReLU; quantum branch Linear(feature_dim -> 2**qubits) adapter -> qmlpipe.models.build_qnn with reduced qubits, amplitude embedding and trainable StronglyEntanglingLayers emitting 2 logits; final Linear(concat([classical_hidden, quantum_logits]) -> 2).",
+        "auc": 0.8474461417939679,
+        "confusion_matrix": [
+          [
+            621,
+            279
+          ],
+          [
+            137,
+            714
+          ]
+        ],
+        "f1": 0.7744034707158352,
+        "iou_class0": 0.5988428158148505,
+        "iou_class1": 0.631858407079646,
+        "macro_iou": 0.6153506114472482,
+        "model": "hybrid",
+        "n": 1751,
+        "n_test_rows": 1751,
+        "precision": 0.7190332326283988,
+        "recall": 0.8390129259694477,
+        "score_kind": "softmax_proba",
+        "seed": 6,
+        "test_evaluations": 1
+      },
+      "seed": 6,
+      "status": "ok",
+      "train_cap": {
+        "cap_applied": true,
+        "class_counts_after": {
+          "0": 1048,
+          "1": 952
+        },
+        "class_counts_before": {
+          "0": 6425,
+          "1": 5831
+        },
+        "note": "stratified TRAIN subsample to at most 2000 rows (seed 6)",
+        "train_cap": 2000,
+        "train_size_after": 2000,
+        "train_size_before": 12256
+      }
+    },
+    {
+      "backbone": "plantnet",
+      "dataset": "deepweeds",
+      "history": {
+        "batch_size": 32,
+        "class_weight": "balanced",
+        "classical_grad_norm": 0.0650114274457237,
+        "epochs": [
+          {
+            "epoch": 0,
+            "n_batches": 20,
+            "train_loss": 0.6730711072683334,
+            "val_accuracy": 0.721302113078241,
+            "val_loss": 0.6503095626831055
+          },
+          {
+            "epoch": 1,
+            "n_batches": 20,
+            "train_loss": 0.6303873538970948,
+            "val_accuracy": 0.7538549400342661,
+            "val_loss": 0.6023906469345093
+          },
+          {
+            "epoch": 2,
+            "n_batches": 20,
+            "train_loss": 0.5694451600313186,
+            "val_accuracy": 0.7721302113078241,
+            "val_loss": 0.5469179153442383
+          }
+        ],
+        "final_val_accuracy": 0.7721302113078241,
+        "final_val_loss": 0.5469179153442383,
+        "learning_rate": 0.001,
+        "max_batches_per_epoch": 20,
+        "n_features": 512,
+        "n_train": 2000,
+        "n_val": 3502,
+        "parameter_counts": {
+          "classical": 32832,
+          "fusion": 134,
+          "quantum": 8242,
+          "total": 41208
+        },
+        "quantum_grad_norm": 0.09838435133581808,
+        "seed": 7,
+        "test_labels_used": false,
+        "train_loss": 0.5694451600313186,
+        "weight_decay": 0.0001
+      },
+      "metrics": {
+        "accuracy": 0.7647058823529411,
+        "architecture": "classical branch Linear(feature_dim -> hidden) -> ReLU; quantum branch Linear(feature_dim -> 2**qubits) adapter -> qmlpipe.models.build_qnn with reduced qubits, amplitude embedding and trainable StronglyEntanglingLayers emitting 2 logits; final Linear(concat([classical_hidden, quantum_logits]) -> 2).",
+        "auc": 0.8583383159659214,
+        "confusion_matrix": [
+          [
+            691,
+            207
+          ],
+          [
+            205,
+            648
+          ]
+        ],
+        "f1": 0.7587822014051522,
+        "iou_class0": 0.6264732547597461,
+        "iou_class1": 0.6113207547169811,
+        "macro_iou": 0.6188970047383636,
+        "model": "hybrid",
+        "n": 1751,
+        "n_test_rows": 1751,
+        "precision": 0.7578947368421053,
+        "recall": 0.7596717467760844,
+        "score_kind": "softmax_proba",
+        "seed": 7,
+        "test_evaluations": 1
+      },
+      "seed": 7,
+      "status": "ok",
+      "train_cap": {
+        "cap_applied": true,
+        "class_counts_after": {
+          "0": 1038,
+          "1": 962
+        },
+        "class_counts_before": {
+          "0": 6364,
+          "1": 5892
+        },
+        "note": "stratified TRAIN subsample to at most 2000 rows (seed 7)",
+        "train_cap": 2000,
+        "train_size_after": 2000,
+        "train_size_before": 12256
+      }
+    },
+    {
+      "backbone": "plantnet",
+      "dataset": "deepweeds",
+      "history": {
+        "batch_size": 32,
+        "class_weight": "balanced",
+        "classical_grad_norm": 0.08120153945445734,
+        "epochs": [
+          {
+            "epoch": 0,
+            "n_batches": 20,
+            "train_loss": 0.6786408334970474,
+            "val_accuracy": 0.6907481439177613,
+            "val_loss": 0.6609875559806824
+          },
+          {
+            "epoch": 1,
+            "n_batches": 20,
+            "train_loss": 0.6309960901737213,
+            "val_accuracy": 0.7215876641918904,
+            "val_loss": 0.6227923035621643
+          },
+          {
+            "epoch": 2,
+            "n_batches": 20,
+            "train_loss": 0.5822520852088928,
+            "val_accuracy": 0.758709308966305,
+            "val_loss": 0.5638848543167114
+          }
+        ],
+        "final_val_accuracy": 0.758709308966305,
+        "final_val_loss": 0.5638848543167114,
+        "learning_rate": 0.001,
+        "max_batches_per_epoch": 20,
+        "n_features": 512,
+        "n_train": 2000,
+        "n_val": 3502,
+        "parameter_counts": {
+          "classical": 32832,
+          "fusion": 134,
+          "quantum": 8242,
+          "total": 41208
+        },
+        "quantum_grad_norm": 0.16596430173159424,
+        "seed": 8,
+        "test_labels_used": false,
+        "train_loss": 0.5822520852088928,
+        "weight_decay": 0.0001
+      },
+      "metrics": {
+        "accuracy": 0.7721302113078241,
+        "architecture": "classical branch Linear(feature_dim -> hidden) -> ReLU; quantum branch Linear(feature_dim -> 2**qubits) adapter -> qmlpipe.models.build_qnn with reduced qubits, amplitude embedding and trainable StronglyEntanglingLayers emitting 2 logits; final Linear(concat([classical_hidden, quantum_logits]) -> 2).",
+        "auc": 0.8492408861748952,
+        "confusion_matrix": [
+          [
+            690,
+            249
+          ],
+          [
+            150,
+            662
+          ]
+        ],
+        "f1": 0.7684271619268718,
+        "iou_class0": 0.6336088154269972,
+        "iou_class1": 0.6239396795475967,
+        "macro_iou": 0.6287742474872969,
+        "model": "hybrid",
+        "n": 1751,
+        "n_test_rows": 1751,
+        "precision": 0.7266739846322722,
+        "recall": 0.8152709359605911,
+        "score_kind": "softmax_proba",
+        "seed": 8,
+        "test_evaluations": 1
+      },
+      "seed": 8,
+      "status": "ok",
+      "train_cap": {
+        "cap_applied": true,
+        "class_counts_after": {
+          "0": 1038,
+          "1": 962
+        },
+        "class_counts_before": {
+          "0": 6362,
+          "1": 5894
+        },
+        "note": "stratified TRAIN subsample to at most 2000 rows (seed 8)",
+        "train_cap": 2000,
+        "train_size_after": 2000,
+        "train_size_before": 12256
+      }
+    },
+    {
+      "backbone": "plantnet",
+      "dataset": "deepweeds",
+      "history": {
+        "batch_size": 32,
+        "class_weight": "balanced",
+        "classical_grad_norm": 0.08531660299940567,
+        "epochs": [
+          {
+            "epoch": 0,
+            "n_batches": 20,
+            "train_loss": 0.6840019434690475,
+            "val_accuracy": 0.7118789263278127,
+            "val_loss": 0.6685993671417236
+          },
+          {
+            "epoch": 1,
+            "n_batches": 20,
+            "train_loss": 0.6466946512460708,
+            "val_accuracy": 0.7247287264420331,
+            "val_loss": 0.620678722858429
+          },
+          {
+            "epoch": 2,
+            "n_batches": 20,
+            "train_loss": 0.5968272984027863,
+            "val_accuracy": 0.7601370645345517,
+            "val_loss": 0.569216787815094
+          }
+        ],
+        "final_val_accuracy": 0.7601370645345517,
+        "final_val_loss": 0.569216787815094,
+        "learning_rate": 0.001,
+        "max_batches_per_epoch": 20,
+        "n_features": 512,
+        "n_train": 2000,
+        "n_val": 3502,
+        "parameter_counts": {
+          "classical": 32832,
+          "fusion": 134,
+          "quantum": 8242,
+          "total": 41208
+        },
+        "quantum_grad_norm": 0.08965642914380786,
+        "seed": 9,
+        "test_labels_used": false,
+        "train_loss": 0.5968272984027863,
+        "weight_decay": 0.0001
+      },
+      "metrics": {
+        "accuracy": 0.7681324957167333,
+        "architecture": "classical branch Linear(feature_dim -> hidden) -> ReLU; quantum branch Linear(feature_dim -> 2**qubits) adapter -> qmlpipe.models.build_qnn with reduced qubits, amplitude embedding and trainable StronglyEntanglingLayers emitting 2 logits; final Linear(concat([classical_hidden, quantum_logits]) -> 2).",
+        "auc": 0.8529320224821955,
+        "confusion_matrix": [
+          [
+            717,
+            201
+          ],
+          [
+            205,
+            628
+          ]
+        ],
+        "f1": 0.7557160048134778,
+        "iou_class0": 0.6384683882457702,
+        "iou_class1": 0.6073500967117988,
+        "macro_iou": 0.6229092424787845,
+        "model": "hybrid",
+        "n": 1751,
+        "n_test_rows": 1751,
+        "precision": 0.7575392038600723,
+        "recall": 0.7539015606242497,
+        "score_kind": "softmax_proba",
+        "seed": 9,
+        "test_evaluations": 1
+      },
+      "seed": 9,
+      "status": "ok",
+      "train_cap": {
+        "cap_applied": true,
+        "class_counts_after": {
+          "0": 1037,
+          "1": 963
+        },
+        "class_counts_before": {
+          "0": 6352,
+          "1": 5904
+        },
+        "note": "stratified TRAIN subsample to at most 2000 rows (seed 9)",
+        "train_cap": 2000,
+        "train_size_after": 2000,
+        "train_size_before": 12256
+      }
+    }
+  ],
+  "schema": "fresh_hybrid.metrics.v1",
+  "warnings": []
+}
