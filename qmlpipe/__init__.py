@@ -20,6 +20,23 @@ from .train import evaluate, seed_everything, train
 from .evaluate import compare_models, evaluate_qsvc
 from .ablate import ablation_grid, run_ablation, summarize_ablation
 from .model_card import build_model_card
+from .losses import (
+    as_two_logits,
+    class_priors_from_labels,
+    class_weights_from_labels,
+    focal_loss,
+    weighted_cross_entropy,
+)
+from .heads import (
+    ClassificationHead,
+    build_classification_head,
+    collect_logits,
+    find_classification_head,
+    fit_calibration,
+    fit_logit_adjustment,
+    fit_temperature,
+    write_calibration_to_checkpoint,
+)
 from .plant_backbone import (
     PLANTNET_CLASSES,
     PLANTNET_FEATURE_DIM,
@@ -56,4 +73,17 @@ __all__ = [
     "build_plantnet_extractor",
     "plantnet_preprocess",
     "build_backbone_extractor",
+    "class_weights_from_labels",
+    "class_priors_from_labels",
+    "weighted_cross_entropy",
+    "focal_loss",
+    "as_two_logits",
+    "ClassificationHead",
+    "build_classification_head",
+    "find_classification_head",
+    "collect_logits",
+    "fit_temperature",
+    "fit_logit_adjustment",
+    "fit_calibration",
+    "write_calibration_to_checkpoint",
 ]
