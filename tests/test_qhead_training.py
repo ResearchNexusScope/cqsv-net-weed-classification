@@ -437,7 +437,9 @@ def test_adaptation_cli_flags_defaults_and_validation(tmp_path):
 
     parser = train_qml._build_parser()
     args = parser.parse_args(["--dry-run"])
-    assert args.adaptation_samples == 0
+    # Raw argparse default is None so choose() can consult --config-json;
+    # the resolved plan default is 0.
+    assert args.adaptation_samples is None
     assert args.adaptation_per_class is None
     assert args.adaptation_seed is None
 
@@ -478,6 +480,16 @@ def test_adaptation_cli_flags_defaults_and_validation(tmp_path):
         parser.parse_args(["--config-json", str(cfg_file)])
     )
     assert from_config["adaptation_samples"] == 12
+
+    # An explicit CLI value (including 0) wins over the config-json override.
+    cli_zero, _ = train_qml._resolve_plan(
+        parser.parse_args(["--config-json", str(cfg_file), "--adaptation-samples", "0"])
+    )
+    assert cli_zero["adaptation_samples"] == 0
+    cli_seven, _ = train_qml._resolve_plan(
+        parser.parse_args(["--config-json", str(cfg_file), "--adaptation-samples", "7"])
+    )
+    assert cli_seven["adaptation_samples"] == 7
 
     # Extra plan keys are provenance-only: QMLConfig ignores them.
     cfg = train_qml._build_config(explicit)
@@ -598,12 +610,19 @@ def test_adaptation_appended_to_train_only_and_provenance_recorded():
     assert prov["adaptation_source_image_ids"] == sorted(
         {s.group_id for s in adaptation if s.sample_id in selected_ids}
     )
+    assert prov["disjointness_assertion"]["status"] == "passed"
     assert prov["disjointness_assertion"]["passed"] is True
     assert "source_image_id/group_id" in prov["disjointness_assertion"]["checked_fields"]
     assert prov["ood_labels_used"] is False
     assert prov["val_loader_unchanged"] is True
     assert prov["ood_loader_unchanged"] is True
     assert prov["selection_seed"] == 7
+    # Provenance states class weights / sampler use the post-mix TRAIN labels.
+    assert "augmented TRAIN" in prov["class_weights_and_sampler_source"]
+    # Advisory 4: crop-level sampled set, not the classical whole-group draw.
+    assert "crop-level" in prov["sample_selection_scope"]
+    assert "whole source-image groups" in prov["sample_selection_scope"]
+    assert any("crop-level" in w for w in prov["warnings"])
     json.dumps({k: v for k, v in prov.items() if k != "warnings"})
 
 
@@ -661,7 +680,13 @@ def test_adaptation_zero_is_a_true_noop():
     assert prov["adaptation_samples_used"] == 0
     assert prov["requested_adaptation_samples"] == 0
     assert prov["ood_labels_used"] is False
-    assert prov["disjointness_assertion"]["passed"] is True
+    # No check was run, so do not claim it passed.
+    disjointness = prov["disjointness_assertion"]
+    assert disjointness["status"] == "not_applicable"
+    assert disjointness["passed"] is None
+    assert "No adaptation samples were selected" in disjointness["reason"]
+    assert "original Kaggle TRAIN tensor" in prov["class_weights_and_sampler_source"]
+    assert any("crop-level" in w for w in prov["warnings"])
 
 
 def test_prepare_data_mixes_only_train_and_leaves_val_ood_untouched(monkeypatch):
@@ -697,6 +722,11 @@ def test_prepare_data_mixes_only_train_and_leaves_val_ood_untouched(monkeypatch)
     )
 
     loader_calls: list = []
+    weight_calls: list = []
+
+    def fake_weights(labels, n_classes, mode):
+        weight_calls.append(np.asarray(labels).copy())
+        return np.ones(2)
 
     class FakeSubsetManifest:
         def __init__(self, base, ood_samples):
@@ -710,7 +740,7 @@ def test_prepare_data_mixes_only_train_and_leaves_val_ood_untouched(monkeypatch)
             build_backbone_extractor=lambda name, cfg: (object(), object())
         ),
         "qmlpipe.losses": SimpleNamespace(
-            class_weights_from_labels=lambda labels, n_classes, mode: np.ones(2)
+            class_weights_from_labels=fake_weights
         ),
         "qmlpipe.train": SimpleNamespace(
             build_balanced_sampler=lambda labels, seed: None
@@ -762,6 +792,7 @@ def test_prepare_data_mixes_only_train_and_leaves_val_ood_untouched(monkeypatch)
     assert bundle["counts"] == {"train": 8, "val": 2, "ood": 2}
     assert bundle["adaptation"]["adaptation_samples_used"] == 4
     assert bundle["adaptation"]["ood_labels_used"] is False
+    assert "augmented TRAIN" in bundle["adaptation"]["class_weights_and_sampler_source"]
 
     train_ds = bundle["train_loader"].dataset
     assert tuple(train_ds.tensors[0].shape) == (8, 3)
@@ -797,3 +828,11 @@ def test_prepare_data_mixes_only_train_and_leaves_val_ood_untouched(monkeypatch)
     splits_seen = [c["split"] for c in loader_calls]
     assert splits_seen == ["train", "id_val", "ood_test", "adaptation"]
     assert loader_calls[-1]["ids"] == tuple(selected_ids)
+
+    # Advisory 2: class weights are computed from the POST-MIX label vector.
+    assert len(weight_calls) == 1
+    assert len(weight_calls[0]) == 8  # 4 original TRAIN + 4 adaptation
+    assert np.array_equal(
+        weight_calls[0], train_ds.tensors[1].numpy()
+    )  # exactly the augmented TRAIN labels
+    assert not np.array_equal(weight_calls[0], np.array([s.label for s in train]))

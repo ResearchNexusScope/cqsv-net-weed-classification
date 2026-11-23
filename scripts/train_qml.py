@@ -125,13 +125,20 @@ ADAPTATION_DEFAULT_NOTE = (
     "Ninja adaptation samples (qsvc_target_adaptation_per_run=50), so pass "
     "--adaptation-samples 50 to match it; this is recorded in provenance."
 )
+ADAPTATION_SAMPLING_SCOPE_NOTE = (
+    "Selection is a seeded, class-balanced crop-level sample of "
+    "manifest.splits[Split.ADAPTATION].samples (one Sample = one Ninja bounding-box "
+    "crop). The classical mixed arm draws whole source-image groups via "
+    "_draw_group_stratified, so the two arms are budget-matched but NOT identical "
+    "sample sets; do not treat them as paired draws."
+)
 ADAPTATION_RECIPE_NOTE = (
     "QHEAD-D02: labelled ADAPTATION-split target-domain samples are mixed into "
     "TRAIN only, through the same frozen feature loader; ID_VAL and OOD_TEST "
     "loaders are untouched and OOD_TEST is never used as a mixing source. "
     "Source-image (group) disjointness from OOD_TEST is asserted. This makes the "
     "training budget matched to the classical mixed arm; it is NOT a claim of "
-    "improved OOD generalisation."
+    "improved OOD generalisation. " + ADAPTATION_SAMPLING_SCOPE_NOTE
 )
 
 # Raw (pre-projection) feature width emitted by each frozen backbone.  The
@@ -215,13 +222,15 @@ def _build_parser() -> argparse.ArgumentParser:
     parser.add_argument(
         "--adaptation-samples",
         type=int,
-        default=0,
+        default=None,
         metavar="N",
         help=(
             "total labelled target-domain adaptation samples to mix into TRAIN "
-            "(default 0 = no adaptation, reproduces prior QNN numbers; pass 50 "
-            "to match the classical mixed protocol). Source is always "
-            "Split.ADAPTATION, never Split.OOD_TEST."
+            "(resolved default 0 = no adaptation, reproduces prior QNN numbers; "
+            "pass 50 to match the classical mixed protocol). None at parse time "
+            "so --config-json / the resolved default 0 are consulted; an explicit "
+            "CLI value (including 0) wins. Source is always Split.ADAPTATION, "
+            "never Split.OOD_TEST."
         ),
     )
     parser.add_argument(
@@ -754,6 +763,7 @@ def _assert_adaptation_ood_disjoint(
             + ". Refusing to mix labelled adaptation samples into TRAIN."
         )
     return {
+        "status": "passed",
         "passed": True,
         "checked_fields": list(checked),
         "overlap": {},
@@ -779,8 +789,10 @@ def _adaptation_common_provenance(adaptation_samples: Sequence[Any], seed: int) 
         "ood_labels_used": False,
         "default_choice": ADAPTATION_DEFAULT_NOTE,
         "recipe_note": ADAPTATION_RECIPE_NOTE,
+        "sample_selection_scope": ADAPTATION_SAMPLING_SCOPE_NOTE,
         "class_weights_and_sampler_source": (
-            "augmented TRAIN tensor (Kaggle TRAIN + selected labelled ADAPTATION)"
+            "augmented TRAIN tensor (Kaggle TRAIN + selected labelled ADAPTATION); "
+            "when --adaptation-samples 0 this is the original Kaggle TRAIN tensor"
         ),
         "val_loader_unchanged": True,
         "ood_loader_unchanged": True,
@@ -827,7 +839,12 @@ def _mix_adaptation_into_train(
             },
             "selected_class_counts": {0: 0, 1: 0},
             "disjointness_assertion": {
-                "passed": True,
+                "status": "not_applicable",
+                "passed": None,
+                "reason": (
+                    "No adaptation samples were selected, so no source-image/group "
+                    "disjointness check was performed; the OOD split stays sealed."
+                ),
                 "checked_fields": [
                     "source_image_id/group_id", "sample_id", "content_hash", "path"
                 ],
@@ -839,7 +856,8 @@ def _mix_adaptation_into_train(
             "warnings": [
                 "adaptation mixing disabled (--adaptation-samples 0): TRAIN tensors "
                 "are unchanged and reproduce the prior QNN recipe exactly; pass "
-                "--adaptation-samples 50 for the matched mixed protocol"
+                "--adaptation-samples 50 for the matched mixed protocol",
+                ADAPTATION_SAMPLING_SCOPE_NOTE,
             ],
         }
         prov.update(_adaptation_common_provenance(adaptation_samples, seed))
@@ -868,7 +886,8 @@ def _mix_adaptation_into_train(
     adaptation_warnings = [
         f"adaptation mixing applied: {len(selected)} labelled ADAPTATION-split "
         f"samples appended to TRAIN only (source-image ids: {source_ids}); "
-        "OOD_TEST untouched, ood_labels_used=false"
+        "OOD_TEST untouched, ood_labels_used=false",
+        ADAPTATION_SAMPLING_SCOPE_NOTE,
     ]
     if len(selected) < int(selection_info["requested_total"]):
         adaptation_warnings.append(
@@ -1182,8 +1201,8 @@ def main(argv: list[str] | None = None) -> int:
         f"labelled ADAPTATION-split samples mixed into TRAIN (requested "
         f"{adaptation_block['requested_adaptation_samples']}); "
         f"source split={adaptation_block['adaptation_source_split']}; "
-        f"OOD disjointness passed="
-        f"{adaptation_block['disjointness_assertion']['passed']}; "
+        f"OOD disjointness status="
+        f"{adaptation_block['disjointness_assertion']['status']}; "
         "ood_labels_used=false. This matches the training budget only; no OOD gain is claimed."
     )
     commit = _git_commit_hash()
