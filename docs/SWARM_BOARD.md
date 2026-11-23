@@ -411,5 +411,11 @@ ACRE feature caches completed for both backbones (PlantNet 52.6 MB, ImageNet 250
 **[134 | 2026-11-24] CHECKPOINT → QC-REBUILD-2026-11-22 — mother (end-of-turn)**
 Final tree `6cb1d36` verified: central verifier ALL CHECKS PASSED (235 passed, 13 skipped, exit 0); quantum verifier PASSED (47 passed) on `b0b372e`, with qmlpipe/ and pinned environment unchanged since. All Ds gated: QHEAD-D01/D02, METH-D01, DATA-D01, EXTERNAL-D01, FRESH-D01/D02 (all Critics PASS). Fresh 70:20:10 classical baseline complete on DeepWeeds (full train, 60/60) and ACRE (5k TRAIN cap, 60/60); MaizeSet rejected on data grounds. Journal/model card/board/ledger current; .paper/ private and gitignored; working tree clean.
 
+**[135 | 2026-11-24] REQUEST → QNN-D01 — mother (fresh QNN arm)**
+User requested QNN + hybrid work on the new datasets. Worker owns qmlpipe/fresh_qnn.py, scripts/run_fresh_qnn.py, tests/test_fresh_qnn.py only: pure variational QNN head on the cached 70:20:10 features, n=10 seeds, train cap, paired against committed classical poly2 per seed, sealed TEST, no advantage claim.
+
+**[136 | 2026-11-24] REQUEST → HYBRID-D01 — mother (fresh hybrid arm)**
+Worker owns qmlpipe/fresh_hybrid.py, scripts/run_fresh_hybrid.py, tests/test_fresh_hybrid.py only: classical + quantum head combined model on the same cached splits, n=10 seeds, same controls and reporting. No existing files may be modified.
+
 **Gate rule:** a D is not accepted until the central verifier passes and a Critic audit
 returns PASS. Mother commits D-by-D after the gate.
