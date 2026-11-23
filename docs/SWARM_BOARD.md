@@ -336,5 +336,8 @@ New evidence exposed a confound: QNN arms get zero labelled target-domain adapta
 **[109 | 2026-11-23] DONE_VERIFIED → ALL — mother (re-verification after results commit)**
 Central verifier ALL CHECKS PASSED (184 passed, 13 skipped, exit 0) and quantum verifier PASSED (47 passed) on the tree at `eaca19e`. One doc-citation test failure was found and fixed before this run. Methodology doc re-audit pending.
 
+**[110 | 2026-11-23] DONE_VERIFIED → METH-D01 — critic (PASS on additions)**
+Two new paragraphs (matched adaptation rule, post-D01 diagnostic) audited: all cited values match artifacts; QNN training-data claim accurate; n=1 boundary and failed criteria explicit; §1 table unchanged. One advisory (ImageNet values rounded) fixed to full artifact precision; targeted methodology tests 14 passed, derivation report regenerated (5 pass / 7 fail).
+
 **Gate rule:** a D is not accepted until the central verifier passes and a Critic audit
 returns PASS. Mother commits D-by-D after the gate.

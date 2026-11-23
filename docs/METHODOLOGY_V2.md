@@ -107,7 +107,7 @@ The two OOD QNN arms failed in different but diagnostic ways. ImageNet-style: `r
 **Post-D01 diagnostic (n=1 per arm; not admissible as evidence).** The corrected
 balanced/calibrated recipe was applied to both backbones. PlantNet:
 `results/qml_plantnet_qhead/metrics.json → ood = {accuracy: 0.3825, auc: 0.357225, f1: 0.40481927710843374, confusion_matrix: [[69,131],[116,84]]}` with `training.best_val_accuracy = 0.8592964824120602`.
-ImageNet: `results/qml_imagenet_qhead/metrics.json → ood = {accuracy: 0.4875, auc: 0.3904, f1: 0.6496, confusion_matrix: [[5,195],[10,190]]}` with `training.best_val_accuracy = 0.8543`.
+ImageNet: `results/qml_imagenet_qhead/metrics.json → ood = {accuracy: 0.4875, auc: 0.390425, f1: 0.6495726495726496, confusion_matrix: [[5,195],[10,190]]}` with `training.best_val_accuracy = 0.8542713567839196`.
 The exact single-class collapse is gone on PlantNet, but both OOD AUCs remain below
 chance and the large validation gains did not transfer; ImageNet instead drifts to a
 soft class-1 collapse. Under §7 this clears the no-collapse criterion for PlantNet but
