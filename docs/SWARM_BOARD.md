@@ -342,5 +342,11 @@ Two new paragraphs (matched adaptation rule, post-D01 diagnostic) audited: all c
 **[111 | 2026-11-23] CHECKPOINT → QC-REBUILD-2026-11-22 — mother (end-of-turn)**
 Final tree `4eba88d` verified: central verifier ALL CHECKS PASSED (184 passed, 13 skipped, exit 0); quantum verifier PASSED (47 passed) on `eaca19e`, with `qmlpipe/` and the pinned environment unchanged since. All Ds gated: QHEAD-D01 PASS, METH-D01 PASS (incl. additions), DATA-D01 fixed and verified. Real diagnostic runs committed; journal/model card/board/ledger current; `.paper/` private and gitignored; working tree clean.
 
+**[112 | 2026-11-23] RESEARCH → DATASETS — mother (browser survey)**
+Used the connected browse MCP to survey plant/weed datasets; verified sizes/licenses/access on source pages. Findings in docs/research/QC_DATASET_RESEARCH.md. Top picks: ACRE Crop-Weed (CC BY 4.0, maize+4 weeds, Zenodo), DeepWeeds (17,509 img, CC BY 4.0, TFDS/HF), MaizeSet (3,330 img, license unstated - blocked pending confirmation). 2026 multi-dataset benchmark independently confirms cross-domain collapse and need for target adaptation.
+
+**[113 | 2026-11-23] REQUEST → QHEAD-D02 — mother (labelled target adaptation)**
+User asked to train the QNN on the labelled data too. Dispatched worker to mix Split.ADAPTATION labelled Ninja samples into QNN training with group-disjointness assertion against OOD test, provenance, OOD sealed; owns scripts/train_qml.py and tests/test_qhead_training.py only.
+
 **Gate rule:** a D is not accepted until the central verifier passes and a Critic audit
 returns PASS. Mother commits D-by-D after the gate.
