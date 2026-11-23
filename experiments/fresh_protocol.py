@@ -295,7 +295,7 @@ def holm_adjust(comparisons: Sequence[dict], alpha: float = 0.05) -> list[dict]:
     inconclusive.  A ``significant`` decision additionally requires n >= 10,
     achieved power >= 0.8 and a bootstrap CI of the difference excluding zero.
     """
-    items = list(comparisons)
+    items = comparisons if isinstance(comparisons, list) else list(comparisons)
     valid = [
         index
         for index, item in enumerate(items)

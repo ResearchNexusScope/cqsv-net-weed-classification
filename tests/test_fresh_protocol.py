@@ -30,7 +30,7 @@ from experiments import fresh_protocol as fp  # noqa: E402
 def test_aggregate_matches_hand_computed_mean_sd_and_is_seed_deterministic() -> None:
     values = [0.5, 0.7, 0.9, 1.1, 1.3]
     expected_mean = 0.9
-    expected_sd = float(np.sqrt(0.4))  # sum((x-0.9)^2)/(5-1) = 0.4
+    expected_sd = float(np.sqrt(0.1))  # sum((x-0.9)^2)=0.4; /(5-1)=0.1
 
     first = fp.aggregate(values, seed=7, n_boot=100)
     second = fp.aggregate(values, seed=7, n_boot=100)
@@ -251,7 +251,7 @@ def _install_fake_cache_modules(monkeypatch, split_fn):
             vectors = []
             for sample in data:
                 digest = hashlib.sha256(sample.sample_id.encode("utf-8")).digest()[:8]
-                vectors.append(np.asarray(digest, dtype=np.float32) / 255.0)
+                vectors.append(np.frombuffer(digest, dtype=np.uint8).astype(np.float32) / 255.0)
             return np.stack(vectors)
 
         return loader
