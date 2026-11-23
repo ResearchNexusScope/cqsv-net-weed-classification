@@ -363,5 +363,8 @@ Blocker (config-json override) and 4 advisories all fixed; raw default None / re
 **[118 | 2026-11-23] DONE → EXTERNAL-D01 — mother (dataset intake complete)**
 Fetched and verified ACRE (1.22 GB), DeepWeeds (493 MB, 17,509 rows x 3 cols), MaizeSet (28 zips, 255 MB) outside the repo with SHA-256 manifests. 8.7/28.6 GB archives registered for resumable large fetch; 3 manual/aggregator entries registered with URLs. Report in docs/research/QC_DATASET_ACQUISITION.md.
 
+**[119 | 2026-11-23] RESULTS → QHEAD-D02 — mother (matched adaptation runs committed)**
+PlantNet +adapt50: OOD acc 0.393, AUC 0.378, F1 0.426 (small gain over no-adapt 0.383/0.357/0.405). ImageNet +adapt50: OOD acc 0.485, AUC 0.392, F1 0.649 (unchanged). Both AUCs below chance; neither beats no-mixing 0.496. Provenance: 50 samples 25/25, disjointness passed, OOD sealed. n=1 per arm, diagnostic only. Budget matched in count (50) but not proportion (3% vs 50% target).
+
 **Gate rule:** a D is not accepted until the central verifier passes and a Critic audit
 returns PASS. Mother commits D-by-D after the gate.
