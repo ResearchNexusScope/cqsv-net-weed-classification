@@ -405,5 +405,8 @@ Resolver tries file_name → data/ prefix → unique basename, fails loudly with
 **[132 | 2026-11-23] STOP → FRESH-PROTOCOL — mother (ACRE SVM compute cap needed)**
 ACRE feature caches completed for both backbones (PlantNet 52.6 MB, ImageNet 250.7 MB) but poly-2/RBF SVC on ~39,571 train crops consumed ~21,500 CPU-seconds in 3h without finishing. Mother stopped the process; no results fabricated. Adding deterministic per-seed TRAIN subsample cap (test stays full/sealed, n=10 preserved) before rerun.
 
+**[133 | 2026-11-24] RESULTS → FRESH-PROTOCOL — mother (ACRE capped run complete)**
+60/60 runs, 0 warnings, invariant true. ImageNet poly2 0.9777±0.0038, PlantNet RBF 0.9765±0.0035, PlantNet poly2 0.9762±0.0028. TRAIN capped at 5,000/seed (TEST full/sealed, n=10, documented no-claim note). poly2 vs logreg significant both backbones; poly2 vs RBF inconclusive. Fresh 70:20:10 classical baseline complete (DeepWeeds full-train + ACRE capped); MaizeSet rejected on data grounds. No quantum claim.
+
 **Gate rule:** a D is not accepted until the central verifier passes and a Critic audit
 returns PASS. Mother commits D-by-D after the gate.

@@ -1,0 +1,3968 @@
+{
+  "accounting_invariant": true,
+  "aggregates": {
+    "imagenet/logreg": {
+      "accuracy": {
+        "boot_B": 2000,
+        "boot_seed": 42,
+        "ci95_high": 0.9740822124331876,
+        "ci95_low": 0.9695097697582238,
+        "mean": 0.9718413902805695,
+        "model": "imagenet/logreg",
+        "n": 10,
+        "std": 0.003932321094334769,
+        "values": [
+          0.9719907817762808,
+          0.975219683655536,
+          0.9676220806794055,
+          0.9659755449229134,
+          0.9788091068301226,
+          0.9709302325581395,
+          0.9692990239574091,
+          0.9754010695187165,
+          0.9734372233044094,
+          0.9697291556027615
+        ]
+      },
+      "auc": {
+        "boot_B": 2000,
+        "boot_seed": 42,
+        "ci95_high": 0.9770436529878059,
+        "ci95_low": 0.9712584653341598,
+        "mean": 0.9741736250646976,
+        "model": "imagenet/logreg",
+        "n": 10,
+        "std": 0.004963861697307983,
+        "values": [
+          0.9737648986765062,
+          0.9786696698393733,
+          0.9670335194540715,
+          0.9697195941154318,
+          0.9830056561085972,
+          0.9778469027435867,
+          0.9680584669835799,
+          0.9740394005773828,
+          0.9754567372461744,
+          0.9741414049022735
+        ]
+      },
+      "f1": {
+        "boot_B": 2000,
+        "boot_seed": 42,
+        "ci95_high": 0.9856262929056001,
+        "ci95_low": 0.9829629032503719,
+        "mean": 0.9843144070353113,
+        "model": "imagenet/logreg",
+        "n": 10,
+        "std": 0.002278357045079145,
+        "values": [
+          0.9844089204657588,
+          0.9862156613549712,
+          0.9821166813251246,
+          0.9808574277168495,
+          0.9883932853717027,
+          0.9836260791902351,
+          0.9828083076617311,
+          0.9864092968288359,
+          0.9852710133542812,
+          0.9830373970836227
+        ]
+      },
+      "n_runs": 10,
+      "precision": {
+        "boot_B": 2000,
+        "boot_seed": 42,
+        "ci95_high": 0.984429112707567,
+        "ci95_low": 0.9807104887545611,
+        "mean": 0.9827887533018422,
+        "model": "imagenet/logreg",
+        "n": 10,
+        "std": 0.0031695990745510944,
+        "values": [
+          0.9855759731278404,
+          0.9849638742433119,
+          0.9810620851229989,
+          0.9754114614316874,
+          0.9860287081339713,
+          0.9827483640690066,
+          0.9832968781069795,
+          0.9844702182032632,
+          0.9839184153755638,
+          0.980411555203799
+        ]
+      },
+      "recall": {
+        "boot_B": 2000,
+        "boot_seed": 42,
+        "ci95_high": 0.9873507412666126,
+        "ci95_low": 0.9843535869511063,
+        "mean": 0.9858508881443642,
+        "model": "imagenet/logreg",
+        "n": 10,
+        "std": 0.0026293856187398733,
+        "values": [
+          0.983244628424995,
+          0.9874706342991386,
+          0.9831735472510272,
+          0.9863645478243432,
+          0.9907692307692307,
+          0.9845053635280095,
+          0.9823202224870878,
+          0.9883560292086047,
+          0.9866273352999017,
+          0.985677342351303
+        ]
+      },
+      "seeds": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ]
+    },
+    "imagenet/poly2": {
+      "accuracy": {
+        "boot_B": 2000,
+        "boot_seed": 42,
+        "ci95_high": 0.9795481653404148,
+        "ci95_low": 0.9753812373673472,
+        "mean": 0.9776955048455281,
+        "model": "imagenet/poly2",
+        "n": 10,
+        "std": 0.003770595818732476,
+        "values": [
+          0.9790817230987413,
+          0.9803163444639719,
+          0.9798301486199575,
+          0.9688109161793372,
+          0.9817863397548161,
+          0.9767441860465116,
+          0.9748003549245785,
+          0.9784313725490196,
+          0.9805206304232336,
+          0.9766330323951142
+        ]
+      },
+      "auc": {
+        "boot_B": 2000,
+        "boot_seed": 42,
+        "ci95_high": 0.9805457475788939,
+        "ci95_low": 0.975509932980999,
+        "mean": 0.9779546416013236,
+        "model": "imagenet/poly2",
+        "n": 10,
+        "std": 0.004337105390945175,
+        "values": [
+          0.97920119772449,
+          0.9789639996017296,
+          0.9745892571240097,
+          0.9734831904414893,
+          0.983988310708899,
+          0.9769932063216236,
+          0.9718113169879099,
+          0.9783784942906852,
+          0.9765544462990374,
+          0.9855829965133617
+        ]
+      },
+      "f1": {
+        "boot_B": 2000,
+        "boot_seed": 42,
+        "ci95_high": 0.9887175674480793,
+        "ci95_low": 0.9863094057825559,
+        "mean": 0.9876368519686327,
+        "model": "imagenet/poly2",
+        "n": 10,
+        "std": 0.002184217262613781,
+        "values": [
+          0.9884404388714734,
+          0.9891050583657588,
+          0.9889212827988338,
+          0.9825292833035537,
+          0.9900649598777226,
+          0.9869848156182213,
+          0.9859905288082084,
+          0.9881291082115177,
+          0.9892620070285045,
+          0.9869410368025326
+        ]
+      },
+      "n_runs": 10,
+      "precision": {
+        "boot_B": 2000,
+        "boot_seed": 42,
+        "ci95_high": 0.9824615747192632,
+        "ci95_low": 0.9789590226183081,
+        "mean": 0.9809996055309229,
+        "model": "imagenet/poly2",
+        "n": 10,
+        "std": 0.003147386975362681,
+        "values": [
+          0.9824732229795521,
+          0.982985305491106,
+          0.9824290403552809,
+          0.9728720267348142,
+          0.9836750189825361,
+          0.9798355520751761,
+          0.9794198353586828,
+          0.9824424502536091,
+          0.9821670866446985,
+          0.9816965164337729
+        ]
+      },
+      "recall": {
+        "boot_B": 2000,
+        "boot_seed": 42,
+        "ci95_high": 0.9952265250382216,
+        "ci95_low": 0.9934288580082183,
+        "mean": 0.9943673829511506,
+        "model": "imagenet/poly2",
+        "n": 10,
+        "std": 0.0015961587922277583,
+        "values": [
+          0.9944805834811749,
+          0.995301487862177,
+          0.9954999021717863,
+          0.9923801884900741,
+          0.9965384615384615,
+          0.9942391736193882,
+          0.9926499801350814,
+          0.9938819814485889,
+          0.9964601769911504,
+          0.9922418937736225
+        ]
+      },
+      "seeds": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ]
+    },
+    "imagenet/rbf": {
+      "accuracy": {
+        "boot_B": 2000,
+        "boot_seed": 42,
+        "ci95_high": 0.9736567126792778,
+        "ci95_low": 0.968973133076542,
+        "mean": 0.971470451404999,
+        "model": "imagenet/rbf",
+        "n": 10,
+        "std": 0.004202425550663612,
+        "values": [
+          0.9741180641730189,
+          0.975219683655536,
+          0.9736376503892428,
+          0.9636718057770689,
+          0.9754816112084063,
+          0.9702255109231853,
+          0.965927240461402,
+          0.9723707664884136,
+          0.9753851602620861,
+          0.9686670207116304
+        ]
+      },
+      "auc": {
+        "boot_B": 2000,
+        "boot_seed": 42,
+        "ci95_high": 0.9873180475380755,
+        "ci95_low": 0.9813645271563275,
+        "mean": 0.9845558270432948,
+        "model": "imagenet/rbf",
+        "n": 10,
+        "std": 0.004974818771291154,
+        "values": [
+          0.9851575449146686,
+          0.9871712588837132,
+          0.9799370789182551,
+          0.9764772554984423,
+          0.9898133484162895,
+          0.9890220024085441,
+          0.977445549960766,
+          0.9841748561904005,
+          0.986698719631041,
+          0.989660655610827
+        ]
+      },
+      "f1": {
+        "boot_B": 2000,
+        "boot_seed": 42,
+        "ci95_high": 0.9855148876883383,
+        "ci95_low": 0.9827686127736562,
+        "mean": 0.984231433092749,
+        "model": "imagenet/rbf",
+        "n": 10,
+        "std": 0.0024318306656557842,
+        "values": [
+          0.9857254595228784,
+          0.9863199767148539,
+          0.985543805180945,
+          0.9797210406568404,
+          0.9866590432628168,
+          0.9833775941772401,
+          0.9811023622047244,
+          0.984841075794621,
+          0.9864641152984711,
+          0.9825598581141
+        ]
+      },
+      "n_runs": 10,
+      "precision": {
+        "boot_B": 2000,
+        "boot_seed": 42,
+        "ci95_high": 0.9768494791257739,
+        "ci95_low": 0.9729462142230453,
+        "mean": 0.9750604262510049,
+        "model": "imagenet/rbf",
+        "n": 10,
+        "std": 0.003552906901624738,
+        "values": [
+          0.9778855480116392,
+          0.977688016926332,
+          0.9774826789838337,
+          0.9668098399062867,
+          0.977899508877975,
+          0.9738944087278395,
+          0.9722980881779165,
+          0.9761535478867778,
+          0.9770447530864198,
+          0.9734478719250292
+        ]
+      },
+      "recall": {
+        "boot_B": 2000,
+        "boot_seed": 42,
+        "ci95_high": 0.9945384305523814,
+        "ci95_low": 0.9924579531288689,
+        "mean": 0.993580583262615,
+        "model": "imagenet/rbf",
+        "n": 10,
+        "std": 0.00178080511115402,
+        "values": [
+          0.9936920954070569,
+          0.995105716523101,
+          0.9937389943259636,
+          0.9929817525566473,
+          0.995576923076923,
+          0.9930472785061581,
+          0.990067540723083,
+          0.9936846260114466,
+          0.9960668633235005,
+          0.9918440421722697
+        ]
+      },
+      "seeds": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ]
+    },
+    "plantnet/logreg": {
+      "accuracy": {
+        "boot_B": 2000,
+        "boot_seed": 42,
+        "ci95_high": 0.9654979007694652,
+        "ci95_low": 0.9592559995891099,
+        "mean": 0.9622164616185316,
+        "model": "plantnet/logreg",
+        "n": 10,
+        "std": 0.005588110358390785,
+        "values": [
+          0.9606452756603439,
+          0.9632688927943761,
+          0.9587756546355273,
+          0.960127591706539,
+          0.9751313485113835,
+          0.9603594080338267,
+          0.9563442768411713,
+          0.9647058823529412,
+          0.9663538161855852,
+          0.9564524694636218
+        ]
+      },
+      "auc": {
+        "boot_B": 2000,
+        "boot_seed": 42,
+        "ci95_high": 0.9615472186403725,
+        "ci95_low": 0.95093062980545,
+        "mean": 0.9565819788041605,
+        "model": "plantnet/logreg",
+        "n": 10,
+        "std": 0.00899781969954879,
+        "values": [
+          0.9597817290099754,
+          0.9645209858802444,
+          0.9515334436869338,
+          0.9372594355079303,
+          0.9714707767722474,
+          0.9599913733032821,
+          0.9527162053444234,
+          0.9548068769828678,
+          0.95844609608191,
+          0.9552928654717902
+        ]
+      },
+      "f1": {
+        "boot_B": 2000,
+        "boot_seed": 42,
+        "ci95_high": 0.9808190758097783,
+        "ci95_low": 0.9771800436118527,
+        "mean": 0.9789153645693641,
+        "model": "plantnet/logreg",
+        "n": 10,
+        "std": 0.003238759114481816,
+        "values": [
+          0.9780545670225386,
+          0.9795718893558792,
+          0.9771814709626873,
+          0.9775426689290349,
+          0.9863645093143845,
+          0.9775963357562482,
+          0.9755612954500298,
+          0.9804579549940782,
+          0.981324945940633,
+          0.9754980079681275
+        ]
+      },
+      "n_runs": 10,
+      "precision": {
+        "boot_B": 2000,
+        "boot_seed": 42,
+        "ci95_high": 0.980907678204936,
+        "ci95_low": 0.9770130116846719,
+        "mean": 0.9789790870096304,
+        "model": "plantnet/logreg",
+        "n": 10,
+        "std": 0.0033049341563348477,
+        "values": [
+          0.9809637120761452,
+          0.9781378098770251,
+          0.9782352941176471,
+          0.9731717011128775,
+          0.9850402761795167,
+          0.9800359353164304,
+          0.9757551669316376,
+          0.9806515301085883,
+          0.9809392808017292,
+          0.9768601635747057
+        ]
+      },
+      "recall": {
+        "boot_B": 2000,
+        "boot_seed": 42,
+        "ci95_high": 0.9814030855720162,
+        "ci95_low": 0.9763499167024126,
+        "mean": 0.9788599476790847,
+        "model": "plantnet/logreg",
+        "n": 10,
+        "std": 0.004365624293004575,
+        "values": [
+          0.9751626256652868,
+          0.9810101801096319,
+          0.9761299158677362,
+          0.9819530780028073,
+          0.9876923076923076,
+          0.9751688518077076,
+          0.9753675009932459,
+          0.9802644562857706,
+          0.9817109144542773,
+          0.9741396459120748
+        ]
+      },
+      "seeds": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ]
+    },
+    "plantnet/poly2": {
+      "accuracy": {
+        "boot_B": 2000,
+        "boot_seed": 42,
+        "ci95_high": 0.9776902093272833,
+        "ci95_low": 0.974381417757913,
+        "mean": 0.976197246506576,
+        "model": "plantnet/poly2",
+        "n": 10,
+        "std": 0.0027939111403918414,
+        "values": [
+          0.9778408083673108,
+          0.9783831282952549,
+          0.9757607926397736,
+          0.9712918660287081,
+          0.9788091068301226,
+          0.9728682170542635,
+          0.9732031943212067,
+          0.9786096256684492,
+          0.978572693465557,
+          0.9766330323951142
+        ]
+      },
+      "auc": {
+        "boot_B": 2000,
+        "boot_seed": 42,
+        "ci95_high": 0.9755257299330193,
+        "ci95_low": 0.9697643084408507,
+        "mean": 0.9726386840679883,
+        "model": "plantnet/poly2",
+        "n": 10,
+        "std": 0.004964115484721042,
+        "values": [
+          0.9693343383779912,
+          0.9737706770862767,
+          0.9774944476611824,
+          0.9629518455300855,
+          0.9756361236802413,
+          0.9810788197886768,
+          0.9733175471684392,
+          0.971685855212346,
+          0.969577327776553,
+          0.9715398583980909
+        ]
+      },
+      "f1": {
+        "boot_B": 2000,
+        "boot_seed": 42,
+        "ci95_high": 0.9876951061690141,
+        "ci95_low": 0.9857870724041776,
+        "mean": 0.9868268468499684,
+        "model": "plantnet/poly2",
+        "n": 10,
+        "std": 0.0016353434569438567,
+        "values": [
+          0.9877726694708011,
+          0.9880501311570971,
+          0.9866951539283286,
+          0.9839667458432304,
+          0.9884398586032292,
+          0.9848245959795033,
+          0.9851099497091017,
+          0.9882422104644327,
+          0.9882054781167755,
+          0.9869616752271829
+        ]
+      },
+      "n_runs": 10,
+      "precision": {
+        "boot_B": 2000,
+        "boot_seed": 42,
+        "ci95_high": 0.980588717866354,
+        "ci95_low": 0.977066461765355,
+        "mean": 0.9790683898339833,
+        "model": "plantnet/poly2",
+        "n": 10,
+        "std": 0.0030456573542951963,
+        "values": [
+          0.9803883495145631,
+          0.9807135969141755,
+          0.9795603548013884,
+          0.9714676568301739,
+          0.9821530282893488,
+          0.977121626906531,
+          0.9780693166242412,
+          0.9813193228254524,
+          0.9797062234248164,
+          0.9801844222091426
+        ]
+      },
+      "recall": {
+        "boot_B": 2000,
+        "boot_seed": 42,
+        "ci95_high": 0.9955981148575428,
+        "ci95_low": 0.9937334010221773,
+        "mean": 0.9947153254374632,
+        "model": "plantnet/poly2",
+        "n": 10,
+        "std": 0.0015573354756306488,
+        "values": [
+          0.9952690715552928,
+          0.995497259201253,
+          0.9939346507532772,
+          0.9967916583116102,
+          0.9948076923076923,
+          0.9926499801350814,
+          0.9922526817640047,
+          0.9952634695085849,
+          0.9968534906588004,
+          0.9938333001790333
+        ]
+      },
+      "seeds": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ]
+    },
+    "plantnet/rbf": {
+      "accuracy": {
+        "boot_B": 2000,
+        "boot_seed": 42,
+        "ci95_high": 0.9784048277100827,
+        "ci95_low": 0.9742010196564819,
+        "mean": 0.9764963052966456,
+        "model": "plantnet/rbf",
+        "n": 10,
+        "std": 0.003462551475033303,
+        "values": [
+          0.9794362701648643,
+          0.9785588752196837,
+          0.9769992922859165,
+          0.9725323409533936,
+          0.9798598949211909,
+          0.9744538407329105,
+          0.9700088731144632,
+          0.9795008912655971,
+          0.9792810341774394,
+          0.9743317401309967
+        ]
+      },
+      "auc": {
+        "boot_B": 2000,
+        "boot_seed": 42,
+        "ci95_high": 0.9825186143704638,
+        "ci95_low": 0.9779387764674785,
+        "mean": 0.9803077194379742,
+        "model": "plantnet/rbf",
+        "n": 10,
+        "std": 0.0038568177295308205,
+        "values": [
+          0.9791883570296211,
+          0.9830260866991204,
+          0.9775367615280875,
+          0.9734229729002724,
+          0.9857828054298642,
+          0.9828700661050032,
+          0.9766767346436909,
+          0.9785983838661384,
+          0.9817336594617482,
+          0.9842413667161956
+        ]
+      },
+      "f1": {
+        "boot_B": 2000,
+        "boot_seed": 42,
+        "ci95_high": 0.988092119819157,
+        "ci95_low": 0.9856437385576087,
+        "mean": 0.9869740657882169,
+        "model": "plantnet/rbf",
+        "n": 10,
+        "std": 0.002011695302903991,
+        "values": [
+          0.9886430389661249,
+          0.9881299863786729,
+          0.9873835403726708,
+          0.9846336869237633,
+          0.9890025820024864,
+          0.9857325592836761,
+          0.983282223761005,
+          0.9887111023853932,
+          0.9885797950219619,
+          0.9856421427864145
+        ]
+      },
+      "n_runs": 10,
+      "precision": {
+        "boot_B": 2000,
+        "boot_seed": 42,
+        "ci95_high": 0.9820224533954809,
+        "ci95_low": 0.9782658951633261,
+        "mean": 0.9803436720905221,
+        "model": "plantnet/rbf",
+        "n": 10,
+        "std": 0.003151559457330199,
+        "values": [
+          0.982104648900992,
+          0.9822050290135397,
+          0.9795879067976122,
+          0.9737254901960785,
+          0.9836408598059729,
+          0.9766036264379021,
+          0.9793103448275862,
+          0.98359375,
+          0.9813953488372092,
+          0.981269716088328
+        ]
+      },
+      "recall": {
+        "boot_B": 2000,
+        "boot_seed": 42,
+        "ci95_high": 0.9951228449080819,
+        "ci95_low": 0.9919096384987478,
+        "mean": 0.9937038425976088,
+        "model": "plantnet/rbf",
+        "n": 10,
+        "std": 0.002809814393652752,
+        "values": [
+          0.9952690715552928,
+          0.9941268598277212,
+          0.9953042457444727,
+          0.9957890515339883,
+          0.994423076923077,
+          0.9950337703615415,
+          0.9872864521255463,
+          0.9938819814485889,
+          0.9958702064896755,
+          0.9900537099661826
+        ]
+      },
+      "seeds": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ]
+    }
+  },
+  "claim_boundary": "This stage measures only classical control arms on freshly grouped splits. No quantum kernel or QNN is implemented here and no quantum advantage is asserted; QNN arms belong to a separate follow-up stage. Every reported value comes from an executed run; failures are recorded as warnings and never fabricated.",
+  "comparisons": [
+    {
+      "alpha": 0.05,
+      "backbone": "plantnet",
+      "boot_B": 2000,
+      "boot_seed": 42,
+      "ci95_high": 0.0007630299005033087,
+      "ci95_low": -0.00115108900362902,
+      "cohens_dz": -0.17883263562283538,
+      "decision": "inconclusive",
+      "decision_reason": "descriptive: power<0.8 or unavailable, p_holm>=alpha, bootstrap CI includes 0",
+      "df": 9,
+      "mean_difference": -0.0002990587900695285,
+      "metric": "accuracy",
+      "multiplicity": {
+        "alpha": 0.05,
+        "m": 3,
+        "method": "holm"
+      },
+      "n": 10,
+      "p_holm": 0.5855414151903082,
+      "p_raw": 0.5855414151903082,
+      "pair": [
+        "poly2",
+        "rbf"
+      ],
+      "power_at_observed_dz": 0.08000937595429658,
+      "primary_test": "paired_t_test (scipy.stats.ttest_rel, two-sided)",
+      "secondary_tests": {
+        "wilcoxon_signed_rank": {
+          "note": null,
+          "p": 0.431640625
+        }
+      },
+      "t_statistic": -0.5655184485391243,
+      "wilcoxon_note": null,
+      "wilcoxon_p": 0.431640625
+    },
+    {
+      "alpha": 0.05,
+      "backbone": "plantnet",
+      "boot_B": 2000,
+      "boot_seed": 42,
+      "ci95_high": 0.016460928268307886,
+      "ci95_low": 0.011213513330341976,
+      "cohens_dz": 3.0693585123627054,
+      "decision": "significant",
+      "decision_reason": "p_holm<alpha, bootstrap CI excludes 0, power>=0.8, n>=10",
+      "df": 9,
+      "mean_difference": 0.01398078488804445,
+      "metric": "accuracy",
+      "multiplicity": {
+        "alpha": 0.05,
+        "m": 3,
+        "method": "holm"
+      },
+      "n": 10,
+      "p_holm": 9.167811145469375e-06,
+      "p_raw": 4.583905572734687e-06,
+      "pair": [
+        "poly2",
+        "logreg"
+      ],
+      "power_at_observed_dz": 0.9999999999556219,
+      "primary_test": "paired_t_test (scipy.stats.ttest_rel, two-sided)",
+      "secondary_tests": {
+        "wilcoxon_signed_rank": {
+          "note": null,
+          "p": 0.001953125
+        }
+      },
+      "t_statistic": 9.706163854692232,
+      "wilcoxon_note": null,
+      "wilcoxon_p": 0.001953125
+    },
+    {
+      "alpha": 0.05,
+      "backbone": "plantnet",
+      "boot_B": 2000,
+      "boot_seed": 42,
+      "ci95_high": 0.016433266656883938,
+      "ci95_low": 0.011692815480738746,
+      "cohens_dz": 3.531766785068398,
+      "decision": "inconclusive",
+      "decision_reason": "descriptive: power<0.8 or unavailable",
+      "df": 9,
+      "mean_difference": 0.014279843678113979,
+      "metric": "accuracy",
+      "multiplicity": {
+        "alpha": 0.05,
+        "m": 3,
+        "method": "holm"
+      },
+      "n": 10,
+      "p_holm": 4.248389129722626e-06,
+      "p_raw": 1.4161297099075422e-06,
+      "pair": [
+        "rbf",
+        "logreg"
+      ],
+      "power_at_observed_dz": null,
+      "primary_test": "paired_t_test (scipy.stats.ttest_rel, two-sided)",
+      "secondary_tests": {
+        "wilcoxon_signed_rank": {
+          "note": null,
+          "p": 0.001953125
+        }
+      },
+      "t_statistic": 11.168427205346491,
+      "wilcoxon_note": null,
+      "wilcoxon_p": 0.001953125
+    },
+    {
+      "alpha": 0.05,
+      "backbone": "imagenet",
+      "boot_B": 2000,
+      "boot_seed": 42,
+      "ci95_high": 0.007080412010115165,
+      "ci95_low": 0.0055170799092028305,
+      "cohens_dz": 4.759694099425923,
+      "decision": "inconclusive",
+      "decision_reason": "descriptive: power<0.8 or unavailable",
+      "df": 9,
+      "mean_difference": 0.0062250534405291266,
+      "metric": "accuracy",
+      "multiplicity": {
+        "alpha": 0.05,
+        "m": 3,
+        "method": "holm"
+      },
+      "n": 10,
+      "p_holm": 3.2850846157249427e-07,
+      "p_raw": 1.0950282052416476e-07,
+      "pair": [
+        "poly2",
+        "rbf"
+      ],
+      "power_at_observed_dz": null,
+      "primary_test": "paired_t_test (scipy.stats.ttest_rel, two-sided)",
+      "secondary_tests": {
+        "wilcoxon_signed_rank": {
+          "note": null,
+          "p": 0.001953125
+        }
+      },
+      "t_statistic": 15.051474319849852,
+      "wilcoxon_note": null,
+      "wilcoxon_p": 0.001953125
+    },
+    {
+      "alpha": 0.05,
+      "backbone": "imagenet",
+      "boot_B": 2000,
+      "boot_seed": 42,
+      "ci95_high": 0.007589444307254213,
+      "ci95_low": 0.0043439884254245715,
+      "cohens_dz": 2.0904796751721704,
+      "decision": "significant",
+      "decision_reason": "p_holm<alpha, bootstrap CI excludes 0, power>=0.8, n>=10",
+      "df": 9,
+      "mean_difference": 0.005854114564958724,
+      "metric": "accuracy",
+      "multiplicity": {
+        "alpha": 0.05,
+        "m": 3,
+        "method": "holm"
+      },
+      "n": 10,
+      "p_holm": 0.0001961274456418171,
+      "p_raw": 9.806372282090855e-05,
+      "pair": [
+        "poly2",
+        "logreg"
+      ],
+      "power_at_observed_dz": 0.9999404044787383,
+      "primary_test": "paired_t_test (scipy.stats.ttest_rel, two-sided)",
+      "secondary_tests": {
+        "wilcoxon_signed_rank": {
+          "note": null,
+          "p": 0.001953125
+        }
+      },
+      "t_statistic": 6.610677175833004,
+      "wilcoxon_note": null,
+      "wilcoxon_p": 0.001953125
+    },
+    {
+      "alpha": 0.05,
+      "backbone": "imagenet",
+      "boot_B": 2000,
+      "boot_seed": 42,
+      "ci95_high": 0.0015069081900762346,
+      "ci95_low": -0.0019715259723535493,
+      "cohens_dz": -0.12312542093995225,
+      "decision": "inconclusive",
+      "decision_reason": "descriptive: power<0.8 or unavailable, p_holm>=alpha, bootstrap CI includes 0",
+      "df": 9,
+      "mean_difference": -0.0003709388755704035,
+      "metric": "accuracy",
+      "multiplicity": {
+        "alpha": 0.05,
+        "m": 3,
+        "method": "holm"
+      },
+      "n": 10,
+      "p_holm": 0.7060648119390583,
+      "p_raw": 0.7060648119390583,
+      "pair": [
+        "rbf",
+        "logreg"
+      ],
+      "power_at_observed_dz": 0.06411889835372211,
+      "primary_test": "paired_t_test (scipy.stats.ttest_rel, two-sided)",
+      "secondary_tests": {
+        "wilcoxon_signed_rank": {
+          "note": null,
+          "p": 0.49609375
+        }
+      },
+      "t_statistic": -0.389356768037239,
+      "wilcoxon_note": null,
+      "wilcoxon_p": 0.49609375
+    }
+  ],
+  "config": {
+    "alpha": 0.05,
+    "backbones": [
+      "plantnet",
+      "imagenet"
+    ],
+    "bootstrap": {
+      "B": 2000,
+      "seed": 42
+    },
+    "cache_dir": "C:\\Users\\sugee\\.cache\\qc_datasets\\features",
+    "dataset": "acre",
+    "models": [
+      "poly2",
+      "rbf",
+      "logreg"
+    ],
+    "protocol": "fresh_protocol.v1",
+    "ratios": [
+      0.7,
+      0.2,
+      0.1
+    ],
+    "root": "None",
+    "seeds": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9
+    ],
+    "train_cap": 5000
+  },
+  "dataset": "acre",
+  "n_runs_expected": 60,
+  "n_runs_skipped": 0,
+  "n_runs_succeeded": 60,
+  "n_skipped_cache_failure": 0,
+  "n_skipped_failed_arm": 0,
+  "runs": [
+    {
+      "backbone": "plantnet",
+      "dataset": "acre",
+      "metrics": {
+        "accuracy": 0.9778408083673108,
+        "auc": 0.9693343383779912,
+        "confusion_matrix": [
+          [
+            467,
+            101
+          ],
+          [
+            24,
+            5049
+          ]
+        ],
+        "f1": 0.9877726694708011,
+        "iou_class0": 0.7888513513513513,
+        "iou_class1": 0.9758407421724005,
+        "kernel": "poly",
+        "macro_iou": 0.8823460467618759,
+        "model": "poly",
+        "n": 5641,
+        "n_train": 5000,
+        "precision": 0.9803883495145631,
+        "recall": 0.9952690715552928,
+        "requested_model": "poly2",
+        "score_kind": "decision_function",
+        "seed": 0
+      },
+      "model": "poly2",
+      "seed": 0,
+      "status": "ok",
+      "train_cap": {
+        "cap_applied": true,
+        "class_counts_after": {
+          "0": 527,
+          "1": 4473
+        },
+        "class_counts_before": {
+          "0": 4173,
+          "1": 35465
+        },
+        "note": "stratified TRAIN subsample to at most 5000 rows (seed 0)",
+        "train_cap": 5000,
+        "train_size_after": 5000,
+        "train_size_before": 39638
+      }
+    },
+    {
+      "backbone": "plantnet",
+      "dataset": "acre",
+      "metrics": {
+        "accuracy": 0.9794362701648643,
+        "auc": 0.9791883570296211,
+        "confusion_matrix": [
+          [
+            476,
+            92
+          ],
+          [
+            24,
+            5049
+          ]
+        ],
+        "f1": 0.9886430389661249,
+        "iou_class0": 0.8040540540540541,
+        "iou_class1": 0.977541142303969,
+        "kernel": "rbf",
+        "macro_iou": 0.8907975981790115,
+        "model": "rbf",
+        "n": 5641,
+        "n_train": 5000,
+        "precision": 0.982104648900992,
+        "recall": 0.9952690715552928,
+        "requested_model": "rbf",
+        "score_kind": "decision_function",
+        "seed": 0
+      },
+      "model": "rbf",
+      "seed": 0,
+      "status": "ok",
+      "train_cap": {
+        "cap_applied": true,
+        "class_counts_after": {
+          "0": 527,
+          "1": 4473
+        },
+        "class_counts_before": {
+          "0": 4173,
+          "1": 35465
+        },
+        "note": "stratified TRAIN subsample to at most 5000 rows (seed 0)",
+        "train_cap": 5000,
+        "train_size_after": 5000,
+        "train_size_before": 39638
+      }
+    },
+    {
+      "backbone": "plantnet",
+      "dataset": "acre",
+      "metrics": {
+        "accuracy": 0.9606452756603439,
+        "auc": 0.9597817290099754,
+        "confusion_matrix": [
+          [
+            472,
+            96
+          ],
+          [
+            126,
+            4947
+          ]
+        ],
+        "f1": 0.9780545670225386,
+        "iou_class0": 0.6801152737752162,
+        "iou_class1": 0.9570516540917006,
+        "kernel": "logreg",
+        "macro_iou": 0.8185834639334584,
+        "model": "logreg",
+        "n": 5641,
+        "n_train": 5000,
+        "precision": 0.9809637120761452,
+        "recall": 0.9751626256652868,
+        "requested_model": "logreg",
+        "score_kind": "predict_proba",
+        "seed": 0
+      },
+      "model": "logreg",
+      "seed": 0,
+      "status": "ok",
+      "train_cap": {
+        "cap_applied": true,
+        "class_counts_after": {
+          "0": 527,
+          "1": 4473
+        },
+        "class_counts_before": {
+          "0": 4173,
+          "1": 35465
+        },
+        "note": "stratified TRAIN subsample to at most 5000 rows (seed 0)",
+        "train_cap": 5000,
+        "train_size_after": 5000,
+        "train_size_before": 39638
+      }
+    },
+    {
+      "backbone": "plantnet",
+      "dataset": "acre",
+      "metrics": {
+        "accuracy": 0.9783831282952549,
+        "auc": 0.9737706770862767,
+        "confusion_matrix": [
+          [
+            482,
+            100
+          ],
+          [
+            23,
+            5085
+          ]
+        ],
+        "f1": 0.9880501311570971,
+        "iou_class0": 0.7966942148760331,
+        "iou_class1": 0.9763824884792627,
+        "kernel": "poly",
+        "macro_iou": 0.8865383516776479,
+        "model": "poly",
+        "n": 5690,
+        "n_train": 5000,
+        "precision": 0.9807135969141755,
+        "recall": 0.995497259201253,
+        "requested_model": "poly2",
+        "score_kind": "decision_function",
+        "seed": 1
+      },
+      "model": "poly2",
+      "seed": 1,
+      "status": "ok",
+      "train_cap": {
+        "cap_applied": true,
+        "class_counts_after": {
+          "0": 532,
+          "1": 4468
+        },
+        "class_counts_before": {
+          "0": 4204,
+          "1": 35341
+        },
+        "note": "stratified TRAIN subsample to at most 5000 rows (seed 1)",
+        "train_cap": 5000,
+        "train_size_after": 5000,
+        "train_size_before": 39545
+      }
+    },
+    {
+      "backbone": "plantnet",
+      "dataset": "acre",
+      "metrics": {
+        "accuracy": 0.9785588752196837,
+        "auc": 0.9830260866991204,
+        "confusion_matrix": [
+          [
+            490,
+            92
+          ],
+          [
+            30,
+            5078
+          ]
+        ],
+        "f1": 0.9881299863786729,
+        "iou_class0": 0.8006535947712419,
+        "iou_class1": 0.9765384615384616,
+        "kernel": "rbf",
+        "macro_iou": 0.8885960281548517,
+        "model": "rbf",
+        "n": 5690,
+        "n_train": 5000,
+        "precision": 0.9822050290135397,
+        "recall": 0.9941268598277212,
+        "requested_model": "rbf",
+        "score_kind": "decision_function",
+        "seed": 1
+      },
+      "model": "rbf",
+      "seed": 1,
+      "status": "ok",
+      "train_cap": {
+        "cap_applied": true,
+        "class_counts_after": {
+          "0": 532,
+          "1": 4468
+        },
+        "class_counts_before": {
+          "0": 4204,
+          "1": 35341
+        },
+        "note": "stratified TRAIN subsample to at most 5000 rows (seed 1)",
+        "train_cap": 5000,
+        "train_size_after": 5000,
+        "train_size_before": 39545
+      }
+    },
+    {
+      "backbone": "plantnet",
+      "dataset": "acre",
+      "metrics": {
+        "accuracy": 0.9632688927943761,
+        "auc": 0.9645209858802444,
+        "confusion_matrix": [
+          [
+            470,
+            112
+          ],
+          [
+            97,
+            5011
+          ]
+        ],
+        "f1": 0.9795718893558792,
+        "iou_class0": 0.6921944035346097,
+        "iou_class1": 0.9599616858237547,
+        "kernel": "logreg",
+        "macro_iou": 0.8260780446791822,
+        "model": "logreg",
+        "n": 5690,
+        "n_train": 5000,
+        "precision": 0.9781378098770251,
+        "recall": 0.9810101801096319,
+        "requested_model": "logreg",
+        "score_kind": "predict_proba",
+        "seed": 1
+      },
+      "model": "logreg",
+      "seed": 1,
+      "status": "ok",
+      "train_cap": {
+        "cap_applied": true,
+        "class_counts_after": {
+          "0": 532,
+          "1": 4468
+        },
+        "class_counts_before": {
+          "0": 4204,
+          "1": 35341
+        },
+        "note": "stratified TRAIN subsample to at most 5000 rows (seed 1)",
+        "train_cap": 5000,
+        "train_size_after": 5000,
+        "train_size_before": 39545
+      }
+    },
+    {
+      "backbone": "plantnet",
+      "dataset": "acre",
+      "metrics": {
+        "accuracy": 0.9757607926397736,
+        "auc": 0.9774944476611824,
+        "confusion_matrix": [
+          [
+            435,
+            106
+          ],
+          [
+            31,
+            5080
+          ]
+        ],
+        "f1": 0.9866951539283286,
+        "iou_class0": 0.7604895104895105,
+        "iou_class1": 0.9737396971439525,
+        "kernel": "poly",
+        "macro_iou": 0.8671146038167314,
+        "model": "poly",
+        "n": 5652,
+        "n_train": 5000,
+        "precision": 0.9795603548013884,
+        "recall": 0.9939346507532772,
+        "requested_model": "poly2",
+        "score_kind": "decision_function",
+        "seed": 2
+      },
+      "model": "poly2",
+      "seed": 2,
+      "status": "ok",
+      "train_cap": {
+        "cap_applied": true,
+        "class_counts_after": {
+          "0": 539,
+          "1": 4461
+        },
+        "class_counts_before": {
+          "0": 4259,
+          "1": 35298
+        },
+        "note": "stratified TRAIN subsample to at most 5000 rows (seed 2)",
+        "train_cap": 5000,
+        "train_size_after": 5000,
+        "train_size_before": 39557
+      }
+    },
+    {
+      "backbone": "plantnet",
+      "dataset": "acre",
+      "metrics": {
+        "accuracy": 0.9769992922859165,
+        "auc": 0.9775367615280875,
+        "confusion_matrix": [
+          [
+            435,
+            106
+          ],
+          [
+            24,
+            5087
+          ]
+        ],
+        "f1": 0.9873835403726708,
+        "iou_class0": 0.7699115044247787,
+        "iou_class1": 0.9750814644431666,
+        "kernel": "rbf",
+        "macro_iou": 0.8724964844339727,
+        "model": "rbf",
+        "n": 5652,
+        "n_train": 5000,
+        "precision": 0.9795879067976122,
+        "recall": 0.9953042457444727,
+        "requested_model": "rbf",
+        "score_kind": "decision_function",
+        "seed": 2
+      },
+      "model": "rbf",
+      "seed": 2,
+      "status": "ok",
+      "train_cap": {
+        "cap_applied": true,
+        "class_counts_after": {
+          "0": 539,
+          "1": 4461
+        },
+        "class_counts_before": {
+          "0": 4259,
+          "1": 35298
+        },
+        "note": "stratified TRAIN subsample to at most 5000 rows (seed 2)",
+        "train_cap": 5000,
+        "train_size_after": 5000,
+        "train_size_before": 39557
+      }
+    },
+    {
+      "backbone": "plantnet",
+      "dataset": "acre",
+      "metrics": {
+        "accuracy": 0.9587756546355273,
+        "auc": 0.9515334436869338,
+        "confusion_matrix": [
+          [
+            430,
+            111
+          ],
+          [
+            122,
+            4989
+          ]
+        ],
+        "f1": 0.9771814709626873,
+        "iou_class0": 0.6485671191553545,
+        "iou_class1": 0.9553810800459595,
+        "kernel": "logreg",
+        "macro_iou": 0.801974099600657,
+        "model": "logreg",
+        "n": 5652,
+        "n_train": 5000,
+        "precision": 0.9782352941176471,
+        "recall": 0.9761299158677362,
+        "requested_model": "logreg",
+        "score_kind": "predict_proba",
+        "seed": 2
+      },
+      "model": "logreg",
+      "seed": 2,
+      "status": "ok",
+      "train_cap": {
+        "cap_applied": true,
+        "class_counts_after": {
+          "0": 539,
+          "1": 4461
+        },
+        "class_counts_before": {
+          "0": 4259,
+          "1": 35298
+        },
+        "note": "stratified TRAIN subsample to at most 5000 rows (seed 2)",
+        "train_cap": 5000,
+        "train_size_after": 5000,
+        "train_size_before": 39557
+      }
+    },
+    {
+      "backbone": "plantnet",
+      "dataset": "acre",
+      "metrics": {
+        "accuracy": 0.9712918660287081,
+        "auc": 0.9629518455300855,
+        "confusion_matrix": [
+          [
+            510,
+            146
+          ],
+          [
+            16,
+            4971
+          ]
+        ],
+        "f1": 0.9839667458432304,
+        "iou_class0": 0.7589285714285714,
+        "iou_class1": 0.9684395090590298,
+        "kernel": "poly",
+        "macro_iou": 0.8636840402438006,
+        "model": "poly",
+        "n": 5643,
+        "n_train": 5000,
+        "precision": 0.9714676568301739,
+        "recall": 0.9967916583116102,
+        "requested_model": "poly2",
+        "score_kind": "decision_function",
+        "seed": 3
+      },
+      "model": "poly2",
+      "seed": 3,
+      "status": "ok",
+      "train_cap": {
+        "cap_applied": true,
+        "class_counts_after": {
+          "0": 525,
+          "1": 4475
+        },
+        "class_counts_before": {
+          "0": 4154,
+          "1": 35450
+        },
+        "note": "stratified TRAIN subsample to at most 5000 rows (seed 3)",
+        "train_cap": 5000,
+        "train_size_after": 5000,
+        "train_size_before": 39604
+      }
+    },
+    {
+      "backbone": "plantnet",
+      "dataset": "acre",
+      "metrics": {
+        "accuracy": 0.9725323409533936,
+        "auc": 0.9734229729002724,
+        "confusion_matrix": [
+          [
+            522,
+            134
+          ],
+          [
+            21,
+            4966
+          ]
+        ],
+        "f1": 0.9846336869237633,
+        "iou_class0": 0.7710487444608567,
+        "iou_class1": 0.9697324741261473,
+        "kernel": "rbf",
+        "macro_iou": 0.870390609293502,
+        "model": "rbf",
+        "n": 5643,
+        "n_train": 5000,
+        "precision": 0.9737254901960785,
+        "recall": 0.9957890515339883,
+        "requested_model": "rbf",
+        "score_kind": "decision_function",
+        "seed": 3
+      },
+      "model": "rbf",
+      "seed": 3,
+      "status": "ok",
+      "train_cap": {
+        "cap_applied": true,
+        "class_counts_after": {
+          "0": 525,
+          "1": 4475
+        },
+        "class_counts_before": {
+          "0": 4154,
+          "1": 35450
+        },
+        "note": "stratified TRAIN subsample to at most 5000 rows (seed 3)",
+        "train_cap": 5000,
+        "train_size_after": 5000,
+        "train_size_before": 39604
+      }
+    },
+    {
+      "backbone": "plantnet",
+      "dataset": "acre",
+      "metrics": {
+        "accuracy": 0.960127591706539,
+        "auc": 0.9372594355079303,
+        "confusion_matrix": [
+          [
+            521,
+            135
+          ],
+          [
+            90,
+            4897
+          ]
+        ],
+        "f1": 0.9775426689290349,
+        "iou_class0": 0.6983914209115282,
+        "iou_class1": 0.9560718469347911,
+        "kernel": "logreg",
+        "macro_iou": 0.8272316339231596,
+        "model": "logreg",
+        "n": 5643,
+        "n_train": 5000,
+        "precision": 0.9731717011128775,
+        "recall": 0.9819530780028073,
+        "requested_model": "logreg",
+        "score_kind": "predict_proba",
+        "seed": 3
+      },
+      "model": "logreg",
+      "seed": 3,
+      "status": "ok",
+      "train_cap": {
+        "cap_applied": true,
+        "class_counts_after": {
+          "0": 525,
+          "1": 4475
+        },
+        "class_counts_before": {
+          "0": 4154,
+          "1": 35450
+        },
+        "note": "stratified TRAIN subsample to at most 5000 rows (seed 3)",
+        "train_cap": 5000,
+        "train_size_after": 5000,
+        "train_size_before": 39604
+      }
+    },
+    {
+      "backbone": "plantnet",
+      "dataset": "acre",
+      "metrics": {
+        "accuracy": 0.9788091068301226,
+        "auc": 0.9756361236802413,
+        "confusion_matrix": [
+          [
+            416,
+            94
+          ],
+          [
+            27,
+            5173
+          ]
+        ],
+        "f1": 0.9884398586032292,
+        "iou_class0": 0.7746741154562383,
+        "iou_class1": 0.9771439365319229,
+        "kernel": "poly",
+        "macro_iou": 0.8759090259940806,
+        "model": "poly",
+        "n": 5710,
+        "n_train": 5000,
+        "precision": 0.9821530282893488,
+        "recall": 0.9948076923076923,
+        "requested_model": "poly2",
+        "score_kind": "decision_function",
+        "seed": 4
+      },
+      "model": "poly2",
+      "seed": 4,
+      "status": "ok",
+      "train_cap": {
+        "cap_applied": true,
+        "class_counts_after": {
+          "0": 538,
+          "1": 4462
+        },
+        "class_counts_before": {
+          "0": 4243,
+          "1": 35250
+        },
+        "note": "stratified TRAIN subsample to at most 5000 rows (seed 4)",
+        "train_cap": 5000,
+        "train_size_after": 5000,
+        "train_size_before": 39493
+      }
+    },
+    {
+      "backbone": "plantnet",
+      "dataset": "acre",
+      "metrics": {
+        "accuracy": 0.9798598949211909,
+        "auc": 0.9857828054298642,
+        "confusion_matrix": [
+          [
+            424,
+            86
+          ],
+          [
+            29,
+            5171
+          ]
+        ],
+        "f1": 0.9890025820024864,
+        "iou_class0": 0.7866419294990723,
+        "iou_class1": 0.9782444192205827,
+        "kernel": "rbf",
+        "macro_iou": 0.8824431743598276,
+        "model": "rbf",
+        "n": 5710,
+        "n_train": 5000,
+        "precision": 0.9836408598059729,
+        "recall": 0.994423076923077,
+        "requested_model": "rbf",
+        "score_kind": "decision_function",
+        "seed": 4
+      },
+      "model": "rbf",
+      "seed": 4,
+      "status": "ok",
+      "train_cap": {
+        "cap_applied": true,
+        "class_counts_after": {
+          "0": 538,
+          "1": 4462
+        },
+        "class_counts_before": {
+          "0": 4243,
+          "1": 35250
+        },
+        "note": "stratified TRAIN subsample to at most 5000 rows (seed 4)",
+        "train_cap": 5000,
+        "train_size_after": 5000,
+        "train_size_before": 39493
+      }
+    },
+    {
+      "backbone": "plantnet",
+      "dataset": "acre",
+      "metrics": {
+        "accuracy": 0.9751313485113835,
+        "auc": 0.9714707767722474,
+        "confusion_matrix": [
+          [
+            432,
+            78
+          ],
+          [
+            64,
+            5136
+          ]
+        ],
+        "f1": 0.9863645093143845,
+        "iou_class0": 0.7526132404181185,
+        "iou_class1": 0.9730958696475938,
+        "kernel": "logreg",
+        "macro_iou": 0.8628545550328561,
+        "model": "logreg",
+        "n": 5710,
+        "n_train": 5000,
+        "precision": 0.9850402761795167,
+        "recall": 0.9876923076923076,
+        "requested_model": "logreg",
+        "score_kind": "predict_proba",
+        "seed": 4
+      },
+      "model": "logreg",
+      "seed": 4,
+      "status": "ok",
+      "train_cap": {
+        "cap_applied": true,
+        "class_counts_after": {
+          "0": 538,
+          "1": 4462
+        },
+        "class_counts_before": {
+          "0": 4243,
+          "1": 35250
+        },
+        "note": "stratified TRAIN subsample to at most 5000 rows (seed 4)",
+        "train_cap": 5000,
+        "train_size_after": 5000,
+        "train_size_before": 39493
+      }
+    },
+    {
+      "backbone": "plantnet",
+      "dataset": "acre",
+      "metrics": {
+        "accuracy": 0.9728682170542635,
+        "auc": 0.9810788197886768,
+        "confusion_matrix": [
+          [
+            525,
+            117
+          ],
+          [
+            37,
+            4997
+          ]
+        ],
+        "f1": 0.9848245959795033,
+        "iou_class0": 0.7731958762886598,
+        "iou_class1": 0.9701028926422054,
+        "kernel": "poly",
+        "macro_iou": 0.8716493844654326,
+        "model": "poly",
+        "n": 5676,
+        "n_train": 5000,
+        "precision": 0.977121626906531,
+        "recall": 0.9926499801350814,
+        "requested_model": "poly2",
+        "score_kind": "decision_function",
+        "seed": 5
+      },
+      "model": "poly2",
+      "seed": 5,
+      "status": "ok",
+      "train_cap": {
+        "cap_applied": true,
+        "class_counts_after": {
+          "0": 519,
+          "1": 4481
+        },
+        "class_counts_before": {
+          "0": 4094,
+          "1": 35434
+        },
+        "note": "stratified TRAIN subsample to at most 5000 rows (seed 5)",
+        "train_cap": 5000,
+        "train_size_after": 5000,
+        "train_size_before": 39528
+      }
+    },
+    {
+      "backbone": "plantnet",
+      "dataset": "acre",
+      "metrics": {
+        "accuracy": 0.9744538407329105,
+        "auc": 0.9828700661050032,
+        "confusion_matrix": [
+          [
+            522,
+            120
+          ],
+          [
+            25,
+            5009
+          ]
+        ],
+        "f1": 0.9857325592836761,
+        "iou_class0": 0.782608695652174,
+        "iou_class1": 0.9718665114474195,
+        "kernel": "rbf",
+        "macro_iou": 0.8772376035497967,
+        "model": "rbf",
+        "n": 5676,
+        "n_train": 5000,
+        "precision": 0.9766036264379021,
+        "recall": 0.9950337703615415,
+        "requested_model": "rbf",
+        "score_kind": "decision_function",
+        "seed": 5
+      },
+      "model": "rbf",
+      "seed": 5,
+      "status": "ok",
+      "train_cap": {
+        "cap_applied": true,
+        "class_counts_after": {
+          "0": 519,
+          "1": 4481
+        },
+        "class_counts_before": {
+          "0": 4094,
+          "1": 35434
+        },
+        "note": "stratified TRAIN subsample to at most 5000 rows (seed 5)",
+        "train_cap": 5000,
+        "train_size_after": 5000,
+        "train_size_before": 39528
+      }
+    },
+    {
+      "backbone": "plantnet",
+      "dataset": "acre",
+      "metrics": {
+        "accuracy": 0.9603594080338267,
+        "auc": 0.9599913733032821,
+        "confusion_matrix": [
+          [
+            542,
+            100
+          ],
+          [
+            125,
+            4909
+          ]
+        ],
+        "f1": 0.9775963357562482,
+        "iou_class0": 0.7066492829204694,
+        "iou_class1": 0.9561745227892482,
+        "kernel": "logreg",
+        "macro_iou": 0.8314119028548588,
+        "model": "logreg",
+        "n": 5676,
+        "n_train": 5000,
+        "precision": 0.9800359353164304,
+        "recall": 0.9751688518077076,
+        "requested_model": "logreg",
+        "score_kind": "predict_proba",
+        "seed": 5
+      },
+      "model": "logreg",
+      "seed": 5,
+      "status": "ok",
+      "train_cap": {
+        "cap_applied": true,
+        "class_counts_after": {
+          "0": 519,
+          "1": 4481
+        },
+        "class_counts_before": {
+          "0": 4094,
+          "1": 35434
+        },
+        "note": "stratified TRAIN subsample to at most 5000 rows (seed 5)",
+        "train_cap": 5000,
+        "train_size_after": 5000,
+        "train_size_before": 39528
+      }
+    },
+    {
+      "backbone": "plantnet",
+      "dataset": "acre",
+      "metrics": {
+        "accuracy": 0.9732031943212067,
+        "auc": 0.9733175471684392,
+        "confusion_matrix": [
+          [
+            489,
+            112
+          ],
+          [
+            39,
+            4995
+          ]
+        ],
+        "f1": 0.9851099497091017,
+        "iou_class0": 0.7640625,
+        "iou_class1": 0.970656820831714,
+        "kernel": "poly",
+        "macro_iou": 0.867359660415857,
+        "model": "poly",
+        "n": 5635,
+        "n_train": 5000,
+        "precision": 0.9780693166242412,
+        "recall": 0.9922526817640047,
+        "requested_model": "poly2",
+        "score_kind": "decision_function",
+        "seed": 6
+      },
+      "model": "poly2",
+      "seed": 6,
+      "status": "ok",
+      "train_cap": {
+        "cap_applied": true,
+        "class_counts_after": {
+          "0": 541,
+          "1": 4459
+        },
+        "class_counts_before": {
+          "0": 4280,
+          "1": 35302
+        },
+        "note": "stratified TRAIN subsample to at most 5000 rows (seed 6)",
+        "train_cap": 5000,
+        "train_size_after": 5000,
+        "train_size_before": 39582
+      }
+    },
+    {
+      "backbone": "plantnet",
+      "dataset": "acre",
+      "metrics": {
+        "accuracy": 0.9700088731144632,
+        "auc": 0.9766767346436909,
+        "confusion_matrix": [
+          [
+            496,
+            105
+          ],
+          [
+            64,
+            4970
+          ]
+        ],
+        "f1": 0.983282223761005,
+        "iou_class0": 0.7458646616541353,
+        "iou_class1": 0.9671142245573069,
+        "kernel": "rbf",
+        "macro_iou": 0.8564894431057211,
+        "model": "rbf",
+        "n": 5635,
+        "n_train": 5000,
+        "precision": 0.9793103448275862,
+        "recall": 0.9872864521255463,
+        "requested_model": "rbf",
+        "score_kind": "decision_function",
+        "seed": 6
+      },
+      "model": "rbf",
+      "seed": 6,
+      "status": "ok",
+      "train_cap": {
+        "cap_applied": true,
+        "class_counts_after": {
+          "0": 541,
+          "1": 4459
+        },
+        "class_counts_before": {
+          "0": 4280,
+          "1": 35302
+        },
+        "note": "stratified TRAIN subsample to at most 5000 rows (seed 6)",
+        "train_cap": 5000,
+        "train_size_after": 5000,
+        "train_size_before": 39582
+      }
+    },
+    {
+      "backbone": "plantnet",
+      "dataset": "acre",
+      "metrics": {
+        "accuracy": 0.9563442768411713,
+        "auc": 0.9527162053444234,
+        "confusion_matrix": [
+          [
+            479,
+            122
+          ],
+          [
+            124,
+            4910
+          ]
+        ],
+        "f1": 0.9755612954500298,
+        "iou_class0": 0.6606896551724138,
+        "iou_class1": 0.952288595810706,
+        "kernel": "logreg",
+        "macro_iou": 0.8064891254915599,
+        "model": "logreg",
+        "n": 5635,
+        "n_train": 5000,
+        "precision": 0.9757551669316376,
+        "recall": 0.9753675009932459,
+        "requested_model": "logreg",
+        "score_kind": "predict_proba",
+        "seed": 6
+      },
+      "model": "logreg",
+      "seed": 6,
+      "status": "ok",
+      "train_cap": {
+        "cap_applied": true,
+        "class_counts_after": {
+          "0": 541,
+          "1": 4459
+        },
+        "class_counts_before": {
+          "0": 4280,
+          "1": 35302
+        },
+        "note": "stratified TRAIN subsample to at most 5000 rows (seed 6)",
+        "train_cap": 5000,
+        "train_size_after": 5000,
+        "train_size_before": 39582
+      }
+    },
+    {
+      "backbone": "plantnet",
+      "dataset": "acre",
+      "metrics": {
+        "accuracy": 0.9786096256684492,
+        "auc": 0.971685855212346,
+        "confusion_matrix": [
+          [
+            447,
+            96
+          ],
+          [
+            24,
+            5043
+          ]
+        ],
+        "f1": 0.9882422104644327,
+        "iou_class0": 0.7883597883597884,
+        "iou_class1": 0.9767576990122022,
+        "kernel": "poly",
+        "macro_iou": 0.8825587436859953,
+        "model": "poly",
+        "n": 5610,
+        "n_train": 5000,
+        "precision": 0.9813193228254524,
+        "recall": 0.9952634695085849,
+        "requested_model": "poly2",
+        "score_kind": "decision_function",
+        "seed": 7
+      },
+      "model": "poly2",
+      "seed": 7,
+      "status": "ok",
+      "train_cap": {
+        "cap_applied": true,
+        "class_counts_after": {
+          "0": 533,
+          "1": 4467
+        },
+        "class_counts_before": {
+          "0": 4216,
+          "1": 35412
+        },
+        "note": "stratified TRAIN subsample to at most 5000 rows (seed 7)",
+        "train_cap": 5000,
+        "train_size_after": 5000,
+        "train_size_before": 39628
+      }
+    },
+    {
+      "backbone": "plantnet",
+      "dataset": "acre",
+      "metrics": {
+        "accuracy": 0.9795008912655971,
+        "auc": 0.9785983838661384,
+        "confusion_matrix": [
+          [
+            459,
+            84
+          ],
+          [
+            31,
+            5036
+          ]
+        ],
+        "f1": 0.9887111023853932,
+        "iou_class0": 0.7996515679442509,
+        "iou_class1": 0.9776742380120365,
+        "kernel": "rbf",
+        "macro_iou": 0.8886629029781437,
+        "model": "rbf",
+        "n": 5610,
+        "n_train": 5000,
+        "precision": 0.98359375,
+        "recall": 0.9938819814485889,
+        "requested_model": "rbf",
+        "score_kind": "decision_function",
+        "seed": 7
+      },
+      "model": "rbf",
+      "seed": 7,
+      "status": "ok",
+      "train_cap": {
+        "cap_applied": true,
+        "class_counts_after": {
+          "0": 533,
+          "1": 4467
+        },
+        "class_counts_before": {
+          "0": 4216,
+          "1": 35412
+        },
+        "note": "stratified TRAIN subsample to at most 5000 rows (seed 7)",
+        "train_cap": 5000,
+        "train_size_after": 5000,
+        "train_size_before": 39628
+      }
+    },
+    {
+      "backbone": "plantnet",
+      "dataset": "acre",
+      "metrics": {
+        "accuracy": 0.9647058823529412,
+        "auc": 0.9548068769828678,
+        "confusion_matrix": [
+          [
+            445,
+            98
+          ],
+          [
+            100,
+            4967
+          ]
+        ],
+        "f1": 0.9804579549940782,
+        "iou_class0": 0.6920684292379471,
+        "iou_class1": 0.9616650532429816,
+        "kernel": "logreg",
+        "macro_iou": 0.8268667412404643,
+        "model": "logreg",
+        "n": 5610,
+        "n_train": 5000,
+        "precision": 0.9806515301085883,
+        "recall": 0.9802644562857706,
+        "requested_model": "logreg",
+        "score_kind": "predict_proba",
+        "seed": 7
+      },
+      "model": "logreg",
+      "seed": 7,
+      "status": "ok",
+      "train_cap": {
+        "cap_applied": true,
+        "class_counts_after": {
+          "0": 533,
+          "1": 4467
+        },
+        "class_counts_before": {
+          "0": 4216,
+          "1": 35412
+        },
+        "note": "stratified TRAIN subsample to at most 5000 rows (seed 7)",
+        "train_cap": 5000,
+        "train_size_after": 5000,
+        "train_size_before": 39628
+      }
+    },
+    {
+      "backbone": "plantnet",
+      "dataset": "acre",
+      "metrics": {
+        "accuracy": 0.978572693465557,
+        "auc": 0.969577327776553,
+        "confusion_matrix": [
+          [
+            457,
+            105
+          ],
+          [
+            16,
+            5069
+          ]
+        ],
+        "f1": 0.9882054781167755,
+        "iou_class0": 0.7906574394463668,
+        "iou_class1": 0.9766859344894027,
+        "kernel": "poly",
+        "macro_iou": 0.8836716869678847,
+        "model": "poly",
+        "n": 5647,
+        "n_train": 5000,
+        "precision": 0.9797062234248164,
+        "recall": 0.9968534906588004,
+        "requested_model": "poly2",
+        "score_kind": "decision_function",
+        "seed": 8
+      },
+      "model": "poly2",
+      "seed": 8,
+      "status": "ok",
+      "train_cap": {
+        "cap_applied": true,
+        "class_counts_after": {
+          "0": 530,
+          "1": 4470
+        },
+        "class_counts_before": {
+          "0": 4187,
+          "1": 35374
+        },
+        "note": "stratified TRAIN subsample to at most 5000 rows (seed 8)",
+        "train_cap": 5000,
+        "train_size_after": 5000,
+        "train_size_before": 39561
+      }
+    },
+    {
+      "backbone": "plantnet",
+      "dataset": "acre",
+      "metrics": {
+        "accuracy": 0.9792810341774394,
+        "auc": 0.9817336594617482,
+        "confusion_matrix": [
+          [
+            466,
+            96
+          ],
+          [
+            21,
+            5064
+          ]
+        ],
+        "f1": 0.9885797950219619,
+        "iou_class0": 0.7993138936535163,
+        "iou_class1": 0.9774174869716271,
+        "kernel": "rbf",
+        "macro_iou": 0.8883656903125717,
+        "model": "rbf",
+        "n": 5647,
+        "n_train": 5000,
+        "precision": 0.9813953488372092,
+        "recall": 0.9958702064896755,
+        "requested_model": "rbf",
+        "score_kind": "decision_function",
+        "seed": 8
+      },
+      "model": "rbf",
+      "seed": 8,
+      "status": "ok",
+      "train_cap": {
+        "cap_applied": true,
+        "class_counts_after": {
+          "0": 530,
+          "1": 4470
+        },
+        "class_counts_before": {
+          "0": 4187,
+          "1": 35374
+        },
+        "note": "stratified TRAIN subsample to at most 5000 rows (seed 8)",
+        "train_cap": 5000,
+        "train_size_after": 5000,
+        "train_size_before": 39561
+      }
+    },
+    {
+      "backbone": "plantnet",
+      "dataset": "acre",
+      "metrics": {
+        "accuracy": 0.9663538161855852,
+        "auc": 0.95844609608191,
+        "confusion_matrix": [
+          [
+            465,
+            97
+          ],
+          [
+            93,
+            4992
+          ]
+        ],
+        "f1": 0.981324945940633,
+        "iou_class0": 0.7099236641221374,
+        "iou_class1": 0.9633346198379005,
+        "kernel": "logreg",
+        "macro_iou": 0.8366291419800189,
+        "model": "logreg",
+        "n": 5647,
+        "n_train": 5000,
+        "precision": 0.9809392808017292,
+        "recall": 0.9817109144542773,
+        "requested_model": "logreg",
+        "score_kind": "predict_proba",
+        "seed": 8
+      },
+      "model": "logreg",
+      "seed": 8,
+      "status": "ok",
+      "train_cap": {
+        "cap_applied": true,
+        "class_counts_after": {
+          "0": 530,
+          "1": 4470
+        },
+        "class_counts_before": {
+          "0": 4187,
+          "1": 35374
+        },
+        "note": "stratified TRAIN subsample to at most 5000 rows (seed 8)",
+        "train_cap": 5000,
+        "train_size_after": 5000,
+        "train_size_before": 39561
+      }
+    },
+    {
+      "backbone": "plantnet",
+      "dataset": "acre",
+      "metrics": {
+        "accuracy": 0.9766330323951142,
+        "auc": 0.9715398583980909,
+        "confusion_matrix": [
+          [
+            521,
+            101
+          ],
+          [
+            31,
+            4996
+          ]
+        ],
+        "f1": 0.9869616752271829,
+        "iou_class0": 0.7978560490045942,
+        "iou_class1": 0.9742589703588144,
+        "kernel": "poly",
+        "macro_iou": 0.8860575096817043,
+        "model": "poly",
+        "n": 5649,
+        "n_train": 5000,
+        "precision": 0.9801844222091426,
+        "recall": 0.9938333001790333,
+        "requested_model": "poly2",
+        "score_kind": "decision_function",
+        "seed": 9
+      },
+      "model": "poly2",
+      "seed": 9,
+      "status": "ok",
+      "train_cap": {
+        "cap_applied": true,
+        "class_counts_after": {
+          "0": 522,
+          "1": 4478
+        },
+        "class_counts_before": {
+          "0": 4129,
+          "1": 35464
+        },
+        "note": "stratified TRAIN subsample to at most 5000 rows (seed 9)",
+        "train_cap": 5000,
+        "train_size_after": 5000,
+        "train_size_before": 39593
+      }
+    },
+    {
+      "backbone": "plantnet",
+      "dataset": "acre",
+      "metrics": {
+        "accuracy": 0.9743317401309967,
+        "auc": 0.9842413667161956,
+        "confusion_matrix": [
+          [
+            527,
+            95
+          ],
+          [
+            50,
+            4977
+          ]
+        ],
+        "f1": 0.9856421427864145,
+        "iou_class0": 0.7842261904761905,
+        "iou_class1": 0.9716907458024209,
+        "kernel": "rbf",
+        "macro_iou": 0.8779584681393057,
+        "model": "rbf",
+        "n": 5649,
+        "n_train": 5000,
+        "precision": 0.981269716088328,
+        "recall": 0.9900537099661826,
+        "requested_model": "rbf",
+        "score_kind": "decision_function",
+        "seed": 9
+      },
+      "model": "rbf",
+      "seed": 9,
+      "status": "ok",
+      "train_cap": {
+        "cap_applied": true,
+        "class_counts_after": {
+          "0": 522,
+          "1": 4478
+        },
+        "class_counts_before": {
+          "0": 4129,
+          "1": 35464
+        },
+        "note": "stratified TRAIN subsample to at most 5000 rows (seed 9)",
+        "train_cap": 5000,
+        "train_size_after": 5000,
+        "train_size_before": 39593
+      }
+    },
+    {
+      "backbone": "plantnet",
+      "dataset": "acre",
+      "metrics": {
+        "accuracy": 0.9564524694636218,
+        "auc": 0.9552928654717902,
+        "confusion_matrix": [
+          [
+            506,
+            116
+          ],
+          [
+            130,
+            4897
+          ]
+        ],
+        "f1": 0.9754980079681275,
+        "iou_class0": 0.6728723404255319,
+        "iou_class1": 0.952167995333463,
+        "kernel": "logreg",
+        "macro_iou": 0.8125201678794974,
+        "model": "logreg",
+        "n": 5649,
+        "n_train": 5000,
+        "precision": 0.9768601635747057,
+        "recall": 0.9741396459120748,
+        "requested_model": "logreg",
+        "score_kind": "predict_proba",
+        "seed": 9
+      },
+      "model": "logreg",
+      "seed": 9,
+      "status": "ok",
+      "train_cap": {
+        "cap_applied": true,
+        "class_counts_after": {
+          "0": 522,
+          "1": 4478
+        },
+        "class_counts_before": {
+          "0": 4129,
+          "1": 35464
+        },
+        "note": "stratified TRAIN subsample to at most 5000 rows (seed 9)",
+        "train_cap": 5000,
+        "train_size_after": 5000,
+        "train_size_before": 39593
+      }
+    },
+    {
+      "backbone": "imagenet",
+      "dataset": "acre",
+      "metrics": {
+        "accuracy": 0.9790817230987413,
+        "auc": 0.97920119772449,
+        "confusion_matrix": [
+          [
+            478,
+            90
+          ],
+          [
+            28,
+            5045
+          ]
+        ],
+        "f1": 0.9884404388714734,
+        "iou_class0": 0.802013422818792,
+        "iou_class1": 0.9771450706953322,
+        "kernel": "poly",
+        "macro_iou": 0.889579246757062,
+        "model": "poly",
+        "n": 5641,
+        "n_train": 5000,
+        "precision": 0.9824732229795521,
+        "recall": 0.9944805834811749,
+        "requested_model": "poly2",
+        "score_kind": "decision_function",
+        "seed": 0
+      },
+      "model": "poly2",
+      "seed": 0,
+      "status": "ok",
+      "train_cap": {
+        "cap_applied": true,
+        "class_counts_after": {
+          "0": 527,
+          "1": 4473
+        },
+        "class_counts_before": {
+          "0": 4173,
+          "1": 35465
+        },
+        "note": "stratified TRAIN subsample to at most 5000 rows (seed 0)",
+        "train_cap": 5000,
+        "train_size_after": 5000,
+        "train_size_before": 39638
+      }
+    },
+    {
+      "backbone": "imagenet",
+      "dataset": "acre",
+      "metrics": {
+        "accuracy": 0.9741180641730189,
+        "auc": 0.9851575449146686,
+        "confusion_matrix": [
+          [
+            454,
+            114
+          ],
+          [
+            32,
+            5041
+          ]
+        ],
+        "f1": 0.9857254595228784,
+        "iou_class0": 0.7566666666666667,
+        "iou_class1": 0.971852708694814,
+        "kernel": "rbf",
+        "macro_iou": 0.8642596876807404,
+        "model": "rbf",
+        "n": 5641,
+        "n_train": 5000,
+        "precision": 0.9778855480116392,
+        "recall": 0.9936920954070569,
+        "requested_model": "rbf",
+        "score_kind": "decision_function",
+        "seed": 0
+      },
+      "model": "rbf",
+      "seed": 0,
+      "status": "ok",
+      "train_cap": {
+        "cap_applied": true,
+        "class_counts_after": {
+          "0": 527,
+          "1": 4473
+        },
+        "class_counts_before": {
+          "0": 4173,
+          "1": 35465
+        },
+        "note": "stratified TRAIN subsample to at most 5000 rows (seed 0)",
+        "train_cap": 5000,
+        "train_size_after": 5000,
+        "train_size_before": 39638
+      }
+    },
+    {
+      "backbone": "imagenet",
+      "dataset": "acre",
+      "metrics": {
+        "accuracy": 0.9719907817762808,
+        "auc": 0.9737648986765062,
+        "confusion_matrix": [
+          [
+            495,
+            73
+          ],
+          [
+            85,
+            4988
+          ]
+        ],
+        "f1": 0.9844089204657588,
+        "iou_class0": 0.7580398162327718,
+        "iou_class1": 0.9692965410027206,
+        "kernel": "logreg",
+        "macro_iou": 0.8636681786177463,
+        "model": "logreg",
+        "n": 5641,
+        "n_train": 5000,
+        "precision": 0.9855759731278404,
+        "recall": 0.983244628424995,
+        "requested_model": "logreg",
+        "score_kind": "predict_proba",
+        "seed": 0
+      },
+      "model": "logreg",
+      "seed": 0,
+      "status": "ok",
+      "train_cap": {
+        "cap_applied": true,
+        "class_counts_after": {
+          "0": 527,
+          "1": 4473
+        },
+        "class_counts_before": {
+          "0": 4173,
+          "1": 35465
+        },
+        "note": "stratified TRAIN subsample to at most 5000 rows (seed 0)",
+        "train_cap": 5000,
+        "train_size_after": 5000,
+        "train_size_before": 39638
+      }
+    },
+    {
+      "backbone": "imagenet",
+      "dataset": "acre",
+      "metrics": {
+        "accuracy": 0.9803163444639719,
+        "auc": 0.9789639996017296,
+        "confusion_matrix": [
+          [
+            494,
+            88
+          ],
+          [
+            24,
+            5084
+          ]
+        ],
+        "f1": 0.9891050583657588,
+        "iou_class0": 0.8151815181518152,
+        "iou_class1": 0.9784449576597383,
+        "kernel": "poly",
+        "macro_iou": 0.8968132379057767,
+        "model": "poly",
+        "n": 5690,
+        "n_train": 5000,
+        "precision": 0.982985305491106,
+        "recall": 0.995301487862177,
+        "requested_model": "poly2",
+        "score_kind": "decision_function",
+        "seed": 1
+      },
+      "model": "poly2",
+      "seed": 1,
+      "status": "ok",
+      "train_cap": {
+        "cap_applied": true,
+        "class_counts_after": {
+          "0": 532,
+          "1": 4468
+        },
+        "class_counts_before": {
+          "0": 4204,
+          "1": 35341
+        },
+        "note": "stratified TRAIN subsample to at most 5000 rows (seed 1)",
+        "train_cap": 5000,
+        "train_size_after": 5000,
+        "train_size_before": 39545
+      }
+    },
+    {
+      "backbone": "imagenet",
+      "dataset": "acre",
+      "metrics": {
+        "accuracy": 0.975219683655536,
+        "auc": 0.9871712588837132,
+        "confusion_matrix": [
+          [
+            466,
+            116
+          ],
+          [
+            25,
+            5083
+          ]
+        ],
+        "f1": 0.9863199767148539,
+        "iou_class0": 0.7677100494233937,
+        "iou_class1": 0.9730091883614089,
+        "kernel": "rbf",
+        "macro_iou": 0.8703596188924013,
+        "model": "rbf",
+        "n": 5690,
+        "n_train": 5000,
+        "precision": 0.977688016926332,
+        "recall": 0.995105716523101,
+        "requested_model": "rbf",
+        "score_kind": "decision_function",
+        "seed": 1
+      },
+      "model": "rbf",
+      "seed": 1,
+      "status": "ok",
+      "train_cap": {
+        "cap_applied": true,
+        "class_counts_after": {
+          "0": 532,
+          "1": 4468
+        },
+        "class_counts_before": {
+          "0": 4204,
+          "1": 35341
+        },
+        "note": "stratified TRAIN subsample to at most 5000 rows (seed 1)",
+        "train_cap": 5000,
+        "train_size_after": 5000,
+        "train_size_before": 39545
+      }
+    },
+    {
+      "backbone": "imagenet",
+      "dataset": "acre",
+      "metrics": {
+        "accuracy": 0.975219683655536,
+        "auc": 0.9786696698393733,
+        "confusion_matrix": [
+          [
+            505,
+            77
+          ],
+          [
+            64,
+            5044
+          ]
+        ],
+        "f1": 0.9862156613549712,
+        "iou_class0": 0.781733746130031,
+        "iou_class1": 0.9728061716489874,
+        "kernel": "logreg",
+        "macro_iou": 0.8772699588895092,
+        "model": "logreg",
+        "n": 5690,
+        "n_train": 5000,
+        "precision": 0.9849638742433119,
+        "recall": 0.9874706342991386,
+        "requested_model": "logreg",
+        "score_kind": "predict_proba",
+        "seed": 1
+      },
+      "model": "logreg",
+      "seed": 1,
+      "status": "ok",
+      "train_cap": {
+        "cap_applied": true,
+        "class_counts_after": {
+          "0": 532,
+          "1": 4468
+        },
+        "class_counts_before": {
+          "0": 4204,
+          "1": 35341
+        },
+        "note": "stratified TRAIN subsample to at most 5000 rows (seed 1)",
+        "train_cap": 5000,
+        "train_size_after": 5000,
+        "train_size_before": 39545
+      }
+    },
+    {
+      "backbone": "imagenet",
+      "dataset": "acre",
+      "metrics": {
+        "accuracy": 0.9798301486199575,
+        "auc": 0.9745892571240097,
+        "confusion_matrix": [
+          [
+            450,
+            91
+          ],
+          [
+            23,
+            5088
+          ]
+        ],
+        "f1": 0.9889212827988338,
+        "iou_class0": 0.7978723404255319,
+        "iou_class1": 0.9780853517877739,
+        "kernel": "poly",
+        "macro_iou": 0.8879788461066529,
+        "model": "poly",
+        "n": 5652,
+        "n_train": 5000,
+        "precision": 0.9824290403552809,
+        "recall": 0.9954999021717863,
+        "requested_model": "poly2",
+        "score_kind": "decision_function",
+        "seed": 2
+      },
+      "model": "poly2",
+      "seed": 2,
+      "status": "ok",
+      "train_cap": {
+        "cap_applied": true,
+        "class_counts_after": {
+          "0": 539,
+          "1": 4461
+        },
+        "class_counts_before": {
+          "0": 4259,
+          "1": 35298
+        },
+        "note": "stratified TRAIN subsample to at most 5000 rows (seed 2)",
+        "train_cap": 5000,
+        "train_size_after": 5000,
+        "train_size_before": 39557
+      }
+    },
+    {
+      "backbone": "imagenet",
+      "dataset": "acre",
+      "metrics": {
+        "accuracy": 0.9736376503892428,
+        "auc": 0.9799370789182551,
+        "confusion_matrix": [
+          [
+            424,
+            117
+          ],
+          [
+            32,
+            5079
+          ]
+        ],
+        "f1": 0.985543805180945,
+        "iou_class0": 0.7399650959860384,
+        "iou_class1": 0.9714996174445295,
+        "kernel": "rbf",
+        "macro_iou": 0.8557323567152839,
+        "model": "rbf",
+        "n": 5652,
+        "n_train": 5000,
+        "precision": 0.9774826789838337,
+        "recall": 0.9937389943259636,
+        "requested_model": "rbf",
+        "score_kind": "decision_function",
+        "seed": 2
+      },
+      "model": "rbf",
+      "seed": 2,
+      "status": "ok",
+      "train_cap": {
+        "cap_applied": true,
+        "class_counts_after": {
+          "0": 539,
+          "1": 4461
+        },
+        "class_counts_before": {
+          "0": 4259,
+          "1": 35298
+        },
+        "note": "stratified TRAIN subsample to at most 5000 rows (seed 2)",
+        "train_cap": 5000,
+        "train_size_after": 5000,
+        "train_size_before": 39557
+      }
+    },
+    {
+      "backbone": "imagenet",
+      "dataset": "acre",
+      "metrics": {
+        "accuracy": 0.9676220806794055,
+        "auc": 0.9670335194540715,
+        "confusion_matrix": [
+          [
+            444,
+            97
+          ],
+          [
+            86,
+            5025
+          ]
+        ],
+        "f1": 0.9821166813251246,
+        "iou_class0": 0.7081339712918661,
+        "iou_class1": 0.9648617511520737,
+        "kernel": "logreg",
+        "macro_iou": 0.8364978612219699,
+        "model": "logreg",
+        "n": 5652,
+        "n_train": 5000,
+        "precision": 0.9810620851229989,
+        "recall": 0.9831735472510272,
+        "requested_model": "logreg",
+        "score_kind": "predict_proba",
+        "seed": 2
+      },
+      "model": "logreg",
+      "seed": 2,
+      "status": "ok",
+      "train_cap": {
+        "cap_applied": true,
+        "class_counts_after": {
+          "0": 539,
+          "1": 4461
+        },
+        "class_counts_before": {
+          "0": 4259,
+          "1": 35298
+        },
+        "note": "stratified TRAIN subsample to at most 5000 rows (seed 2)",
+        "train_cap": 5000,
+        "train_size_after": 5000,
+        "train_size_before": 39557
+      }
+    },
+    {
+      "backbone": "imagenet",
+      "dataset": "acre",
+      "metrics": {
+        "accuracy": 0.9688109161793372,
+        "auc": 0.9734831904414893,
+        "confusion_matrix": [
+          [
+            518,
+            138
+          ],
+          [
+            38,
+            4949
+          ]
+        ],
+        "f1": 0.9825292833035537,
+        "iou_class0": 0.7463976945244957,
+        "iou_class1": 0.9656585365853658,
+        "kernel": "poly",
+        "macro_iou": 0.8560281155549307,
+        "model": "poly",
+        "n": 5643,
+        "n_train": 5000,
+        "precision": 0.9728720267348142,
+        "recall": 0.9923801884900741,
+        "requested_model": "poly2",
+        "score_kind": "decision_function",
+        "seed": 3
+      },
+      "model": "poly2",
+      "seed": 3,
+      "status": "ok",
+      "train_cap": {
+        "cap_applied": true,
+        "class_counts_after": {
+          "0": 525,
+          "1": 4475
+        },
+        "class_counts_before": {
+          "0": 4154,
+          "1": 35450
+        },
+        "note": "stratified TRAIN subsample to at most 5000 rows (seed 3)",
+        "train_cap": 5000,
+        "train_size_after": 5000,
+        "train_size_before": 39604
+      }
+    },
+    {
+      "backbone": "imagenet",
+      "dataset": "acre",
+      "metrics": {
+        "accuracy": 0.9636718057770689,
+        "auc": 0.9764772554984423,
+        "confusion_matrix": [
+          [
+            486,
+            170
+          ],
+          [
+            35,
+            4952
+          ]
+        ],
+        "f1": 0.9797210406568404,
+        "iou_class0": 0.703328509406657,
+        "iou_class1": 0.9602482063215048,
+        "kernel": "rbf",
+        "macro_iou": 0.8317883578640809,
+        "model": "rbf",
+        "n": 5643,
+        "n_train": 5000,
+        "precision": 0.9668098399062867,
+        "recall": 0.9929817525566473,
+        "requested_model": "rbf",
+        "score_kind": "decision_function",
+        "seed": 3
+      },
+      "model": "rbf",
+      "seed": 3,
+      "status": "ok",
+      "train_cap": {
+        "cap_applied": true,
+        "class_counts_after": {
+          "0": 525,
+          "1": 4475
+        },
+        "class_counts_before": {
+          "0": 4154,
+          "1": 35450
+        },
+        "note": "stratified TRAIN subsample to at most 5000 rows (seed 3)",
+        "train_cap": 5000,
+        "train_size_after": 5000,
+        "train_size_before": 39604
+      }
+    },
+    {
+      "backbone": "imagenet",
+      "dataset": "acre",
+      "metrics": {
+        "accuracy": 0.9659755449229134,
+        "auc": 0.9697195941154318,
+        "confusion_matrix": [
+          [
+            532,
+            124
+          ],
+          [
+            68,
+            4919
+          ]
+        ],
+        "f1": 0.9808574277168495,
+        "iou_class0": 0.7348066298342542,
+        "iou_class1": 0.9624339659557817,
+        "kernel": "logreg",
+        "macro_iou": 0.8486202978950179,
+        "model": "logreg",
+        "n": 5643,
+        "n_train": 5000,
+        "precision": 0.9754114614316874,
+        "recall": 0.9863645478243432,
+        "requested_model": "logreg",
+        "score_kind": "predict_proba",
+        "seed": 3
+      },
+      "model": "logreg",
+      "seed": 3,
+      "status": "ok",
+      "train_cap": {
+        "cap_applied": true,
+        "class_counts_after": {
+          "0": 525,
+          "1": 4475
+        },
+        "class_counts_before": {
+          "0": 4154,
+          "1": 35450
+        },
+        "note": "stratified TRAIN subsample to at most 5000 rows (seed 3)",
+        "train_cap": 5000,
+        "train_size_after": 5000,
+        "train_size_before": 39604
+      }
+    },
+    {
+      "backbone": "imagenet",
+      "dataset": "acre",
+      "metrics": {
+        "accuracy": 0.9817863397548161,
+        "auc": 0.983988310708899,
+        "confusion_matrix": [
+          [
+            424,
+            86
+          ],
+          [
+            18,
+            5182
+          ]
+        ],
+        "f1": 0.9900649598777226,
+        "iou_class0": 0.803030303030303,
+        "iou_class1": 0.9803253878168747,
+        "kernel": "poly",
+        "macro_iou": 0.8916778454235889,
+        "model": "poly",
+        "n": 5710,
+        "n_train": 5000,
+        "precision": 0.9836750189825361,
+        "recall": 0.9965384615384615,
+        "requested_model": "poly2",
+        "score_kind": "decision_function",
+        "seed": 4
+      },
+      "model": "poly2",
+      "seed": 4,
+      "status": "ok",
+      "train_cap": {
+        "cap_applied": true,
+        "class_counts_after": {
+          "0": 538,
+          "1": 4462
+        },
+        "class_counts_before": {
+          "0": 4243,
+          "1": 35250
+        },
+        "note": "stratified TRAIN subsample to at most 5000 rows (seed 4)",
+        "train_cap": 5000,
+        "train_size_after": 5000,
+        "train_size_before": 39493
+      }
+    },
+    {
+      "backbone": "imagenet",
+      "dataset": "acre",
+      "metrics": {
+        "accuracy": 0.9754816112084063,
+        "auc": 0.9898133484162895,
+        "confusion_matrix": [
+          [
+            393,
+            117
+          ],
+          [
+            23,
+            5177
+          ]
+        ],
+        "f1": 0.9866590432628168,
+        "iou_class0": 0.7373358348968105,
+        "iou_class1": 0.9736693624224186,
+        "kernel": "rbf",
+        "macro_iou": 0.8555025986596145,
+        "model": "rbf",
+        "n": 5710,
+        "n_train": 5000,
+        "precision": 0.977899508877975,
+        "recall": 0.995576923076923,
+        "requested_model": "rbf",
+        "score_kind": "decision_function",
+        "seed": 4
+      },
+      "model": "rbf",
+      "seed": 4,
+      "status": "ok",
+      "train_cap": {
+        "cap_applied": true,
+        "class_counts_after": {
+          "0": 538,
+          "1": 4462
+        },
+        "class_counts_before": {
+          "0": 4243,
+          "1": 35250
+        },
+        "note": "stratified TRAIN subsample to at most 5000 rows (seed 4)",
+        "train_cap": 5000,
+        "train_size_after": 5000,
+        "train_size_before": 39493
+      }
+    },
+    {
+      "backbone": "imagenet",
+      "dataset": "acre",
+      "metrics": {
+        "accuracy": 0.9788091068301226,
+        "auc": 0.9830056561085972,
+        "confusion_matrix": [
+          [
+            437,
+            73
+          ],
+          [
+            48,
+            5152
+          ]
+        ],
+        "f1": 0.9883932853717027,
+        "iou_class0": 0.7831541218637993,
+        "iou_class1": 0.9770529110563246,
+        "kernel": "logreg",
+        "macro_iou": 0.8801035164600619,
+        "model": "logreg",
+        "n": 5710,
+        "n_train": 5000,
+        "precision": 0.9860287081339713,
+        "recall": 0.9907692307692307,
+        "requested_model": "logreg",
+        "score_kind": "predict_proba",
+        "seed": 4
+      },
+      "model": "logreg",
+      "seed": 4,
+      "status": "ok",
+      "train_cap": {
+        "cap_applied": true,
+        "class_counts_after": {
+          "0": 538,
+          "1": 4462
+        },
+        "class_counts_before": {
+          "0": 4243,
+          "1": 35250
+        },
+        "note": "stratified TRAIN subsample to at most 5000 rows (seed 4)",
+        "train_cap": 5000,
+        "train_size_after": 5000,
+        "train_size_before": 39493
+      }
+    },
+    {
+      "backbone": "imagenet",
+      "dataset": "acre",
+      "metrics": {
+        "accuracy": 0.9767441860465116,
+        "auc": 0.9769932063216236,
+        "confusion_matrix": [
+          [
+            539,
+            103
+          ],
+          [
+            29,
+            5005
+          ]
+        ],
+        "f1": 0.9869848156182213,
+        "iou_class0": 0.8032786885245902,
+        "iou_class1": 0.974304068522484,
+        "kernel": "poly",
+        "macro_iou": 0.8887913785235371,
+        "model": "poly",
+        "n": 5676,
+        "n_train": 5000,
+        "precision": 0.9798355520751761,
+        "recall": 0.9942391736193882,
+        "requested_model": "poly2",
+        "score_kind": "decision_function",
+        "seed": 5
+      },
+      "model": "poly2",
+      "seed": 5,
+      "status": "ok",
+      "train_cap": {
+        "cap_applied": true,
+        "class_counts_after": {
+          "0": 519,
+          "1": 4481
+        },
+        "class_counts_before": {
+          "0": 4094,
+          "1": 35434
+        },
+        "note": "stratified TRAIN subsample to at most 5000 rows (seed 5)",
+        "train_cap": 5000,
+        "train_size_after": 5000,
+        "train_size_before": 39528
+      }
+    },
+    {
+      "backbone": "imagenet",
+      "dataset": "acre",
+      "metrics": {
+        "accuracy": 0.9702255109231853,
+        "auc": 0.9890220024085441,
+        "confusion_matrix": [
+          [
+            508,
+            134
+          ],
+          [
+            35,
+            4999
+          ]
+        ],
+        "f1": 0.9833775941772401,
+        "iou_class0": 0.7503692762186115,
+        "iou_class1": 0.9672987616099071,
+        "kernel": "rbf",
+        "macro_iou": 0.8588340189142594,
+        "model": "rbf",
+        "n": 5676,
+        "n_train": 5000,
+        "precision": 0.9738944087278395,
+        "recall": 0.9930472785061581,
+        "requested_model": "rbf",
+        "score_kind": "decision_function",
+        "seed": 5
+      },
+      "model": "rbf",
+      "seed": 5,
+      "status": "ok",
+      "train_cap": {
+        "cap_applied": true,
+        "class_counts_after": {
+          "0": 519,
+          "1": 4481
+        },
+        "class_counts_before": {
+          "0": 4094,
+          "1": 35434
+        },
+        "note": "stratified TRAIN subsample to at most 5000 rows (seed 5)",
+        "train_cap": 5000,
+        "train_size_after": 5000,
+        "train_size_before": 39528
+      }
+    },
+    {
+      "backbone": "imagenet",
+      "dataset": "acre",
+      "metrics": {
+        "accuracy": 0.9709302325581395,
+        "auc": 0.9778469027435867,
+        "confusion_matrix": [
+          [
+            555,
+            87
+          ],
+          [
+            78,
+            4956
+          ]
+        ],
+        "f1": 0.9836260791902351,
+        "iou_class0": 0.7708333333333334,
+        "iou_class1": 0.9677797305213826,
+        "kernel": "logreg",
+        "macro_iou": 0.869306531927358,
+        "model": "logreg",
+        "n": 5676,
+        "n_train": 5000,
+        "precision": 0.9827483640690066,
+        "recall": 0.9845053635280095,
+        "requested_model": "logreg",
+        "score_kind": "predict_proba",
+        "seed": 5
+      },
+      "model": "logreg",
+      "seed": 5,
+      "status": "ok",
+      "train_cap": {
+        "cap_applied": true,
+        "class_counts_after": {
+          "0": 519,
+          "1": 4481
+        },
+        "class_counts_before": {
+          "0": 4094,
+          "1": 35434
+        },
+        "note": "stratified TRAIN subsample to at most 5000 rows (seed 5)",
+        "train_cap": 5000,
+        "train_size_after": 5000,
+        "train_size_before": 39528
+      }
+    },
+    {
+      "backbone": "imagenet",
+      "dataset": "acre",
+      "metrics": {
+        "accuracy": 0.9748003549245785,
+        "auc": 0.9718113169879099,
+        "confusion_matrix": [
+          [
+            496,
+            105
+          ],
+          [
+            37,
+            4997
+          ]
+        ],
+        "f1": 0.9859905288082084,
+        "iou_class0": 0.7774294670846394,
+        "iou_class1": 0.9723681650126483,
+        "kernel": "poly",
+        "macro_iou": 0.874898816048644,
+        "model": "poly",
+        "n": 5635,
+        "n_train": 5000,
+        "precision": 0.9794198353586828,
+        "recall": 0.9926499801350814,
+        "requested_model": "poly2",
+        "score_kind": "decision_function",
+        "seed": 6
+      },
+      "model": "poly2",
+      "seed": 6,
+      "status": "ok",
+      "train_cap": {
+        "cap_applied": true,
+        "class_counts_after": {
+          "0": 541,
+          "1": 4459
+        },
+        "class_counts_before": {
+          "0": 4280,
+          "1": 35302
+        },
+        "note": "stratified TRAIN subsample to at most 5000 rows (seed 6)",
+        "train_cap": 5000,
+        "train_size_after": 5000,
+        "train_size_before": 39582
+      }
+    },
+    {
+      "backbone": "imagenet",
+      "dataset": "acre",
+      "metrics": {
+        "accuracy": 0.965927240461402,
+        "auc": 0.977445549960766,
+        "confusion_matrix": [
+          [
+            459,
+            142
+          ],
+          [
+            50,
+            4984
+          ]
+        ],
+        "f1": 0.9811023622047244,
+        "iou_class0": 0.7050691244239631,
+        "iou_class1": 0.9629057187017002,
+        "kernel": "rbf",
+        "macro_iou": 0.8339874215628316,
+        "model": "rbf",
+        "n": 5635,
+        "n_train": 5000,
+        "precision": 0.9722980881779165,
+        "recall": 0.990067540723083,
+        "requested_model": "rbf",
+        "score_kind": "decision_function",
+        "seed": 6
+      },
+      "model": "rbf",
+      "seed": 6,
+      "status": "ok",
+      "train_cap": {
+        "cap_applied": true,
+        "class_counts_after": {
+          "0": 541,
+          "1": 4459
+        },
+        "class_counts_before": {
+          "0": 4280,
+          "1": 35302
+        },
+        "note": "stratified TRAIN subsample to at most 5000 rows (seed 6)",
+        "train_cap": 5000,
+        "train_size_after": 5000,
+        "train_size_before": 39582
+      }
+    },
+    {
+      "backbone": "imagenet",
+      "dataset": "acre",
+      "metrics": {
+        "accuracy": 0.9692990239574091,
+        "auc": 0.9680584669835799,
+        "confusion_matrix": [
+          [
+            517,
+            84
+          ],
+          [
+            89,
+            4945
+          ]
+        ],
+        "f1": 0.9828083076617311,
+        "iou_class0": 0.7492753623188406,
+        "iou_class1": 0.9661977334896444,
+        "kernel": "logreg",
+        "macro_iou": 0.8577365479042425,
+        "model": "logreg",
+        "n": 5635,
+        "n_train": 5000,
+        "precision": 0.9832968781069795,
+        "recall": 0.9823202224870878,
+        "requested_model": "logreg",
+        "score_kind": "predict_proba",
+        "seed": 6
+      },
+      "model": "logreg",
+      "seed": 6,
+      "status": "ok",
+      "train_cap": {
+        "cap_applied": true,
+        "class_counts_after": {
+          "0": 541,
+          "1": 4459
+        },
+        "class_counts_before": {
+          "0": 4280,
+          "1": 35302
+        },
+        "note": "stratified TRAIN subsample to at most 5000 rows (seed 6)",
+        "train_cap": 5000,
+        "train_size_after": 5000,
+        "train_size_before": 39582
+      }
+    },
+    {
+      "backbone": "imagenet",
+      "dataset": "acre",
+      "metrics": {
+        "accuracy": 0.9784313725490196,
+        "auc": 0.9783784942906852,
+        "confusion_matrix": [
+          [
+            453,
+            90
+          ],
+          [
+            31,
+            5036
+          ]
+        ],
+        "f1": 0.9881291082115177,
+        "iou_class0": 0.789198606271777,
+        "iou_class1": 0.976536746170254,
+        "kernel": "poly",
+        "macro_iou": 0.8828676762210155,
+        "model": "poly",
+        "n": 5610,
+        "n_train": 5000,
+        "precision": 0.9824424502536091,
+        "recall": 0.9938819814485889,
+        "requested_model": "poly2",
+        "score_kind": "decision_function",
+        "seed": 7
+      },
+      "model": "poly2",
+      "seed": 7,
+      "status": "ok",
+      "train_cap": {
+        "cap_applied": true,
+        "class_counts_after": {
+          "0": 533,
+          "1": 4467
+        },
+        "class_counts_before": {
+          "0": 4216,
+          "1": 35412
+        },
+        "note": "stratified TRAIN subsample to at most 5000 rows (seed 7)",
+        "train_cap": 5000,
+        "train_size_after": 5000,
+        "train_size_before": 39628
+      }
+    },
+    {
+      "backbone": "imagenet",
+      "dataset": "acre",
+      "metrics": {
+        "accuracy": 0.9723707664884136,
+        "auc": 0.9841748561904005,
+        "confusion_matrix": [
+          [
+            420,
+            123
+          ],
+          [
+            32,
+            5035
+          ]
+        ],
+        "f1": 0.984841075794621,
+        "iou_class0": 0.7304347826086957,
+        "iou_class1": 0.9701348747591522,
+        "kernel": "rbf",
+        "macro_iou": 0.850284828683924,
+        "model": "rbf",
+        "n": 5610,
+        "n_train": 5000,
+        "precision": 0.9761535478867778,
+        "recall": 0.9936846260114466,
+        "requested_model": "rbf",
+        "score_kind": "decision_function",
+        "seed": 7
+      },
+      "model": "rbf",
+      "seed": 7,
+      "status": "ok",
+      "train_cap": {
+        "cap_applied": true,
+        "class_counts_after": {
+          "0": 533,
+          "1": 4467
+        },
+        "class_counts_before": {
+          "0": 4216,
+          "1": 35412
+        },
+        "note": "stratified TRAIN subsample to at most 5000 rows (seed 7)",
+        "train_cap": 5000,
+        "train_size_after": 5000,
+        "train_size_before": 39628
+      }
+    },
+    {
+      "backbone": "imagenet",
+      "dataset": "acre",
+      "metrics": {
+        "accuracy": 0.9754010695187165,
+        "auc": 0.9740394005773828,
+        "confusion_matrix": [
+          [
+            464,
+            79
+          ],
+          [
+            59,
+            5008
+          ]
+        ],
+        "f1": 0.9864092968288359,
+        "iou_class0": 0.770764119601329,
+        "iou_class1": 0.9731830547998446,
+        "kernel": "logreg",
+        "macro_iou": 0.8719735872005867,
+        "model": "logreg",
+        "n": 5610,
+        "n_train": 5000,
+        "precision": 0.9844702182032632,
+        "recall": 0.9883560292086047,
+        "requested_model": "logreg",
+        "score_kind": "predict_proba",
+        "seed": 7
+      },
+      "model": "logreg",
+      "seed": 7,
+      "status": "ok",
+      "train_cap": {
+        "cap_applied": true,
+        "class_counts_after": {
+          "0": 533,
+          "1": 4467
+        },
+        "class_counts_before": {
+          "0": 4216,
+          "1": 35412
+        },
+        "note": "stratified TRAIN subsample to at most 5000 rows (seed 7)",
+        "train_cap": 5000,
+        "train_size_after": 5000,
+        "train_size_before": 39628
+      }
+    },
+    {
+      "backbone": "imagenet",
+      "dataset": "acre",
+      "metrics": {
+        "accuracy": 0.9805206304232336,
+        "auc": 0.9765544462990374,
+        "confusion_matrix": [
+          [
+            470,
+            92
+          ],
+          [
+            18,
+            5067
+          ]
+        ],
+        "f1": 0.9892620070285045,
+        "iou_class0": 0.8103448275862069,
+        "iou_class1": 0.9787521730732084,
+        "kernel": "poly",
+        "macro_iou": 0.8945485003297076,
+        "model": "poly",
+        "n": 5647,
+        "n_train": 5000,
+        "precision": 0.9821670866446985,
+        "recall": 0.9964601769911504,
+        "requested_model": "poly2",
+        "score_kind": "decision_function",
+        "seed": 8
+      },
+      "model": "poly2",
+      "seed": 8,
+      "status": "ok",
+      "train_cap": {
+        "cap_applied": true,
+        "class_counts_after": {
+          "0": 530,
+          "1": 4470
+        },
+        "class_counts_before": {
+          "0": 4187,
+          "1": 35374
+        },
+        "note": "stratified TRAIN subsample to at most 5000 rows (seed 8)",
+        "train_cap": 5000,
+        "train_size_after": 5000,
+        "train_size_before": 39561
+      }
+    },
+    {
+      "backbone": "imagenet",
+      "dataset": "acre",
+      "metrics": {
+        "accuracy": 0.9753851602620861,
+        "auc": 0.986698719631041,
+        "confusion_matrix": [
+          [
+            443,
+            119
+          ],
+          [
+            20,
+            5065
+          ]
+        ],
+        "f1": 0.9864641152984711,
+        "iou_class0": 0.761168384879725,
+        "iou_class1": 0.9732897770945427,
+        "kernel": "rbf",
+        "macro_iou": 0.8672290809871339,
+        "model": "rbf",
+        "n": 5647,
+        "n_train": 5000,
+        "precision": 0.9770447530864198,
+        "recall": 0.9960668633235005,
+        "requested_model": "rbf",
+        "score_kind": "decision_function",
+        "seed": 8
+      },
+      "model": "rbf",
+      "seed": 8,
+      "status": "ok",
+      "train_cap": {
+        "cap_applied": true,
+        "class_counts_after": {
+          "0": 530,
+          "1": 4470
+        },
+        "class_counts_before": {
+          "0": 4187,
+          "1": 35374
+        },
+        "note": "stratified TRAIN subsample to at most 5000 rows (seed 8)",
+        "train_cap": 5000,
+        "train_size_after": 5000,
+        "train_size_before": 39561
+      }
+    },
+    {
+      "backbone": "imagenet",
+      "dataset": "acre",
+      "metrics": {
+        "accuracy": 0.9734372233044094,
+        "auc": 0.9754567372461744,
+        "confusion_matrix": [
+          [
+            480,
+            82
+          ],
+          [
+            68,
+            5017
+          ]
+        ],
+        "f1": 0.9852710133542812,
+        "iou_class0": 0.7619047619047619,
+        "iou_class1": 0.9709696148635572,
+        "kernel": "logreg",
+        "macro_iou": 0.8664371883841595,
+        "model": "logreg",
+        "n": 5647,
+        "n_train": 5000,
+        "precision": 0.9839184153755638,
+        "recall": 0.9866273352999017,
+        "requested_model": "logreg",
+        "score_kind": "predict_proba",
+        "seed": 8
+      },
+      "model": "logreg",
+      "seed": 8,
+      "status": "ok",
+      "train_cap": {
+        "cap_applied": true,
+        "class_counts_after": {
+          "0": 530,
+          "1": 4470
+        },
+        "class_counts_before": {
+          "0": 4187,
+          "1": 35374
+        },
+        "note": "stratified TRAIN subsample to at most 5000 rows (seed 8)",
+        "train_cap": 5000,
+        "train_size_after": 5000,
+        "train_size_before": 39561
+      }
+    },
+    {
+      "backbone": "imagenet",
+      "dataset": "acre",
+      "metrics": {
+        "accuracy": 0.9766330323951142,
+        "auc": 0.9855829965133617,
+        "confusion_matrix": [
+          [
+            529,
+            93
+          ],
+          [
+            39,
+            4988
+          ]
+        ],
+        "f1": 0.9869410368025326,
+        "iou_class0": 0.800302571860817,
+        "iou_class1": 0.97421875,
+        "kernel": "poly",
+        "macro_iou": 0.8872606609304086,
+        "model": "poly",
+        "n": 5649,
+        "n_train": 5000,
+        "precision": 0.9816965164337729,
+        "recall": 0.9922418937736225,
+        "requested_model": "poly2",
+        "score_kind": "decision_function",
+        "seed": 9
+      },
+      "model": "poly2",
+      "seed": 9,
+      "status": "ok",
+      "train_cap": {
+        "cap_applied": true,
+        "class_counts_after": {
+          "0": 522,
+          "1": 4478
+        },
+        "class_counts_before": {
+          "0": 4129,
+          "1": 35464
+        },
+        "note": "stratified TRAIN subsample to at most 5000 rows (seed 9)",
+        "train_cap": 5000,
+        "train_size_after": 5000,
+        "train_size_before": 39593
+      }
+    },
+    {
+      "backbone": "imagenet",
+      "dataset": "acre",
+      "metrics": {
+        "accuracy": 0.9686670207116304,
+        "auc": 0.989660655610827,
+        "confusion_matrix": [
+          [
+            486,
+            136
+          ],
+          [
+            41,
+            4986
+          ]
+        ],
+        "f1": 0.9825598581141,
+        "iou_class0": 0.7330316742081447,
+        "iou_class1": 0.9657176060429983,
+        "kernel": "rbf",
+        "macro_iou": 0.8493746401255715,
+        "model": "rbf",
+        "n": 5649,
+        "n_train": 5000,
+        "precision": 0.9734478719250292,
+        "recall": 0.9918440421722697,
+        "requested_model": "rbf",
+        "score_kind": "decision_function",
+        "seed": 9
+      },
+      "model": "rbf",
+      "seed": 9,
+      "status": "ok",
+      "train_cap": {
+        "cap_applied": true,
+        "class_counts_after": {
+          "0": 522,
+          "1": 4478
+        },
+        "class_counts_before": {
+          "0": 4129,
+          "1": 35464
+        },
+        "note": "stratified TRAIN subsample to at most 5000 rows (seed 9)",
+        "train_cap": 5000,
+        "train_size_after": 5000,
+        "train_size_before": 39593
+      }
+    },
+    {
+      "backbone": "imagenet",
+      "dataset": "acre",
+      "metrics": {
+        "accuracy": 0.9697291556027615,
+        "auc": 0.9741414049022735,
+        "confusion_matrix": [
+          [
+            523,
+            99
+          ],
+          [
+            72,
+            4955
+          ]
+        ],
+        "f1": 0.9830373970836227,
+        "iou_class0": 0.7536023054755043,
+        "iou_class1": 0.9666406554818572,
+        "kernel": "logreg",
+        "macro_iou": 0.8601214804786808,
+        "model": "logreg",
+        "n": 5649,
+        "n_train": 5000,
+        "precision": 0.980411555203799,
+        "recall": 0.985677342351303,
+        "requested_model": "logreg",
+        "score_kind": "predict_proba",
+        "seed": 9
+      },
+      "model": "logreg",
+      "seed": 9,
+      "status": "ok",
+      "train_cap": {
+        "cap_applied": true,
+        "class_counts_after": {
+          "0": 522,
+          "1": 4478
+        },
+        "class_counts_before": {
+          "0": 4129,
+          "1": 35464
+        },
+        "note": "stratified TRAIN subsample to at most 5000 rows (seed 9)",
+        "train_cap": 5000,
+        "train_size_after": 5000,
+        "train_size_before": 39593
+      }
+    }
+  ],
+  "schema": "fresh_protocol.metrics.v1",
+  "warnings": []
+}
