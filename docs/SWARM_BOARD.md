@@ -402,5 +402,8 @@ DeepWeeds 60/60 runs succeeded: PlantNet poly2 0.9042±0.0056 (AUC 0.966), rbf 0
 **[131 | 2026-11-23] GATE → FRESH-D01 ACRE fix — critic (PASS)**
 Resolver tries file_name → data/ prefix → unique basename, fails loudly with candidates; collision-safe crop names; source-image grouping unchanged. Central verifier 232 passed / 13 skipped. Real ACRE rerun in progress as results/fresh_acre_v2.
 
+**[132 | 2026-11-23] STOP → FRESH-PROTOCOL — mother (ACRE SVM compute cap needed)**
+ACRE feature caches completed for both backbones (PlantNet 52.6 MB, ImageNet 250.7 MB) but poly-2/RBF SVC on ~39,571 train crops consumed ~21,500 CPU-seconds in 3h without finishing. Mother stopped the process; no results fabricated. Adding deterministic per-seed TRAIN subsample cap (test stays full/sealed, n=10 preserved) before rerun.
+
 **Gate rule:** a D is not accepted until the central verifier passes and a Critic audit
 returns PASS. Mother commits D-by-D after the gate.
