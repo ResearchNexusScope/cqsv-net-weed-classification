@@ -396,6 +396,83 @@ def test_run_protocol_writes_additive_artifacts_and_records_failures(monkeypatch
     assert metrics_path.read_text(encoding="utf-8") == original
 
 
+def test_run_protocol_cache_failure_skips_every_remaining_run(monkeypatch, tmp_path) -> None:
+    pytest.importorskip("sklearn.svm")
+    pytest.importorskip("scipy")
+
+    rng = np.random.default_rng(4)
+    X_train = rng.normal(size=(24, 3))
+    y_train = (X_train[:, 0] > 0).astype(int)
+    X_test = rng.normal(size=(8, 3))
+    y_test = (X_test[:, 0] > 0).astype(int)
+
+    def fake_cache(dataset, backbone, root=None, cache_dir=None, *, seed=42,
+                   ratios=fp.DEFAULT_RATIOS, force=False):
+        if backbone == "plantnet":
+            raise RuntimeError("synthetic cache failure")
+        return {
+            "X": {"train": X_train, "test": X_test},
+            "y": {"train": y_train, "test": y_test},
+            "groups": {"train": ["g0"], "test": ["g1"]},
+            "cache_path": "fake-cache.npz",
+            "cache_hit": True,
+            "provenance": {"split": {"seed": seed}},
+        }
+
+    monkeypatch.setattr(fp, "cache_features", fake_cache)
+    result = fp.run_protocol(
+        "acre",
+        backbones=["plantnet", "imagenet"],
+        seeds=3,
+        models=["poly2", "logreg"],
+        output_dir=str(tmp_path / "out"),
+    )
+    metrics = json.loads(Path(result["metrics_path"]).read_text(encoding="utf-8"))
+    provenance = json.loads(Path(result["provenance_path"]).read_text(encoding="utf-8"))
+
+    assert metrics["n_runs_expected"] == 12
+    assert metrics["n_runs_succeeded"] == 6
+    assert metrics["n_runs_skipped"] == 6
+    assert metrics["n_skipped_cache_failure"] == 6
+    assert metrics["accounting_invariant"] is True
+    assert metrics["n_runs_expected"] == metrics["n_runs_succeeded"] + metrics["n_runs_skipped"]
+
+    skips = [warning for warning in metrics["warnings"] if warning["backbone"] == "plantnet"]
+    assert len(skips) == 6
+    assert {(warning["seed"], warning["model"]) for warning in skips} == {
+        (seed, model) for seed in range(3) for model in ("poly2", "logreg")
+    }
+    assert all(warning["status"] == "skipped_cache_failure" for warning in skips)
+    assert all(warning["stage"] == "feature_cache" for warning in skips)
+    assert all(
+        warning["error_type"] == "RuntimeError"
+        and warning["error"] == "synthetic cache failure"
+        for warning in skips
+    )
+    assert all("metrics" not in warning for warning in metrics["warnings"])
+    assert all("accuracy" not in warning for warning in metrics["warnings"])
+
+    assert {run["backbone"] for run in metrics["runs"]} == {"imagenet"}
+    assert all(run["metrics"]["accuracy"] is not None for run in metrics["runs"])
+
+    manifest = provenance["run_manifest"]
+    assert len(manifest) == 12
+    assert {(entry["backbone"], entry["seed"], entry["model"]) for entry in manifest} == {
+        (backbone, seed, model)
+        for backbone in ("plantnet", "imagenet")
+        for seed in range(3)
+        for model in ("poly2", "logreg")
+    }
+    assert {entry["status"] for entry in manifest} <= {
+        "succeeded",
+        "skipped_failed_arm",
+        "skipped_cache_failure",
+    }
+    assert sum(entry["status"] == "succeeded" for entry in manifest) == 6
+    assert sum(entry["status"] == "skipped_cache_failure" for entry in manifest) == 6
+    assert "exact_mcnemar" in provenance["comparison_notes"]
+
+
 # --------------------------------------------------------------------------- #
 # CLI                                                                          #
 # --------------------------------------------------------------------------- #

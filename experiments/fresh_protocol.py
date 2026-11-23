@@ -784,24 +784,59 @@ def run_protocol(
 ) -> dict:
     """Loop seeds x backbones x classical models and write additive artifacts.
 
-    Failed cache builds or arms are recorded in ``warnings`` with their stage,
-    exception type and message; they are never silently dropped or imputed.
-    ``metrics.json`` and ``provenance.json`` are written to ``output_dir`` (or
-    to a fresh child directory when those files already exist).  Both carry
-    ``claim_boundary`` stating that no quantum advantage is asserted.
+    Every expected ``(backbone, seed, model)`` tuple gets one manifest row with
+    a final status of ``succeeded``, ``skipped_failed_arm`` or
+    ``skipped_cache_failure``.  Skipped rows carry the original exception type
+    and message and no metric values; all counts derive from that manifest, so
+    a failed cache build can never silently drop the remaining seeds of a
+    backbone.  ``metrics.json`` and ``provenance.json`` are written to
+    ``output_dir`` (or a fresh child directory if they already exist).  Both
+    carry ``claim_boundary`` stating that no quantum advantage is asserted.
     """
     seed_list = _normalize_seeds(seeds)
     model_list = list(dict.fromkeys(str(model) for model in models))
     backbone_list = list(dict.fromkeys(str(backbone) for backbone in backbones))
-    warnings: list[dict] = []
-    runs: list[dict] = []
+
+    # Single source of truth for accounting: one row per expected run.  Every
+    # list and count below is derived from this manifest.
+    manifest: list[dict] = [
+        {
+            "dataset": str(dataset),
+            "backbone": backbone,
+            "seed": int(seed),
+            "model": model,
+            "status": "not_run",
+            "stage": None,
+            "error_type": None,
+            "error": None,
+        }
+        for backbone in backbone_list
+        for seed in seed_list
+        for model in model_list
+    ]
+    manifest_index = {
+        (entry["backbone"], entry["seed"], entry["model"]): index
+        for index, entry in enumerate(manifest)
+    }
+    run_metrics: dict[tuple[str, int, str], dict] = {}
     cache_info: dict[str, dict] = {}
     split_provenance: dict[str, list[dict]] = {}
-    expected = len(seed_list) * len(backbone_list) * len(model_list)
+
+    def _mark(
+        entry: dict, status: str, stage: str | None = None, exc: Exception | None = None
+    ) -> None:
+        entry["status"] = status
+        entry["stage"] = stage
+        if exc is not None:
+            entry["error_type"] = type(exc).__name__
+            entry["error"] = str(exc)
 
     for backbone in backbone_list:
         first_cache = None
+        cache_failed = False
         for seed in seed_list:
+            if cache_failed:
+                break
             try:
                 if first_cache is not None and seed == seed_list[0]:
                     cached = first_cache
@@ -816,35 +851,32 @@ def run_protocol(
                     )
                     if seed == seed_list[0]:
                         first_cache = cached
-            except Exception as exc:
-                warnings.append(
+                cache_info.setdefault(
+                    backbone,
                     {
-                        "stage": "feature_cache",
-                        "status": "skipped",
-                        "dataset": str(dataset),
-                        "backbone": backbone,
+                        "cache_path": cached.get("cache_path"),
+                        "cache_hit": bool(cached.get("cache_hit")),
+                        "feature_dim": int(np.asarray(cached["X"]["train"]).shape[1]),
+                    },
+                )
+                split_provenance.setdefault(backbone, []).append(
+                    {
                         "seed": int(seed),
-                        "error_type": type(exc).__name__,
-                        "error": str(exc),
+                        "split_provenance": cached.get("provenance", {}).get("split"),
+                        "groups": cached.get("groups"),
                     }
                 )
+            except Exception as exc:
+                # This backbone cannot be featurised.  Finalise EVERY remaining
+                # (seed, model) tuple for it with the original error, so the
+                # accounting invariant holds and nothing is silently omitted.
+                for entry in manifest:
+                    if entry["backbone"] == backbone and entry["status"] == "not_run":
+                        _mark(entry, "skipped_cache_failure", "feature_cache", exc)
+                cache_failed = True
                 break
-            cache_info.setdefault(
-                backbone,
-                {
-                    "cache_path": cached.get("cache_path"),
-                    "cache_hit": bool(cached.get("cache_hit")),
-                    "feature_dim": int(np.asarray(cached["X"]["train"]).shape[1]),
-                },
-            )
-            split_provenance.setdefault(backbone, []).append(
-                {
-                    "seed": int(seed),
-                    "split_provenance": cached.get("provenance", {}).get("split"),
-                    "groups": cached.get("groups"),
-                }
-            )
             for model in model_list:
+                entry = manifest[manifest_index[(backbone, seed, model)]]
                 try:
                     arm = run_svm_arm(
                         cached["X"]["train"],
@@ -854,29 +886,41 @@ def run_protocol(
                         model,
                         seed=seed,
                     )
-                    runs.append(
-                        {
-                            "dataset": str(dataset),
-                            "backbone": backbone,
-                            "seed": int(seed),
-                            "model": model,
-                            "status": "ok",
-                            "metrics": arm,
-                        }
-                    )
+                    _mark(entry, "succeeded")
+                    run_metrics[(backbone, seed, model)] = arm
                 except Exception as exc:
-                    warnings.append(
-                        {
-                            "stage": "arm",
-                            "status": "skipped",
-                            "dataset": str(dataset),
-                            "backbone": backbone,
-                            "seed": int(seed),
-                            "model": model,
-                            "error_type": type(exc).__name__,
-                            "error": str(exc),
-                        }
-                    )
+                    _mark(entry, "skipped_failed_arm", "arm", exc)
+
+    # Derive all downstream views from the single manifest.
+    runs: list[dict] = []
+    for entry in manifest:
+        if entry["status"] != "succeeded":
+            continue
+        key = (entry["backbone"], entry["seed"], entry["model"])
+        runs.append(
+            {
+                "dataset": str(dataset),
+                "backbone": entry["backbone"],
+                "seed": entry["seed"],
+                "model": entry["model"],
+                "status": "ok",
+                "metrics": run_metrics[key],
+            }
+        )
+    warnings: list[dict] = [
+        {
+            "stage": entry["stage"],
+            "status": entry["status"],
+            "dataset": entry["dataset"],
+            "backbone": entry["backbone"],
+            "seed": entry["seed"],
+            "model": entry["model"],
+            "error_type": entry["error_type"],
+            "error": entry["error"],
+        }
+        for entry in manifest
+        if entry["status"] != "succeeded"
+    ]
 
     aggregates: dict[str, dict] = {}
     for backbone in backbone_list:
@@ -968,6 +1012,13 @@ def run_protocol(
         "bootstrap": {"B": int(boot_B), "seed": int(boot_seed)},
         "protocol": "fresh_protocol.v1",
     }
+    counts = {
+        status: sum(1 for entry in manifest if entry["status"] == status)
+        for status in ("succeeded", "skipped_failed_arm", "skipped_cache_failure")
+    }
+    n_expected = len(manifest)
+    n_succeeded = counts["succeeded"]
+    n_skipped = counts["skipped_failed_arm"] + counts["skipped_cache_failure"]
     metrics_payload = {
         "schema": "fresh_protocol.metrics.v1",
         "dataset": str(dataset),
@@ -977,9 +1028,12 @@ def run_protocol(
         "aggregates": aggregates,
         "comparisons": comparisons,
         "warnings": warnings,
-        "n_runs_expected": int(expected),
-        "n_runs_succeeded": len(runs),
-        "n_runs_skipped": len(warnings),
+        "n_runs_expected": int(n_expected),
+        "n_runs_succeeded": int(n_succeeded),
+        "n_runs_skipped": int(n_skipped),
+        "n_skipped_failed_arm": int(counts["skipped_failed_arm"]),
+        "n_skipped_cache_failure": int(counts["skipped_cache_failure"]),
+        "accounting_invariant": bool(n_expected == n_succeeded + n_skipped),
     }
     provenance_payload = {
         "schema": "fresh_protocol.provenance.v1",
@@ -991,25 +1045,25 @@ def run_protocol(
         "feature_cache": cache_info,
         "run_manifest": [
             {
-                "dataset": str(dataset),
-                "backbone": run["backbone"],
-                "seed": run["seed"],
-                "model": run["model"],
-                "status": run["status"],
+                "dataset": entry["dataset"],
+                "backbone": entry["backbone"],
+                "seed": entry["seed"],
+                "model": entry["model"],
+                "status": entry["status"],
+                "stage": entry["stage"],
+                "error_type": entry["error_type"],
+                "error": entry["error"],
             }
-            for run in runs
-        ]
-        + [
-            {
-                "dataset": str(dataset),
-                "backbone": warning.get("backbone"),
-                "seed": warning.get("seed"),
-                "model": warning.get("model"),
-                "status": warning["status"],
-                "error_type": warning["error_type"],
-            }
-            for warning in warnings
+            for entry in manifest
         ],
+        "comparison_notes": {
+            "secondary_test": "Wilcoxon signed-rank",
+            "exact_mcnemar": (
+                "not computed: this stage stores only one scalar accuracy per seed; "
+                "paired per-image predictions are not retained, so Wilcoxon is the "
+                "secondary paired test"
+            ),
+        },
         "warnings": warnings,
         "additive": True,
     }
