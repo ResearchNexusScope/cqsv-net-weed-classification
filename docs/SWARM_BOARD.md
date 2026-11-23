@@ -369,5 +369,11 @@ PlantNet +adapt50: OOD acc 0.393, AUC 0.378, F1 0.426 (small gain over no-adapt 
 **[120 | 2026-11-23] CHECKPOINT → QC-REBUILD-2026-11-22 — mother (end-of-turn)**
 Final tree `732dfba` verified: central verifier ALL CHECKS PASSED (200 passed, 13 skipped, exit 0); quantum verifier PASSED (47 passed) on `7b73594`, with qmlpipe/ and pinned environment unchanged since. All Ds gated (QHEAD-D01/D02, METH-D01, DATA-D01, EXTERNAL-D01). Three external datasets downloaded and byte-verified with manifests; 5 more registered (2 large deferred, 3 manual/index). Matched adaptation runs committed and recorded in private journal §7. Working tree clean; `.paper/` private and gitignored.
 
+**[121 | 2026-11-23] REQUEST → FRESH-D01 — mother (new-dataset ingestion + splits)**
+User requested fresh, properly powered 70:20:10 protocol on downloaded datasets. Worker owns data/fresh_splits.py and tests/test_fresh_splits.py only: adapters for MaizeSet (3,330 img, filename labels), DeepWeeds (17,509 img, Negative→0 / 8 weeds→1) and ACRE (1,000 img, 56,530 COCO boxes, 1=crop/2=weed) plus deterministic group-disjoint 70:20:10 splits.
+
+**[122 | 2026-11-23] REQUEST → FRESH-D02 — mother (fresh protocol + statistics)**
+Worker owns experiments/fresh_protocol.py, scripts/run_fresh_protocol.py, tests/test_fresh_protocol.py only: matched classical arms (poly-2, RBF, logreg), n≥10 seeds, bootstrap CIs, paired t/Wilcoxon/Holm/power, additive provenance. No real runs until gate.
+
 **Gate rule:** a D is not accepted until the central verifier passes and a Critic audit
 returns PASS. Mother commits D-by-D after the gate.
