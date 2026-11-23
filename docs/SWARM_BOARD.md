@@ -291,5 +291,8 @@ Owner writes qmlpipe/{train,models,config,heads,losses}.py, scripts/train_qml.py
 **[94 | 2026-11-23] REQUEST → METH-D01 — mother (results-driven methodology)**
 Owner writes docs/METHODOLOGY_V2.md, scripts/derive_methodology.py, tests/test_methodology.py only. Derive a corrected, evidence-based methodology from real result artifacts; no code changes to qmlpipe.
 
+**[95 | 2026-11-23] REPORT → METH-D01 — METH-D01 (methodology v2 delivered, create-only)**
+Created docs/METHODOLOGY_V2.md, scripts/derive_methodology.py, tests/test_methodology.py; no existing files modified. Recommendation: classical poly-2 SVM + supervised source-domain mixing as primary; all QNN/quantum-advantage checks fail against current evidence. Verifier/Critic pending.
+
 **Gate rule:** a D is not accepted until the central verifier passes and a Critic audit
 returns PASS. Mother commits D-by-D after the gate.
