@@ -127,15 +127,76 @@ def test_grouped_split_handles_unequal_group_sizes() -> None:
         assert {sample.label for sample in part} == {0, 1}
 
 
-def test_grouped_split_rejects_group_mixing_classes() -> None:
-    samples = [
-        _sample("a", "mixed", 0),
-        _sample("b", "mixed", 1),
-        _sample("c", "clean0", 0),
-        _sample("d", "clean1", 1),
+def test_grouped_split_keeps_mixed_group_whole() -> None:
+    """A group with both labels is allowed and must not be split across folds."""
+    # Six mixed groups give each split enough samples to contain both classes.
+    samples: list[fs.FreshSample] = []
+    for group_index in range(6):
+        group = "mixed" if group_index == 0 else f"mixed_{group_index}"
+        samples.append(_sample(f"{group}_0", group, 0))
+        samples.append(_sample(f"{group}_1", group, 1))
+
+    splits = fs.grouped_split(samples, seed=42, ratios=RATIOS)
+
+    group_sets = {
+        name: {sample.source_image_id for sample in part} for name, part in splits.items()
+    }
+    assert not (group_sets["train"] & group_sets["val"])
+    assert not (group_sets["train"] & group_sets["test"])
+    assert not (group_sets["val"] & group_sets["test"])
+    assert set().union(*group_sets.values()) == {s.source_image_id for s in samples}
+
+    mixed_splits = [
+        name for name, part in splits.items() if any(s.source_image_id == "mixed" for s in part)
     ]
-    with pytest.raises(ValueError, match="mixes classes"):
-        fs.grouped_split(samples, seed=42, ratios=RATIOS)
+    assert len(mixed_splits) == 1  # the mixed group is kept wholly in one split
+    owner = mixed_splits[0]
+    assert {s.label for s in splits[owner] if s.source_image_id == "mixed"} == {0, 1}
+    assert sum(len(part) for part in splits.values()) == len(samples)
+    for part in splits.values():
+        assert {sample.label for sample in part} == {0, 1}
+
+
+def test_grouped_split_acre_like_mixed_and_single_class_groups() -> None:
+    """Real ACRE photos mix crop/weed boxes; whole-photo disjointness must hold."""
+    samples: list[fs.FreshSample] = []
+    # Single-class crop groups, single-class weed groups and mixed groups.
+    for group_index in range(40):
+        group = f"photo_{group_index:03d}"
+        kind = group_index % 3
+        if kind == 0:
+            labels = [0, 0, 0]
+        elif kind == 1:
+            labels = [1, 1, 1]
+        else:
+            labels = [0, 1, 0, 1]
+        for member, label in enumerate(labels):
+            samples.append(_sample(f"{group}_{member}", group, label))
+
+    first = fs.grouped_split(samples, seed=42, ratios=RATIOS)
+    second = fs.grouped_split(samples, seed=42, ratios=RATIOS)
+    for name in ("train", "val", "test"):
+        assert [s.sample_id for s in first[name]] == [s.sample_id for s in second[name]]
+
+    group_sets = {
+        name: {sample.source_image_id for sample in part} for name, part in first.items()
+    }
+    assert not (group_sets["train"] & group_sets["val"])
+    assert not (group_sets["train"] & group_sets["test"])
+    assert not (group_sets["val"] & group_sets["test"])
+    assert set().union(*group_sets.values()) == {s.source_image_id for s in samples}
+    assert sum(len(part) for part in first.values()) == len(samples)
+    for part in first.values():
+        assert {sample.label for sample in part} == {0, 1}
+
+    # class_counts must count both labels inside mixed groups per split.
+    provenance = fs.split_provenance("acre-like", samples, first, 42, RATIOS)
+    for name in ("train", "val", "test"):
+        expected = {
+            "0": sum(s.label == 0 for s in first[name]),
+            "1": sum(s.label == 1 for s in first[name]),
+        }
+        assert provenance["class_counts"][name] == expected
 
 
 def test_grouped_split_rejects_split_that_would_be_empty() -> None:

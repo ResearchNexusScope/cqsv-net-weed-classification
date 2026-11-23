@@ -20,8 +20,10 @@ Design notes
   ``numpy.random.default_rng(seed)`` and assigns each group to the split with
   the largest remaining sample deficit. Greedy largest-deficit assignment
   approximates the requested ratios even when groups have unequal sizes.
-* A group containing both classes, a split lacking a class and an empty split
-  are all correctness failures (leakage / degenerate evaluation) and raise a
+* A group may contain both classes (real ACRE photos carry crop and weed
+  annotations side by side); that is allowed and the whole group is kept in a
+  single fold. An empty split or a split lacking either class *after* group
+  assignment is a correctness failure (degenerate evaluation) and raises a
   ``ValueError`` rather than being silently accepted.
 
 Only the standard library, numpy and (lazily) Pillow/pyarrow are used.
@@ -277,11 +279,13 @@ def grouped_split(
     Groups are keyed by ``source_image_id``. A seeded permutation fixes the
     order in which groups are assigned; each group goes to the split with the
     largest remaining target deficit, so whole groups stay together while the
-    resulting *sample* counts approximate ``ratios``.
+    resulting *sample* counts approximate ``ratios``. A group may hold both
+    classes (e.g. one ACRE photo with crop and weed annotations); it is still
+    kept whole and contributes both classes to its assigned split.
 
     Raises ``ValueError`` for: empty input, invalid ratios, fewer than three
-    groups, a group that mixes classes, an empty split, or a split that does
-    not contain both classes.
+    groups, an empty split, or a split that does not contain both classes
+    after all groups have been assigned.
     """
     items = list(samples)
     if not items:
@@ -300,13 +304,10 @@ def grouped_split(
             raise ValueError(f"sample {sample.sample_id!r} has invalid label {sample.label!r}")
         groups.setdefault(str(sample.source_image_id), []).append(sample)
 
-    for group_id, members in groups.items():
-        labels = {int(member.label) for member in members}
-        if len(labels) > 1:
-            raise ValueError(
-                f"source group {group_id!r} mixes classes {sorted(labels)}; "
-                "a group must have one class to keep the split leak-free"
-            )
+    # Mixed-label groups are allowed: a single ACRE photograph can contain both
+    # crop and weed annotations. Such a group is assigned whole to one fold, so
+    # strict source-image disjointness still holds; it simply contributes both
+    # classes to whichever split it lands in.
 
     group_ids = sorted(groups)
     if len(group_ids) < len(_SPLIT_NAMES):
