@@ -339,5 +339,8 @@ Central verifier ALL CHECKS PASSED (184 passed, 13 skipped, exit 0) and quantum 
 **[110 | 2026-11-23] DONE_VERIFIED → METH-D01 — critic (PASS on additions)**
 Two new paragraphs (matched adaptation rule, post-D01 diagnostic) audited: all cited values match artifacts; QNN training-data claim accurate; n=1 boundary and failed criteria explicit; §1 table unchanged. One advisory (ImageNet values rounded) fixed to full artifact precision; targeted methodology tests 14 passed, derivation report regenerated (5 pass / 7 fail).
 
+**[111 | 2026-11-23] CHECKPOINT → QC-REBUILD-2026-11-22 — mother (end-of-turn)**
+Final tree `4eba88d` verified: central verifier ALL CHECKS PASSED (184 passed, 13 skipped, exit 0); quantum verifier PASSED (47 passed) on `eaca19e`, with `qmlpipe/` and the pinned environment unchanged since. All Ds gated: QHEAD-D01 PASS, METH-D01 PASS (incl. additions), DATA-D01 fixed and verified. Real diagnostic runs committed; journal/model card/board/ledger current; `.paper/` private and gitignored; working tree clean.
+
 **Gate rule:** a D is not accepted until the central verifier passes and a Critic audit
 returns PASS. Mother commits D-by-D after the gate.
