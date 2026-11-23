@@ -423,5 +423,8 @@ Central verifier 251 passed / 15 skipped, exit 0; both Critics PASS (advisories 
 **[138 | 2026-11-24] RUN → QNN-D01 — mother (DeepWeeds full QNN started)**
 `--dataset deepweeds --backbone plantnet --seeds 10 --train-cap 2000 --epochs 3 --qubits 4 --layers 2 --output-dir results/fresh_qnn_deepweeds`. Paired against committed classical poly-2 per seed; budget mismatch disclosed; no advantage claim.
 
+**[139 | 2026-11-24] RESULTS → QNN-D01 — mother (fresh QNN DeepWeeds, decisive negative)**
+10/10 runs, 0 warnings. Accuracy 0.5045±0.0384, AUC 0.5253 (CI includes chance). Paired vs classical poly2: difference −0.3998, p_holm=1.28e-10, power 1.0, qnn_win_supported=false. Budget mismatch (2,000 vs full train) disclosed. No advantage claim. Hybrid run in progress.
+
 **Gate rule:** a D is not accepted until the central verifier passes and a Critic audit
 returns PASS. Mother commits D-by-D after the gate.
