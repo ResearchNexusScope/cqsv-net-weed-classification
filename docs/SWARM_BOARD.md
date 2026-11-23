@@ -429,5 +429,8 @@ Central verifier 251 passed / 15 skipped, exit 0; both Critics PASS (advisories 
 **[140 | 2026-11-24] RESULTS → HYBRID-D01 — mother (fresh hybrid DeepWeeds)**
 10/10 runs, 0 warnings. Accuracy 0.7665±0.0086, AUC 0.8505 — between classical poly2 (0.9042) and pure QNN (0.5045). Paired vs classical diff −0.1377 (p_holm 2.6e-11) and vs QNN diff +0.2620 (p_holm 7.3e-9); both `inconclusive` because power unavailable. No advantage claim; budgets unmatched and disclosed. QNN/hybrid stage complete on DeepWeeds.
 
+**[141 | 2026-11-24] CHECKPOINT → QC-REBUILD-2026-11-22 — mother (end-of-turn)**
+Final tree `090d2d8` verified: central verifier ALL CHECKS PASSED (251 passed, 15 skipped, exit 0); quantum verifier PASSED (47 passed) on `b0b372e`, qmlpipe core and pins unchanged since. All Ds gated with Critic PASS. Fresh protocol complete: classical DeepWeeds/ACRE, QNN and hybrid on DeepWeeds with properly powered paired stats and honest no-advantage boundary; MaizeSet rejected on data grounds. Journal §§8-9, timeline S32-35, board, ledger, registry and acquisition docs current; .paper/ private and gitignored; working tree clean.
+
 **Gate rule:** a D is not accepted until the central verifier passes and a Critic audit
 returns PASS. Mother commits D-by-D after the gate.
