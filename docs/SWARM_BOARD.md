@@ -408,5 +408,8 @@ ACRE feature caches completed for both backbones (PlantNet 52.6 MB, ImageNet 250
 **[133 | 2026-11-24] RESULTS → FRESH-PROTOCOL — mother (ACRE capped run complete)**
 60/60 runs, 0 warnings, invariant true. ImageNet poly2 0.9777±0.0038, PlantNet RBF 0.9765±0.0035, PlantNet poly2 0.9762±0.0028. TRAIN capped at 5,000/seed (TEST full/sealed, n=10, documented no-claim note). poly2 vs logreg significant both backbones; poly2 vs RBF inconclusive. Fresh 70:20:10 classical baseline complete (DeepWeeds full-train + ACRE capped); MaizeSet rejected on data grounds. No quantum claim.
 
+**[134 | 2026-11-24] CHECKPOINT → QC-REBUILD-2026-11-22 — mother (end-of-turn)**
+Final tree `6cb1d36` verified: central verifier ALL CHECKS PASSED (235 passed, 13 skipped, exit 0); quantum verifier PASSED (47 passed) on `b0b372e`, with qmlpipe/ and pinned environment unchanged since. All Ds gated: QHEAD-D01/D02, METH-D01, DATA-D01, EXTERNAL-D01, FRESH-D01/D02 (all Critics PASS). Fresh 70:20:10 classical baseline complete on DeepWeeds (full train, 60/60) and ACRE (5k TRAIN cap, 60/60); MaizeSet rejected on data grounds. Journal/model card/board/ledger current; .paper/ private and gitignored; working tree clean.
+
 **Gate rule:** a D is not accepted until the central verifier passes and a Critic audit
 returns PASS. Mother commits D-by-D after the gate.
