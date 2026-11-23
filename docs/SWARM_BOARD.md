@@ -318,5 +318,8 @@ Fixed 3 failing synthetic tests (single-class weight fixture, module import for 
 **[103 | 2026-11-23] FIX → DATA-D01 — mother (checksum determinism)**
 Root cause: `_git_commit()` is volatile build provenance included in checksum; commits landing mid-verifier changed HEAD between two builds. `canonical_json` now excludes `git_commit` (retained in full manifest). Regression test `test_checksum_is_invariant_to_git_commit` added. Targeted tests pass.
 
+**[104 | 2026-11-23] DONE_VERIFIED → ALL — mother (verifiers green on stable tree)**
+Central verifier: ALL CHECKS PASSED (184 passed, 13 skipped, exit 0). Quantum verifier: QUANTUM VERIFIER PASSED (47 passed, exit 0). No commits were made during either run. METH-D01 Critic re-audit pending.
+
 **Gate rule:** a D is not accepted until the central verifier passes and a Critic audit
 returns PASS. Mother commits D-by-D after the gate.
