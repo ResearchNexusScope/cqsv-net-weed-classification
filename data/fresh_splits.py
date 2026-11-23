@@ -199,6 +199,26 @@ def _prepare_deepweeds(root) -> list[FreshSample]:
     return samples
 
 
+def _resolve_acre_entry(file_name: str, entries, by_basename) -> str:
+    """Resolve a COCO ``file_name`` to a real zip entry without silent guessing.
+
+    The COCO JSON uses paths like ``Maize/<seq>/rgb-....jpg`` while the archive
+    stores them under ``data/``. Try the exact name, then the ``data/``-prefixed
+    name, then a *unique* basename match; anything else is a hard error.
+    """
+    candidates = [file_name, f"data/{file_name}"]
+    for candidate in candidates:
+        if candidate in entries:
+            return candidate
+    matches = by_basename.get(Path(file_name).name, [])
+    if len(matches) == 1:
+        return matches[0]
+    raise FileNotFoundError(
+        f"ACRE image {file_name!r} not found in archive; tried {candidates} "
+        f"and basename matches {matches}"
+    )
+
+
 def _prepare_acre(root) -> list[FreshSample]:
     archive = external.cache_root(root) / "acre" / "The_ACRE_Crop-Weed_Dataset.zip"
     if not archive.is_file():
@@ -211,6 +231,11 @@ def _prepare_acre(root) -> list[FreshSample]:
     out_dir = _prepared_dir("acre", root)
     samples: list[FreshSample] = []
     with zipfile.ZipFile(archive) as zf:
+        entries = set(zf.namelist())
+        by_basename: dict[str, list[str]] = {}
+        for entry in entries:
+            by_basename.setdefault(Path(entry).name, []).append(entry)
+
         coco = json.loads(zf.read("data/ACRE_COCO_annotations.json"))
         file_by_id = {int(image["id"]): str(image["file_name"]) for image in coco["images"]}
         anns_by_image: dict[int, list[dict]] = {}
@@ -221,14 +246,19 @@ def _prepare_acre(root) -> list[FreshSample]:
             file_name = file_by_id.get(image_id)
             if file_name is None:
                 raise ValueError(f"ACRE annotation references unknown image_id {image_id}")
+            entry = _resolve_acre_entry(file_name, entries, by_basename)
             source_stem = Path(file_name).stem
-            with Image.open(io.BytesIO(zf.read(file_name))) as image:
+            # Different directories can share an image stem; hash the COCO path
+            # so crop filenames cannot collide. source_image_id stays the stem.
+            path_digest = hashlib.sha256(file_name.encode("utf-8")).hexdigest()[:10]
+            crop_stem = f"{source_stem}_{path_digest}"
+            with Image.open(io.BytesIO(zf.read(entry))) as image:
                 image = image.convert("RGB")
                 width, height = image.size
                 for ann in sorted(anns_by_image[image_id], key=lambda item: int(item["id"])):
                     ann_id = int(ann["id"])
                     label = 1 if int(ann["category_id"]) == 2 else 0
-                    out = out_dir / f"{source_stem}_{ann_id}.jpg"
+                    out = out_dir / f"{crop_stem}_{ann_id}.jpg"
                     sample = FreshSample(
                         sample_id=out.stem,
                         source_image_id=source_stem,

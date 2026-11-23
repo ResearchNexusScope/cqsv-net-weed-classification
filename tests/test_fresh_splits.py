@@ -306,3 +306,64 @@ def test_prepare_maizeset_synthetic_is_idempotent(tmp_path: Path) -> None:
     second = fs.prepare_dataset("maizeset", root=tmp_path)
     assert [s.sample_id for s in second] == [s.sample_id for s in first]
     assert {s.path: os.path.getmtime(s.path) for s in second} == mtimes
+
+
+def test_prepare_acre_resolves_data_prefix_and_is_collision_safe(tmp_path: Path) -> None:
+    """COCO file_names omit the ``data/`` prefix that real zip entries carry."""
+    image_module = pytest.importorskip("PIL.Image")
+    import io
+    import json
+    import zipfile
+
+    def jpeg(colour):
+        buffer = io.BytesIO()
+        image_module.new("RGB", (16, 16), colour).save(buffer, "JPEG")
+        return buffer.getvalue()
+
+    coco = {
+        "images": [
+            {"id": 1, "file_name": "Maize/seq1/rgb-x.jpg"},
+            {"id": 2, "file_name": "Bean/seq1/rgb-x.jpg"},  # same stem, other directory
+            {"id": 3, "file_name": "Maize/seq2/rgb-y.jpg"},
+        ],
+        "annotations": [
+            {"id": 10, "image_id": 1, "category_id": 1, "bbox": [0, 0, 4, 4]},
+            {"id": 11, "image_id": 1, "category_id": 2, "bbox": [4, 4, 4, 4]},
+            {"id": 20, "image_id": 2, "category_id": 2, "bbox": [0, 0, 4, 4]},
+            {"id": 30, "image_id": 3, "category_id": 1, "bbox": [0, 0, 4, 4]},
+        ],
+    }
+    archive = tmp_path / "acre" / "The_ACRE_Crop-Weed_Dataset.zip"
+    archive.parent.mkdir(parents=True)
+    with zipfile.ZipFile(archive, "w") as zf:
+        zf.writestr("data/ACRE_COCO_annotations.json", json.dumps(coco))
+        zf.writestr("data/Maize/seq1/rgb-x.jpg", jpeg((10, 20, 30)))
+        zf.writestr("data/Bean/seq1/rgb-x.jpg", jpeg((30, 20, 10)))
+        zf.writestr("data/Maize/seq2/rgb-y.jpg", jpeg((20, 30, 10)))
+
+    samples = fs._prepare_acre(tmp_path)
+    assert len(samples) == 4
+    assert {sample.source_image_id for sample in samples} == {"rgb-x", "rgb-y"}
+    labels = {s.sample_id.rsplit("_", 1)[-1]: s.label for s in samples}
+    assert labels == {"10": 0, "11": 1, "20": 1, "30": 0}  # category 1->0, 2->1
+    assert len({s.sample_id for s in samples}) == 4  # hash keeps names unique
+    assert len({s.path for s in samples}) == 4
+    assert all(os.path.isabs(s.path) and Path(s.path).is_file() for s in samples)
+    assert all(s.bbox is None for s in samples)
+
+    mtimes = {s.path: os.path.getmtime(s.path) for s in samples}
+    again = fs._prepare_acre(tmp_path)
+    assert [s.sample_id for s in again] == [s.sample_id for s in samples]
+    assert {s.path: os.path.getmtime(s.path) for s in again} == mtimes
+
+
+def test_acre_entry_resolver_reports_candidates() -> None:
+    entries = {"data/Maize/seq/rgb-x.jpg", "data/Bean/seq/rgb-x.jpg"}
+    by_basename: dict[str, list[str]] = {}
+    for entry in entries:
+        by_basename.setdefault(Path(entry).name, []).append(entry)
+
+    with pytest.raises(FileNotFoundError, match="tried"):
+        fs._resolve_acre_entry("Maize/seq/missing.jpg", entries, by_basename)
+    with pytest.raises(FileNotFoundError, match="basename matches"):
+        fs._resolve_acre_entry("Other/seq/rgb-x.jpg", entries, by_basename)
