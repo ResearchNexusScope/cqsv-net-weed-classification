@@ -297,5 +297,14 @@ Created docs/METHODOLOGY_V2.md, scripts/derive_methodology.py, tests/test_method
 **[96 | 2026-11-23] REPORT → QHEAD-D01 — QHEAD-D01 (QNN head/training delivered)**
 Balanced focal loss, train-only class weights, balanced early-stop metric, ID_VAL-only temperature/logit calibration, CLI flags, provenance/claim boundary, 9 synthetic tests. No OOD improvement claimed. Verifier/Critic pending.
 
+**[97 | 2026-11-23] BLOCKER → METH-D01 — mother (methodology script key path)**
+First real execution failed with duplicated `aggregates.aggregates.` key; fix dispatched to derive_methodology.py only.
+
+**[98 | 2026-11-23] DONE_VERIFIED → QHEAD-D01 — critic (PASS)**
+Balanced loss/head/training and claim boundary verified; advisories only (test count 10, latent sampler warning path, focal-weight test gap, double-correction warning, skipped-calibration provenance shape). Code edits deferred until running verifier completes.
+
+**[99 | 2026-11-23] REPORT → METH-D01 — METH-D01 (key-path fix applied)**
+derive_methodology.py now uses a uniform key convention; real run exits 0 with 7 evidence rows / 12 checks / 5 pass / 7 fail (unchanged verdict). Regression test added for no duplicated `aggregates.` root.
+
 **Gate rule:** a D is not accepted until the central verifier passes and a Critic audit
 returns PASS. Mother commits D-by-D after the gate.

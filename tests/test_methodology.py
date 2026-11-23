@@ -191,6 +191,21 @@ def test_evidence_table_recomputes_observations_and_statuses() -> None:
         assert all(obs["artifact"].startswith("results/") for obs in row["observations"])
 
 
+def test_noise_observation_keys_do_not_duplicate_aggregates_root() -> None:
+    rows = {row["id"]: row for row in dm.evidence_table(make_artifacts(healthy=True))}
+    noise = rows["quantum_noise_robustness"]
+    keys = [obs["key"] for obs in noise["observations"]]
+    assert not any("aggregates.aggregates" in key for key in keys)
+    assert any(key.startswith("aggregates.noise_robustness/qsvc_quantum_kernel/sigma=") for key in keys)
+    assert any(key.startswith("aggregates.noise_robustness/svc_poly2_classical/sigma=") for key in keys)
+    means = [obs["value"] for obs in noise["observations"]]
+    assert 0.6801 in means and 0.5203 in means  # synthetic quantum / classical noise means
+    # Uniform convention: no row anywhere may repeat the top-level segment.
+    for row in rows.values():
+        for obs in row["observations"]:
+            assert "aggregates.aggregates" not in obs["key"]
+
+
 def test_acceptance_thresholds_are_derived_from_control_values() -> None:
     artifacts = make_artifacts()
     checks = dm.acceptance_checks(artifacts)

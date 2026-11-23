@@ -362,11 +362,13 @@ def evidence_table(artifacts: Mapping[str, Any]) -> list[dict[str, Any]]:
         else "ablations are conclusive at the required sample size"
     )
 
-    mix_key = f"aggregates.{_PRIMARY_EXPERIMENT}/{_PAIRED_MODELS[0]}.accuracy"
-    ctl_key = f"aggregates.{_PRIMARY_EXPERIMENT}/qsvc_no_mixing_control.accuracy"
-    poly_key = f"aggregates.{_PRIMARY_EXPERIMENT}/{_PAIRED_MODELS[1]}.accuracy"
-    noise_q_key = f"aggregates.noise_robustness/{_PAIRED_MODELS[0]}/sigma="
-    noise_c_key = f"aggregates.noise_robustness/{_PAIRED_MODELS[1]}/sigma="
+    # Convention: key constants never include the top-level "aggregates" segment;
+    # every observed() call passes that segment explicitly as its first key.
+    mix_key = f"{_PRIMARY_EXPERIMENT}/{_PAIRED_MODELS[0]}.accuracy"
+    ctl_key = f"{_PRIMARY_EXPERIMENT}/qsvc_no_mixing_control.accuracy"
+    poly_key = f"{_PRIMARY_EXPERIMENT}/{_PAIRED_MODELS[1]}.accuracy"
+    noise_q_key = f"noise_robustness/{_PAIRED_MODELS[0]}/sigma="
+    noise_c_key = f"noise_robustness/{_PAIRED_MODELS[1]}/sigma="
 
     rows = [
         {
@@ -375,9 +377,9 @@ def evidence_table(artifacts: Mapping[str, Any]) -> list[dict[str, Any]]:
             "status": primary_status,
             "reason": primary_reason,
             "observations": [
-                observed(artifacts, "real_run", *poly_key.split("."), "mean"),
-                observed(artifacts, "real_run", *poly_key.split("."), "values"),
-                observed(artifacts, "real_run", *ctl_key.split("."), "mean"),
+                observed(artifacts, "real_run", "aggregates", *poly_key.split("."), "mean"),
+                observed(artifacts, "real_run", "aggregates", *poly_key.split("."), "values"),
+                observed(artifacts, "real_run", "aggregates", *ctl_key.split("."), "mean"),
             ],
         },
         {
@@ -386,12 +388,12 @@ def evidence_table(artifacts: Mapping[str, Any]) -> list[dict[str, Any]]:
             "status": mixing_status,
             "reason": mixing_reason,
             "observations": [
-                observed(artifacts, "real_run", *mix_key.split("."), "mean"),
-                observed(artifacts, "real_run", *mix_key.split("."), "std"),
-                observed(artifacts, "real_run", *mix_key.split("."), "n"),
-                observed(artifacts, "real_run", *ctl_key.split("."), "mean"),
-                observed(artifacts, "real_run", *ctl_key.split("."), "std"),
-                observed(artifacts, "real_run", *ctl_key.split("."), "n"),
+                observed(artifacts, "real_run", "aggregates", *mix_key.split("."), "mean"),
+                observed(artifacts, "real_run", "aggregates", *mix_key.split("."), "std"),
+                observed(artifacts, "real_run", "aggregates", *mix_key.split("."), "n"),
+                observed(artifacts, "real_run", "aggregates", *ctl_key.split("."), "mean"),
+                observed(artifacts, "real_run", "aggregates", *ctl_key.split("."), "std"),
+                observed(artifacts, "real_run", "aggregates", *ctl_key.split("."), "n"),
             ],
         },
         {
@@ -400,8 +402,8 @@ def evidence_table(artifacts: Mapping[str, Any]) -> list[dict[str, Any]]:
             "status": advantage_status,
             "reason": advantage_reason,
             "observations": [
-                observed(artifacts, "real_run", *mix_key.split("."), "values"),
-                observed(artifacts, "real_run", *poly_key.split("."), "values"),
+                observed(artifacts, "real_run", "aggregates", *mix_key.split("."), "values"),
+                observed(artifacts, "real_run", "aggregates", *poly_key.split("."), "values"),
                 observed(artifacts, "real_run", "comparisons", d["paired_index"])
                 if paired is not None
                 else observed(artifacts, "real_run", "comparisons"),
@@ -511,9 +513,10 @@ def acceptance_checks(artifacts: Mapping[str, Any]) -> list[dict[str, Any]]:
             "artifacts": sorted(set(artifacts_used)),
         }
 
-    qacc = f"aggregates.{_PRIMARY_EXPERIMENT}/{models[0]}.accuracy"
-    cacc = f"aggregates.{_PRIMARY_EXPERIMENT}/qsvc_no_mixing_control.accuracy"
-    pacc = f"aggregates.{_PRIMARY_EXPERIMENT}/{models[1]}.accuracy"
+    # Same convention as evidence_table(): no leading "aggregates" in these keys.
+    qacc = f"{_PRIMARY_EXPERIMENT}/{models[0]}.accuracy"
+    cacc = f"{_PRIMARY_EXPERIMENT}/qsvc_no_mixing_control.accuracy"
+    pacc = f"{_PRIMARY_EXPERIMENT}/{models[1]}.accuracy"
 
     significance_ok = (
         paired is not None
@@ -535,8 +538,8 @@ def acceptance_checks(artifacts: Mapping[str, Any]) -> list[dict[str, Any]]:
             },
             d["gap"] > d["margin"] and min(d["mix_n"], d["control_n"]) >= min_n,
             [
-                observed(artifacts, "real_run", *qacc.split("."), "mean")["artifact"],
-                observed(artifacts, "real_run", *cacc.split("."), "std")["artifact"],
+                observed(artifacts, "real_run", "aggregates", *qacc.split("."), "mean")["artifact"],
+                observed(artifacts, "real_run", "aggregates", *cacc.split("."), "std")["artifact"],
             ],
         ),
         check(
@@ -572,7 +575,7 @@ def acceptance_checks(artifacts: Mapping[str, Any]) -> list[dict[str, Any]]:
                 "n": d["poly_n"],
             },
             d["poly_acc"] > d["control_acc"] + d["margin"] and d["poly_n"] >= min_n,
-            [observed(artifacts, "real_run", *pacc.split("."), "mean")["artifact"]],
+            [observed(artifacts, "real_run", "aggregates", *pacc.split("."), "mean")["artifact"]],
         ),
         check(
             "qnn_ood_beats_chance",
