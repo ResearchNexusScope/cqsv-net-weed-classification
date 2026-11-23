@@ -417,5 +417,11 @@ User requested QNN + hybrid work on the new datasets. Worker owns qmlpipe/fresh_
 **[136 | 2026-11-24] REQUEST → HYBRID-D01 — mother (fresh hybrid arm)**
 Worker owns qmlpipe/fresh_hybrid.py, scripts/run_fresh_hybrid.py, tests/test_fresh_hybrid.py only: classical + quantum head combined model on the same cached splits, n=10 seeds, same controls and reporting. No existing files may be modified.
 
+**[137 | 2026-11-24] GATE → QNN-D01 + HYBRID-D01 — mother (ALL GREEN)**
+Central verifier 251 passed / 15 skipped, exit 0; both Critics PASS (advisories only: budget-mismatch caveat placement, maizeset baseline warning). QNN smoke (1 seed, 1 epoch) succeeded: acc 0.480 / AUC 0.478, near chance as expected. Real runs authorized.
+
+**[138 | 2026-11-24] RUN → QNN-D01 — mother (DeepWeeds full QNN started)**
+`--dataset deepweeds --backbone plantnet --seeds 10 --train-cap 2000 --epochs 3 --qubits 4 --layers 2 --output-dir results/fresh_qnn_deepweeds`. Paired against committed classical poly-2 per seed; budget mismatch disclosed; no advantage claim.
+
 **Gate rule:** a D is not accepted until the central verifier passes and a Critic audit
 returns PASS. Mother commits D-by-D after the gate.
