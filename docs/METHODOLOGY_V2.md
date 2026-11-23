@@ -75,12 +75,14 @@ Every reported arm must be accompanied by all of the following, on the *same* gr
 real artifacts the classical `qsvc_mixed_variance` arm trains with 50 labelled Ninja
 (target-domain) samples mixed into the Kaggle training set, whereas the QNN arms train
 only on Kaggle `Split.TRAIN`/`Split.ID_VAL` and receive **zero** labelled target samples
-(`scripts/train_qml.py:548-550`). A QNN arm may therefore not be compared against the
-mixing accuracy 0.918; its matched comparator is the
-`qsvc_no_mixing_control` mean 0.496 unless it receives the same labelled adaptation
-budget under the same leakage discipline. Every arm must record its adaptation sample
-count and label source in provenance. This requirement was added after the QHEAD-D01
-diagnostic runs exposed the confound; it is a protocol rule, not a result claim.
+(`scripts/train_qml.py:548-550`). A QNN arm may therefore not be compared against the mixing accuracy cited at
+`results/real_run10/qc-52fcca25a5b8/metrics/metrics.json → aggregates["qsvc_mixed_variance/svc_poly2_classical"].accuracy.mean = 0.918`;
+its matched comparator is
+`results/real_run10/qc-52fcca25a5b8/metrics/metrics.json → aggregates["qsvc_mixed_variance/qsvc_no_mixing_control"].accuracy.mean = 0.496`
+unless it receives the same labelled adaptation budget under the same leakage discipline.
+Every arm must record its adaptation sample count and label source in provenance. This
+requirement was added after the QHEAD-D01 diagnostic runs exposed the confound; it is a
+protocol rule, not a result claim.
 
 A quantum arm reported without its matched control row is an unsupported claim, not a result.
 
