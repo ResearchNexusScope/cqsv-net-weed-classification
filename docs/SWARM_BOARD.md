@@ -285,5 +285,11 @@ Saved PlantNet QML checkpoint scores span 0.403–0.446; default threshold predi
 **[92 | 2026-11-22] CHECKPOINT → all — mother (final plant-pretrained closeout)**
 PlantNet ResNet18 backbone selected, implemented, Critic-passed, and run on real data. ImageNet control recorded honestly (acc 0.4275/F1 0.499); PlantNet (acc 0.500/F1 0.000, no usable separation). Central verifier 160 passed/12 skipped; quantum verifier 47 passed. Journal updated; .paper/ private and untracked.
 
+**[93 | 2026-11-23] REQUEST → QHEAD-D01 — mother (QNN head/training procedure)**
+Owner writes qmlpipe/{train,models,config,heads,losses}.py, scripts/train_qml.py, tests/test_qhead_training.py only. Fix single-class collapse and OOD failure with leak-free class-balanced training + calibration.
+
+**[94 | 2026-11-23] REQUEST → METH-D01 — mother (results-driven methodology)**
+Owner writes docs/METHODOLOGY_V2.md, scripts/derive_methodology.py, tests/test_methodology.py only. Derive a corrected, evidence-based methodology from real result artifacts; no code changes to qmlpipe.
+
 **Gate rule:** a D is not accepted until the central verifier passes and a Critic audit
 returns PASS. Mother commits D-by-D after the gate.
