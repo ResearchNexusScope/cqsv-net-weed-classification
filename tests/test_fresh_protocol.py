@@ -325,6 +325,76 @@ def test_cache_features_is_reused_and_rejects_group_leakage(monkeypatch, tmp_pat
         )
 
 
+def test_cache_features_batches_loader_calls_and_preserves_order(monkeypatch, tmp_path) -> None:
+    calls: list[int] = []
+
+    def vector_for(sample):
+        digest = hashlib.sha256(sample.sample_id.encode("utf-8")).digest()[:3]
+        return np.frombuffer(digest, dtype=np.uint8).astype(np.float32) / 255.0
+
+    def recording_loader_factory(extractor, preprocess, device):
+        def loader(data, cfg, split):
+            calls.append(len(data))
+            return np.stack([vector_for(sample) for sample in data])
+
+        return loader
+
+    fresh = _install_fake_cache_modules(monkeypatch, None)
+    monkeypatch.setattr(
+        sys.modules["scripts.run_real_benchmark"], "make_feature_loader", recording_loader_factory
+    )
+    root, cache_dir = str(tmp_path), str(tmp_path / "cache")
+    result = fp.cache_features(
+        "deepweeds", "imagenet", root=root, cache_dir=cache_dir, seed=42, feature_batch_size=3
+    )
+
+    assert calls == [3, 3, 3, 3, 3, 3, 2]  # 20 synthetic samples, batch size 3
+    assert all(size <= 3 for size in calls)
+    assert sum(calls) == 20
+    assert result["X"]["train"].shape == (14, 3)
+    assert result["X"]["val"].shape == (4, 3)
+    assert result["X"]["test"].shape == (2, 3)
+    assert result["provenance"]["cache"]["feature_batch_size"] == 3
+
+    # Original per-sample order and values are unchanged by chunking.
+    samples = fresh.prepare_dataset("deepweeds", root=root)
+    splits = fresh.grouped_split(samples, seed=42, ratios=fp.DEFAULT_RATIOS)
+    for name in ("train", "val", "test"):
+        expected = np.stack([vector_for(sample) for sample in splits[name]])
+        np.testing.assert_array_equal(result["X"][name], expected)
+
+    calls.clear()
+    reuse = fp.cache_features(
+        "deepweeds", "imagenet", root=root, cache_dir=cache_dir, seed=7, feature_batch_size=3
+    )
+    assert reuse["cache_hit"] is True
+    assert calls == []  # cache reuse never invokes the loader
+
+    with pytest.raises(ValueError, match="feature_batch_size"):
+        fp.cache_features(
+            "deepweeds", "imagenet", root=root, cache_dir=str(tmp_path / "bad_cache"),
+            seed=42, feature_batch_size=0,
+        )
+
+    # Group disjointness is still checked before any loader call.
+    calls.clear()
+
+    def leaking_split(data, seed=42, ratios=(0.7, 0.2, 0.1)):
+        return {
+            "train": [s for s in data if s.source_image_id == "img00"],
+            "val": [],
+            "test": [s for s in data if s.source_image_id == "img00"],
+        }
+
+    monkeypatch.setattr(sys.modules["data.fresh_splits"], "grouped_split", leaking_split)
+    with pytest.raises(ValueError, match="group"):
+        fp.cache_features(
+            "deepweeds", "imagenet", root=root, cache_dir=str(tmp_path / "leak_cache"),
+            seed=42, feature_batch_size=3,
+        )
+    assert calls == []
+
+
 # --------------------------------------------------------------------------- #
 # Orchestrator                                                                 #
 # --------------------------------------------------------------------------- #

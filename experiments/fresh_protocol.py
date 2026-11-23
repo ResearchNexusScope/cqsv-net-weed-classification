@@ -497,14 +497,18 @@ def cache_features(
     seed: int = DEFAULT_SEED,
     ratios: Sequence[float] = DEFAULT_RATIOS,
     force: bool = False,
+    feature_batch_size: int = 128,
 ) -> dict:
     """Compute/reuse frozen features for a fresh grouped 70/20/10 split.
 
     Features are computed for *all* samples once per (dataset, backbone, root)
     and stored at a deterministic cache path; subsequent calls with different
     split seeds re-assemble train/val/test arrays from that cache without
-    re-extracting.  Group disjointness is asserted with ``split_provenance``
-    BEFORE any image is featurised, so no feature can cross a split boundary.
+    re-extracting.  Extraction is performed in bounded batches of at most
+    ``feature_batch_size`` samples so the backbone never stacks the whole
+    dataset into one tensor.  Group disjointness is asserted with
+    ``split_provenance`` BEFORE any image is featurised, so no feature can
+    cross a split boundary.
 
     Returns a dict with ``X``/``y`` (per-split arrays), ``X_train``/``y_train``
     /``X_test``/``y_test`` aliases, ``sample_ids``, ``groups``, ``cache_path``,
@@ -551,7 +555,29 @@ def cache_features(
             backbone, QMLConfig(backbone=backbone)
         )
         loader = make_feature_loader(extractor, preprocess, device)
-        features = np.asarray(loader(samples, None, "all"), dtype=np.float32)
+        batch_size = int(feature_batch_size)
+        if batch_size < 1:
+            raise ValueError("feature_batch_size must be >= 1")
+        # Bound peak memory: make_feature_loader stacks every image in a call
+        # into one tensor, so never hand it more than batch_size samples.
+        chunks: list[np.ndarray] = []
+        for start in range(0, len(samples), batch_size):
+            chunk = samples[start : start + batch_size]
+            chunk_features = np.asarray(loader(chunk, None, "all"), dtype=np.float32)
+            if chunk_features.ndim == 1:
+                chunk_features = chunk_features.reshape(len(chunk), -1)
+            if chunk_features.ndim != 2 or chunk_features.shape[0] != len(chunk):
+                raise ValueError(
+                    f"feature loader returned shape {chunk_features.shape} for "
+                    f"{len(chunk)} samples in batch starting at {start}"
+                )
+            chunks.append(chunk_features)
+        features = (
+            np.concatenate(chunks, axis=0)
+            if chunks
+            else np.empty((0, 0), dtype=np.float32)
+        )
+        # The final assembled matrix keeps the original shape contract.
         if features.ndim == 1:
             features = features.reshape(len(samples), -1)
         if features.ndim != 2 or features.shape[0] != len(samples):
@@ -576,6 +602,7 @@ def cache_features(
             "root": str(root),
             "n_samples": int(len(samples)),
             "feature_dim": int(features.shape[1]),
+            "feature_batch_size": int(batch_size),
             "feature_hash": hashlib.sha256(features.tobytes()).hexdigest(),
             "frozen": True,
             "note": (
