@@ -366,5 +366,8 @@ Fetched and verified ACRE (1.22 GB), DeepWeeds (493 MB, 17,509 rows x 3 cols), M
 **[119 | 2026-11-23] RESULTS → QHEAD-D02 — mother (matched adaptation runs committed)**
 PlantNet +adapt50: OOD acc 0.393, AUC 0.378, F1 0.426 (small gain over no-adapt 0.383/0.357/0.405). ImageNet +adapt50: OOD acc 0.485, AUC 0.392, F1 0.649 (unchanged). Both AUCs below chance; neither beats no-mixing 0.496. Provenance: 50 samples 25/25, disjointness passed, OOD sealed. n=1 per arm, diagnostic only. Budget matched in count (50) but not proportion (3% vs 50% target).
 
+**[120 | 2026-11-23] CHECKPOINT → QC-REBUILD-2026-11-22 — mother (end-of-turn)**
+Final tree `732dfba` verified: central verifier ALL CHECKS PASSED (200 passed, 13 skipped, exit 0); quantum verifier PASSED (47 passed) on `7b73594`, with qmlpipe/ and pinned environment unchanged since. All Ds gated (QHEAD-D01/D02, METH-D01, DATA-D01, EXTERNAL-D01). Three external datasets downloaded and byte-verified with manifests; 5 more registered (2 large deferred, 3 manual/index). Matched adaptation runs committed and recorded in private journal §7. Working tree clean; `.paper/` private and gitignored.
+
 **Gate rule:** a D is not accepted until the central verifier passes and a Critic audit
 returns PASS. Mother commits D-by-D after the gate.
