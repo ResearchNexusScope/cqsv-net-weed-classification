@@ -1,0 +1,1269 @@
+{
+  "additive": true,
+  "claim_boundary": "This stage measures only classical control arms on freshly grouped splits. No quantum kernel or QNN is implemented here and no quantum advantage is asserted; QNN arms belong to a separate follow-up stage. Every reported value comes from an executed run; failures are recorded as warnings and never fabricated.",
+  "comparison_notes": {
+    "exact_mcnemar": "not computed: this stage stores only one scalar accuracy per seed; paired per-image predictions are not retained, so Wilcoxon is the secondary paired test",
+    "secondary_test": "Wilcoxon signed-rank"
+  },
+  "config": {
+    "alpha": 0.05,
+    "backbones": [
+      "plantnet",
+      "imagenet"
+    ],
+    "bootstrap": {
+      "B": 2000,
+      "seed": 42
+    },
+    "cache_dir": "C:\\Users\\sugee\\.cache\\qc_datasets\\features",
+    "dataset": "acre",
+    "models": [
+      "poly2",
+      "rbf",
+      "logreg"
+    ],
+    "protocol": "fresh_protocol.v1",
+    "ratios": [
+      0.7,
+      0.2,
+      0.1
+    ],
+    "root": "None",
+    "seeds": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9
+    ]
+  },
+  "dataset": "acre",
+  "dataset_split_provenance": {},
+  "environment": {
+    "commit_hash": null,
+    "note": "versions are those importable in the executing interpreter; no installs performed",
+    "packages": {
+      "Pillow": "13.0.0",
+      "numpy": "2.0.2",
+      "scikit-learn": "1.9.1",
+      "scipy": "1.17.1",
+      "statsmodels": "0.15.0",
+      "torch": "2.15.0+xpu",
+      "torchvision": "0.29.2"
+    },
+    "platform": "Windows-10-10.0.19045-SP0",
+    "python": "3.11.9",
+    "python_executable": "C:\\Users\\sugee\\AppData\\Local\\Programs\\Python\\Python311\\python.exe"
+  },
+  "feature_cache": {},
+  "run_manifest": [
+    {
+      "backbone": "plantnet",
+      "dataset": "acre",
+      "error": "\"There is no item named 'Maize/2022-06-08-16-44/rgb-2022-10-10-17-27-34-232094.jpg' in the archive\"",
+      "error_type": "KeyError",
+      "model": "poly2",
+      "seed": 0,
+      "stage": "feature_cache",
+      "status": "skipped_cache_failure"
+    },
+    {
+      "backbone": "plantnet",
+      "dataset": "acre",
+      "error": "\"There is no item named 'Maize/2022-06-08-16-44/rgb-2022-10-10-17-27-34-232094.jpg' in the archive\"",
+      "error_type": "KeyError",
+      "model": "rbf",
+      "seed": 0,
+      "stage": "feature_cache",
+      "status": "skipped_cache_failure"
+    },
+    {
+      "backbone": "plantnet",
+      "dataset": "acre",
+      "error": "\"There is no item named 'Maize/2022-06-08-16-44/rgb-2022-10-10-17-27-34-232094.jpg' in the archive\"",
+      "error_type": "KeyError",
+      "model": "logreg",
+      "seed": 0,
+      "stage": "feature_cache",
+      "status": "skipped_cache_failure"
+    },
+    {
+      "backbone": "plantnet",
+      "dataset": "acre",
+      "error": "\"There is no item named 'Maize/2022-06-08-16-44/rgb-2022-10-10-17-27-34-232094.jpg' in the archive\"",
+      "error_type": "KeyError",
+      "model": "poly2",
+      "seed": 1,
+      "stage": "feature_cache",
+      "status": "skipped_cache_failure"
+    },
+    {
+      "backbone": "plantnet",
+      "dataset": "acre",
+      "error": "\"There is no item named 'Maize/2022-06-08-16-44/rgb-2022-10-10-17-27-34-232094.jpg' in the archive\"",
+      "error_type": "KeyError",
+      "model": "rbf",
+      "seed": 1,
+      "stage": "feature_cache",
+      "status": "skipped_cache_failure"
+    },
+    {
+      "backbone": "plantnet",
+      "dataset": "acre",
+      "error": "\"There is no item named 'Maize/2022-06-08-16-44/rgb-2022-10-10-17-27-34-232094.jpg' in the archive\"",
+      "error_type": "KeyError",
+      "model": "logreg",
+      "seed": 1,
+      "stage": "feature_cache",
+      "status": "skipped_cache_failure"
+    },
+    {
+      "backbone": "plantnet",
+      "dataset": "acre",
+      "error": "\"There is no item named 'Maize/2022-06-08-16-44/rgb-2022-10-10-17-27-34-232094.jpg' in the archive\"",
+      "error_type": "KeyError",
+      "model": "poly2",
+      "seed": 2,
+      "stage": "feature_cache",
+      "status": "skipped_cache_failure"
+    },
+    {
+      "backbone": "plantnet",
+      "dataset": "acre",
+      "error": "\"There is no item named 'Maize/2022-06-08-16-44/rgb-2022-10-10-17-27-34-232094.jpg' in the archive\"",
+      "error_type": "KeyError",
+      "model": "rbf",
+      "seed": 2,
+      "stage": "feature_cache",
+      "status": "skipped_cache_failure"
+    },
+    {
+      "backbone": "plantnet",
+      "dataset": "acre",
+      "error": "\"There is no item named 'Maize/2022-06-08-16-44/rgb-2022-10-10-17-27-34-232094.jpg' in the archive\"",
+      "error_type": "KeyError",
+      "model": "logreg",
+      "seed": 2,
+      "stage": "feature_cache",
+      "status": "skipped_cache_failure"
+    },
+    {
+      "backbone": "plantnet",
+      "dataset": "acre",
+      "error": "\"There is no item named 'Maize/2022-06-08-16-44/rgb-2022-10-10-17-27-34-232094.jpg' in the archive\"",
+      "error_type": "KeyError",
+      "model": "poly2",
+      "seed": 3,
+      "stage": "feature_cache",
+      "status": "skipped_cache_failure"
+    },
+    {
+      "backbone": "plantnet",
+      "dataset": "acre",
+      "error": "\"There is no item named 'Maize/2022-06-08-16-44/rgb-2022-10-10-17-27-34-232094.jpg' in the archive\"",
+      "error_type": "KeyError",
+      "model": "rbf",
+      "seed": 3,
+      "stage": "feature_cache",
+      "status": "skipped_cache_failure"
+    },
+    {
+      "backbone": "plantnet",
+      "dataset": "acre",
+      "error": "\"There is no item named 'Maize/2022-06-08-16-44/rgb-2022-10-10-17-27-34-232094.jpg' in the archive\"",
+      "error_type": "KeyError",
+      "model": "logreg",
+      "seed": 3,
+      "stage": "feature_cache",
+      "status": "skipped_cache_failure"
+    },
+    {
+      "backbone": "plantnet",
+      "dataset": "acre",
+      "error": "\"There is no item named 'Maize/2022-06-08-16-44/rgb-2022-10-10-17-27-34-232094.jpg' in the archive\"",
+      "error_type": "KeyError",
+      "model": "poly2",
+      "seed": 4,
+      "stage": "feature_cache",
+      "status": "skipped_cache_failure"
+    },
+    {
+      "backbone": "plantnet",
+      "dataset": "acre",
+      "error": "\"There is no item named 'Maize/2022-06-08-16-44/rgb-2022-10-10-17-27-34-232094.jpg' in the archive\"",
+      "error_type": "KeyError",
+      "model": "rbf",
+      "seed": 4,
+      "stage": "feature_cache",
+      "status": "skipped_cache_failure"
+    },
+    {
+      "backbone": "plantnet",
+      "dataset": "acre",
+      "error": "\"There is no item named 'Maize/2022-06-08-16-44/rgb-2022-10-10-17-27-34-232094.jpg' in the archive\"",
+      "error_type": "KeyError",
+      "model": "logreg",
+      "seed": 4,
+      "stage": "feature_cache",
+      "status": "skipped_cache_failure"
+    },
+    {
+      "backbone": "plantnet",
+      "dataset": "acre",
+      "error": "\"There is no item named 'Maize/2022-06-08-16-44/rgb-2022-10-10-17-27-34-232094.jpg' in the archive\"",
+      "error_type": "KeyError",
+      "model": "poly2",
+      "seed": 5,
+      "stage": "feature_cache",
+      "status": "skipped_cache_failure"
+    },
+    {
+      "backbone": "plantnet",
+      "dataset": "acre",
+      "error": "\"There is no item named 'Maize/2022-06-08-16-44/rgb-2022-10-10-17-27-34-232094.jpg' in the archive\"",
+      "error_type": "KeyError",
+      "model": "rbf",
+      "seed": 5,
+      "stage": "feature_cache",
+      "status": "skipped_cache_failure"
+    },
+    {
+      "backbone": "plantnet",
+      "dataset": "acre",
+      "error": "\"There is no item named 'Maize/2022-06-08-16-44/rgb-2022-10-10-17-27-34-232094.jpg' in the archive\"",
+      "error_type": "KeyError",
+      "model": "logreg",
+      "seed": 5,
+      "stage": "feature_cache",
+      "status": "skipped_cache_failure"
+    },
+    {
+      "backbone": "plantnet",
+      "dataset": "acre",
+      "error": "\"There is no item named 'Maize/2022-06-08-16-44/rgb-2022-10-10-17-27-34-232094.jpg' in the archive\"",
+      "error_type": "KeyError",
+      "model": "poly2",
+      "seed": 6,
+      "stage": "feature_cache",
+      "status": "skipped_cache_failure"
+    },
+    {
+      "backbone": "plantnet",
+      "dataset": "acre",
+      "error": "\"There is no item named 'Maize/2022-06-08-16-44/rgb-2022-10-10-17-27-34-232094.jpg' in the archive\"",
+      "error_type": "KeyError",
+      "model": "rbf",
+      "seed": 6,
+      "stage": "feature_cache",
+      "status": "skipped_cache_failure"
+    },
+    {
+      "backbone": "plantnet",
+      "dataset": "acre",
+      "error": "\"There is no item named 'Maize/2022-06-08-16-44/rgb-2022-10-10-17-27-34-232094.jpg' in the archive\"",
+      "error_type": "KeyError",
+      "model": "logreg",
+      "seed": 6,
+      "stage": "feature_cache",
+      "status": "skipped_cache_failure"
+    },
+    {
+      "backbone": "plantnet",
+      "dataset": "acre",
+      "error": "\"There is no item named 'Maize/2022-06-08-16-44/rgb-2022-10-10-17-27-34-232094.jpg' in the archive\"",
+      "error_type": "KeyError",
+      "model": "poly2",
+      "seed": 7,
+      "stage": "feature_cache",
+      "status": "skipped_cache_failure"
+    },
+    {
+      "backbone": "plantnet",
+      "dataset": "acre",
+      "error": "\"There is no item named 'Maize/2022-06-08-16-44/rgb-2022-10-10-17-27-34-232094.jpg' in the archive\"",
+      "error_type": "KeyError",
+      "model": "rbf",
+      "seed": 7,
+      "stage": "feature_cache",
+      "status": "skipped_cache_failure"
+    },
+    {
+      "backbone": "plantnet",
+      "dataset": "acre",
+      "error": "\"There is no item named 'Maize/2022-06-08-16-44/rgb-2022-10-10-17-27-34-232094.jpg' in the archive\"",
+      "error_type": "KeyError",
+      "model": "logreg",
+      "seed": 7,
+      "stage": "feature_cache",
+      "status": "skipped_cache_failure"
+    },
+    {
+      "backbone": "plantnet",
+      "dataset": "acre",
+      "error": "\"There is no item named 'Maize/2022-06-08-16-44/rgb-2022-10-10-17-27-34-232094.jpg' in the archive\"",
+      "error_type": "KeyError",
+      "model": "poly2",
+      "seed": 8,
+      "stage": "feature_cache",
+      "status": "skipped_cache_failure"
+    },
+    {
+      "backbone": "plantnet",
+      "dataset": "acre",
+      "error": "\"There is no item named 'Maize/2022-06-08-16-44/rgb-2022-10-10-17-27-34-232094.jpg' in the archive\"",
+      "error_type": "KeyError",
+      "model": "rbf",
+      "seed": 8,
+      "stage": "feature_cache",
+      "status": "skipped_cache_failure"
+    },
+    {
+      "backbone": "plantnet",
+      "dataset": "acre",
+      "error": "\"There is no item named 'Maize/2022-06-08-16-44/rgb-2022-10-10-17-27-34-232094.jpg' in the archive\"",
+      "error_type": "KeyError",
+      "model": "logreg",
+      "seed": 8,
+      "stage": "feature_cache",
+      "status": "skipped_cache_failure"
+    },
+    {
+      "backbone": "plantnet",
+      "dataset": "acre",
+      "error": "\"There is no item named 'Maize/2022-06-08-16-44/rgb-2022-10-10-17-27-34-232094.jpg' in the archive\"",
+      "error_type": "KeyError",
+      "model": "poly2",
+      "seed": 9,
+      "stage": "feature_cache",
+      "status": "skipped_cache_failure"
+    },
+    {
+      "backbone": "plantnet",
+      "dataset": "acre",
+      "error": "\"There is no item named 'Maize/2022-06-08-16-44/rgb-2022-10-10-17-27-34-232094.jpg' in the archive\"",
+      "error_type": "KeyError",
+      "model": "rbf",
+      "seed": 9,
+      "stage": "feature_cache",
+      "status": "skipped_cache_failure"
+    },
+    {
+      "backbone": "plantnet",
+      "dataset": "acre",
+      "error": "\"There is no item named 'Maize/2022-06-08-16-44/rgb-2022-10-10-17-27-34-232094.jpg' in the archive\"",
+      "error_type": "KeyError",
+      "model": "logreg",
+      "seed": 9,
+      "stage": "feature_cache",
+      "status": "skipped_cache_failure"
+    },
+    {
+      "backbone": "imagenet",
+      "dataset": "acre",
+      "error": "\"There is no item named 'Maize/2022-06-08-16-44/rgb-2022-10-10-17-27-34-232094.jpg' in the archive\"",
+      "error_type": "KeyError",
+      "model": "poly2",
+      "seed": 0,
+      "stage": "feature_cache",
+      "status": "skipped_cache_failure"
+    },
+    {
+      "backbone": "imagenet",
+      "dataset": "acre",
+      "error": "\"There is no item named 'Maize/2022-06-08-16-44/rgb-2022-10-10-17-27-34-232094.jpg' in the archive\"",
+      "error_type": "KeyError",
+      "model": "rbf",
+      "seed": 0,
+      "stage": "feature_cache",
+      "status": "skipped_cache_failure"
+    },
+    {
+      "backbone": "imagenet",
+      "dataset": "acre",
+      "error": "\"There is no item named 'Maize/2022-06-08-16-44/rgb-2022-10-10-17-27-34-232094.jpg' in the archive\"",
+      "error_type": "KeyError",
+      "model": "logreg",
+      "seed": 0,
+      "stage": "feature_cache",
+      "status": "skipped_cache_failure"
+    },
+    {
+      "backbone": "imagenet",
+      "dataset": "acre",
+      "error": "\"There is no item named 'Maize/2022-06-08-16-44/rgb-2022-10-10-17-27-34-232094.jpg' in the archive\"",
+      "error_type": "KeyError",
+      "model": "poly2",
+      "seed": 1,
+      "stage": "feature_cache",
+      "status": "skipped_cache_failure"
+    },
+    {
+      "backbone": "imagenet",
+      "dataset": "acre",
+      "error": "\"There is no item named 'Maize/2022-06-08-16-44/rgb-2022-10-10-17-27-34-232094.jpg' in the archive\"",
+      "error_type": "KeyError",
+      "model": "rbf",
+      "seed": 1,
+      "stage": "feature_cache",
+      "status": "skipped_cache_failure"
+    },
+    {
+      "backbone": "imagenet",
+      "dataset": "acre",
+      "error": "\"There is no item named 'Maize/2022-06-08-16-44/rgb-2022-10-10-17-27-34-232094.jpg' in the archive\"",
+      "error_type": "KeyError",
+      "model": "logreg",
+      "seed": 1,
+      "stage": "feature_cache",
+      "status": "skipped_cache_failure"
+    },
+    {
+      "backbone": "imagenet",
+      "dataset": "acre",
+      "error": "\"There is no item named 'Maize/2022-06-08-16-44/rgb-2022-10-10-17-27-34-232094.jpg' in the archive\"",
+      "error_type": "KeyError",
+      "model": "poly2",
+      "seed": 2,
+      "stage": "feature_cache",
+      "status": "skipped_cache_failure"
+    },
+    {
+      "backbone": "imagenet",
+      "dataset": "acre",
+      "error": "\"There is no item named 'Maize/2022-06-08-16-44/rgb-2022-10-10-17-27-34-232094.jpg' in the archive\"",
+      "error_type": "KeyError",
+      "model": "rbf",
+      "seed": 2,
+      "stage": "feature_cache",
+      "status": "skipped_cache_failure"
+    },
+    {
+      "backbone": "imagenet",
+      "dataset": "acre",
+      "error": "\"There is no item named 'Maize/2022-06-08-16-44/rgb-2022-10-10-17-27-34-232094.jpg' in the archive\"",
+      "error_type": "KeyError",
+      "model": "logreg",
+      "seed": 2,
+      "stage": "feature_cache",
+      "status": "skipped_cache_failure"
+    },
+    {
+      "backbone": "imagenet",
+      "dataset": "acre",
+      "error": "\"There is no item named 'Maize/2022-06-08-16-44/rgb-2022-10-10-17-27-34-232094.jpg' in the archive\"",
+      "error_type": "KeyError",
+      "model": "poly2",
+      "seed": 3,
+      "stage": "feature_cache",
+      "status": "skipped_cache_failure"
+    },
+    {
+      "backbone": "imagenet",
+      "dataset": "acre",
+      "error": "\"There is no item named 'Maize/2022-06-08-16-44/rgb-2022-10-10-17-27-34-232094.jpg' in the archive\"",
+      "error_type": "KeyError",
+      "model": "rbf",
+      "seed": 3,
+      "stage": "feature_cache",
+      "status": "skipped_cache_failure"
+    },
+    {
+      "backbone": "imagenet",
+      "dataset": "acre",
+      "error": "\"There is no item named 'Maize/2022-06-08-16-44/rgb-2022-10-10-17-27-34-232094.jpg' in the archive\"",
+      "error_type": "KeyError",
+      "model": "logreg",
+      "seed": 3,
+      "stage": "feature_cache",
+      "status": "skipped_cache_failure"
+    },
+    {
+      "backbone": "imagenet",
+      "dataset": "acre",
+      "error": "\"There is no item named 'Maize/2022-06-08-16-44/rgb-2022-10-10-17-27-34-232094.jpg' in the archive\"",
+      "error_type": "KeyError",
+      "model": "poly2",
+      "seed": 4,
+      "stage": "feature_cache",
+      "status": "skipped_cache_failure"
+    },
+    {
+      "backbone": "imagenet",
+      "dataset": "acre",
+      "error": "\"There is no item named 'Maize/2022-06-08-16-44/rgb-2022-10-10-17-27-34-232094.jpg' in the archive\"",
+      "error_type": "KeyError",
+      "model": "rbf",
+      "seed": 4,
+      "stage": "feature_cache",
+      "status": "skipped_cache_failure"
+    },
+    {
+      "backbone": "imagenet",
+      "dataset": "acre",
+      "error": "\"There is no item named 'Maize/2022-06-08-16-44/rgb-2022-10-10-17-27-34-232094.jpg' in the archive\"",
+      "error_type": "KeyError",
+      "model": "logreg",
+      "seed": 4,
+      "stage": "feature_cache",
+      "status": "skipped_cache_failure"
+    },
+    {
+      "backbone": "imagenet",
+      "dataset": "acre",
+      "error": "\"There is no item named 'Maize/2022-06-08-16-44/rgb-2022-10-10-17-27-34-232094.jpg' in the archive\"",
+      "error_type": "KeyError",
+      "model": "poly2",
+      "seed": 5,
+      "stage": "feature_cache",
+      "status": "skipped_cache_failure"
+    },
+    {
+      "backbone": "imagenet",
+      "dataset": "acre",
+      "error": "\"There is no item named 'Maize/2022-06-08-16-44/rgb-2022-10-10-17-27-34-232094.jpg' in the archive\"",
+      "error_type": "KeyError",
+      "model": "rbf",
+      "seed": 5,
+      "stage": "feature_cache",
+      "status": "skipped_cache_failure"
+    },
+    {
+      "backbone": "imagenet",
+      "dataset": "acre",
+      "error": "\"There is no item named 'Maize/2022-06-08-16-44/rgb-2022-10-10-17-27-34-232094.jpg' in the archive\"",
+      "error_type": "KeyError",
+      "model": "logreg",
+      "seed": 5,
+      "stage": "feature_cache",
+      "status": "skipped_cache_failure"
+    },
+    {
+      "backbone": "imagenet",
+      "dataset": "acre",
+      "error": "\"There is no item named 'Maize/2022-06-08-16-44/rgb-2022-10-10-17-27-34-232094.jpg' in the archive\"",
+      "error_type": "KeyError",
+      "model": "poly2",
+      "seed": 6,
+      "stage": "feature_cache",
+      "status": "skipped_cache_failure"
+    },
+    {
+      "backbone": "imagenet",
+      "dataset": "acre",
+      "error": "\"There is no item named 'Maize/2022-06-08-16-44/rgb-2022-10-10-17-27-34-232094.jpg' in the archive\"",
+      "error_type": "KeyError",
+      "model": "rbf",
+      "seed": 6,
+      "stage": "feature_cache",
+      "status": "skipped_cache_failure"
+    },
+    {
+      "backbone": "imagenet",
+      "dataset": "acre",
+      "error": "\"There is no item named 'Maize/2022-06-08-16-44/rgb-2022-10-10-17-27-34-232094.jpg' in the archive\"",
+      "error_type": "KeyError",
+      "model": "logreg",
+      "seed": 6,
+      "stage": "feature_cache",
+      "status": "skipped_cache_failure"
+    },
+    {
+      "backbone": "imagenet",
+      "dataset": "acre",
+      "error": "\"There is no item named 'Maize/2022-06-08-16-44/rgb-2022-10-10-17-27-34-232094.jpg' in the archive\"",
+      "error_type": "KeyError",
+      "model": "poly2",
+      "seed": 7,
+      "stage": "feature_cache",
+      "status": "skipped_cache_failure"
+    },
+    {
+      "backbone": "imagenet",
+      "dataset": "acre",
+      "error": "\"There is no item named 'Maize/2022-06-08-16-44/rgb-2022-10-10-17-27-34-232094.jpg' in the archive\"",
+      "error_type": "KeyError",
+      "model": "rbf",
+      "seed": 7,
+      "stage": "feature_cache",
+      "status": "skipped_cache_failure"
+    },
+    {
+      "backbone": "imagenet",
+      "dataset": "acre",
+      "error": "\"There is no item named 'Maize/2022-06-08-16-44/rgb-2022-10-10-17-27-34-232094.jpg' in the archive\"",
+      "error_type": "KeyError",
+      "model": "logreg",
+      "seed": 7,
+      "stage": "feature_cache",
+      "status": "skipped_cache_failure"
+    },
+    {
+      "backbone": "imagenet",
+      "dataset": "acre",
+      "error": "\"There is no item named 'Maize/2022-06-08-16-44/rgb-2022-10-10-17-27-34-232094.jpg' in the archive\"",
+      "error_type": "KeyError",
+      "model": "poly2",
+      "seed": 8,
+      "stage": "feature_cache",
+      "status": "skipped_cache_failure"
+    },
+    {
+      "backbone": "imagenet",
+      "dataset": "acre",
+      "error": "\"There is no item named 'Maize/2022-06-08-16-44/rgb-2022-10-10-17-27-34-232094.jpg' in the archive\"",
+      "error_type": "KeyError",
+      "model": "rbf",
+      "seed": 8,
+      "stage": "feature_cache",
+      "status": "skipped_cache_failure"
+    },
+    {
+      "backbone": "imagenet",
+      "dataset": "acre",
+      "error": "\"There is no item named 'Maize/2022-06-08-16-44/rgb-2022-10-10-17-27-34-232094.jpg' in the archive\"",
+      "error_type": "KeyError",
+      "model": "logreg",
+      "seed": 8,
+      "stage": "feature_cache",
+      "status": "skipped_cache_failure"
+    },
+    {
+      "backbone": "imagenet",
+      "dataset": "acre",
+      "error": "\"There is no item named 'Maize/2022-06-08-16-44/rgb-2022-10-10-17-27-34-232094.jpg' in the archive\"",
+      "error_type": "KeyError",
+      "model": "poly2",
+      "seed": 9,
+      "stage": "feature_cache",
+      "status": "skipped_cache_failure"
+    },
+    {
+      "backbone": "imagenet",
+      "dataset": "acre",
+      "error": "\"There is no item named 'Maize/2022-06-08-16-44/rgb-2022-10-10-17-27-34-232094.jpg' in the archive\"",
+      "error_type": "KeyError",
+      "model": "rbf",
+      "seed": 9,
+      "stage": "feature_cache",
+      "status": "skipped_cache_failure"
+    },
+    {
+      "backbone": "imagenet",
+      "dataset": "acre",
+      "error": "\"There is no item named 'Maize/2022-06-08-16-44/rgb-2022-10-10-17-27-34-232094.jpg' in the archive\"",
+      "error_type": "KeyError",
+      "model": "logreg",
+      "seed": 9,
+      "stage": "feature_cache",
+      "status": "skipped_cache_failure"
+    }
+  ],
+  "schema": "fresh_protocol.provenance.v1",
+  "warnings": [
+    {
+      "backbone": "plantnet",
+      "dataset": "acre",
+      "error": "\"There is no item named 'Maize/2022-06-08-16-44/rgb-2022-10-10-17-27-34-232094.jpg' in the archive\"",
+      "error_type": "KeyError",
+      "model": "poly2",
+      "seed": 0,
+      "stage": "feature_cache",
+      "status": "skipped_cache_failure"
+    },
+    {
+      "backbone": "plantnet",
+      "dataset": "acre",
+      "error": "\"There is no item named 'Maize/2022-06-08-16-44/rgb-2022-10-10-17-27-34-232094.jpg' in the archive\"",
+      "error_type": "KeyError",
+      "model": "rbf",
+      "seed": 0,
+      "stage": "feature_cache",
+      "status": "skipped_cache_failure"
+    },
+    {
+      "backbone": "plantnet",
+      "dataset": "acre",
+      "error": "\"There is no item named 'Maize/2022-06-08-16-44/rgb-2022-10-10-17-27-34-232094.jpg' in the archive\"",
+      "error_type": "KeyError",
+      "model": "logreg",
+      "seed": 0,
+      "stage": "feature_cache",
+      "status": "skipped_cache_failure"
+    },
+    {
+      "backbone": "plantnet",
+      "dataset": "acre",
+      "error": "\"There is no item named 'Maize/2022-06-08-16-44/rgb-2022-10-10-17-27-34-232094.jpg' in the archive\"",
+      "error_type": "KeyError",
+      "model": "poly2",
+      "seed": 1,
+      "stage": "feature_cache",
+      "status": "skipped_cache_failure"
+    },
+    {
+      "backbone": "plantnet",
+      "dataset": "acre",
+      "error": "\"There is no item named 'Maize/2022-06-08-16-44/rgb-2022-10-10-17-27-34-232094.jpg' in the archive\"",
+      "error_type": "KeyError",
+      "model": "rbf",
+      "seed": 1,
+      "stage": "feature_cache",
+      "status": "skipped_cache_failure"
+    },
+    {
+      "backbone": "plantnet",
+      "dataset": "acre",
+      "error": "\"There is no item named 'Maize/2022-06-08-16-44/rgb-2022-10-10-17-27-34-232094.jpg' in the archive\"",
+      "error_type": "KeyError",
+      "model": "logreg",
+      "seed": 1,
+      "stage": "feature_cache",
+      "status": "skipped_cache_failure"
+    },
+    {
+      "backbone": "plantnet",
+      "dataset": "acre",
+      "error": "\"There is no item named 'Maize/2022-06-08-16-44/rgb-2022-10-10-17-27-34-232094.jpg' in the archive\"",
+      "error_type": "KeyError",
+      "model": "poly2",
+      "seed": 2,
+      "stage": "feature_cache",
+      "status": "skipped_cache_failure"
+    },
+    {
+      "backbone": "plantnet",
+      "dataset": "acre",
+      "error": "\"There is no item named 'Maize/2022-06-08-16-44/rgb-2022-10-10-17-27-34-232094.jpg' in the archive\"",
+      "error_type": "KeyError",
+      "model": "rbf",
+      "seed": 2,
+      "stage": "feature_cache",
+      "status": "skipped_cache_failure"
+    },
+    {
+      "backbone": "plantnet",
+      "dataset": "acre",
+      "error": "\"There is no item named 'Maize/2022-06-08-16-44/rgb-2022-10-10-17-27-34-232094.jpg' in the archive\"",
+      "error_type": "KeyError",
+      "model": "logreg",
+      "seed": 2,
+      "stage": "feature_cache",
+      "status": "skipped_cache_failure"
+    },
+    {
+      "backbone": "plantnet",
+      "dataset": "acre",
+      "error": "\"There is no item named 'Maize/2022-06-08-16-44/rgb-2022-10-10-17-27-34-232094.jpg' in the archive\"",
+      "error_type": "KeyError",
+      "model": "poly2",
+      "seed": 3,
+      "stage": "feature_cache",
+      "status": "skipped_cache_failure"
+    },
+    {
+      "backbone": "plantnet",
+      "dataset": "acre",
+      "error": "\"There is no item named 'Maize/2022-06-08-16-44/rgb-2022-10-10-17-27-34-232094.jpg' in the archive\"",
+      "error_type": "KeyError",
+      "model": "rbf",
+      "seed": 3,
+      "stage": "feature_cache",
+      "status": "skipped_cache_failure"
+    },
+    {
+      "backbone": "plantnet",
+      "dataset": "acre",
+      "error": "\"There is no item named 'Maize/2022-06-08-16-44/rgb-2022-10-10-17-27-34-232094.jpg' in the archive\"",
+      "error_type": "KeyError",
+      "model": "logreg",
+      "seed": 3,
+      "stage": "feature_cache",
+      "status": "skipped_cache_failure"
+    },
+    {
+      "backbone": "plantnet",
+      "dataset": "acre",
+      "error": "\"There is no item named 'Maize/2022-06-08-16-44/rgb-2022-10-10-17-27-34-232094.jpg' in the archive\"",
+      "error_type": "KeyError",
+      "model": "poly2",
+      "seed": 4,
+      "stage": "feature_cache",
+      "status": "skipped_cache_failure"
+    },
+    {
+      "backbone": "plantnet",
+      "dataset": "acre",
+      "error": "\"There is no item named 'Maize/2022-06-08-16-44/rgb-2022-10-10-17-27-34-232094.jpg' in the archive\"",
+      "error_type": "KeyError",
+      "model": "rbf",
+      "seed": 4,
+      "stage": "feature_cache",
+      "status": "skipped_cache_failure"
+    },
+    {
+      "backbone": "plantnet",
+      "dataset": "acre",
+      "error": "\"There is no item named 'Maize/2022-06-08-16-44/rgb-2022-10-10-17-27-34-232094.jpg' in the archive\"",
+      "error_type": "KeyError",
+      "model": "logreg",
+      "seed": 4,
+      "stage": "feature_cache",
+      "status": "skipped_cache_failure"
+    },
+    {
+      "backbone": "plantnet",
+      "dataset": "acre",
+      "error": "\"There is no item named 'Maize/2022-06-08-16-44/rgb-2022-10-10-17-27-34-232094.jpg' in the archive\"",
+      "error_type": "KeyError",
+      "model": "poly2",
+      "seed": 5,
+      "stage": "feature_cache",
+      "status": "skipped_cache_failure"
+    },
+    {
+      "backbone": "plantnet",
+      "dataset": "acre",
+      "error": "\"There is no item named 'Maize/2022-06-08-16-44/rgb-2022-10-10-17-27-34-232094.jpg' in the archive\"",
+      "error_type": "KeyError",
+      "model": "rbf",
+      "seed": 5,
+      "stage": "feature_cache",
+      "status": "skipped_cache_failure"
+    },
+    {
+      "backbone": "plantnet",
+      "dataset": "acre",
+      "error": "\"There is no item named 'Maize/2022-06-08-16-44/rgb-2022-10-10-17-27-34-232094.jpg' in the archive\"",
+      "error_type": "KeyError",
+      "model": "logreg",
+      "seed": 5,
+      "stage": "feature_cache",
+      "status": "skipped_cache_failure"
+    },
+    {
+      "backbone": "plantnet",
+      "dataset": "acre",
+      "error": "\"There is no item named 'Maize/2022-06-08-16-44/rgb-2022-10-10-17-27-34-232094.jpg' in the archive\"",
+      "error_type": "KeyError",
+      "model": "poly2",
+      "seed": 6,
+      "stage": "feature_cache",
+      "status": "skipped_cache_failure"
+    },
+    {
+      "backbone": "plantnet",
+      "dataset": "acre",
+      "error": "\"There is no item named 'Maize/2022-06-08-16-44/rgb-2022-10-10-17-27-34-232094.jpg' in the archive\"",
+      "error_type": "KeyError",
+      "model": "rbf",
+      "seed": 6,
+      "stage": "feature_cache",
+      "status": "skipped_cache_failure"
+    },
+    {
+      "backbone": "plantnet",
+      "dataset": "acre",
+      "error": "\"There is no item named 'Maize/2022-06-08-16-44/rgb-2022-10-10-17-27-34-232094.jpg' in the archive\"",
+      "error_type": "KeyError",
+      "model": "logreg",
+      "seed": 6,
+      "stage": "feature_cache",
+      "status": "skipped_cache_failure"
+    },
+    {
+      "backbone": "plantnet",
+      "dataset": "acre",
+      "error": "\"There is no item named 'Maize/2022-06-08-16-44/rgb-2022-10-10-17-27-34-232094.jpg' in the archive\"",
+      "error_type": "KeyError",
+      "model": "poly2",
+      "seed": 7,
+      "stage": "feature_cache",
+      "status": "skipped_cache_failure"
+    },
+    {
+      "backbone": "plantnet",
+      "dataset": "acre",
+      "error": "\"There is no item named 'Maize/2022-06-08-16-44/rgb-2022-10-10-17-27-34-232094.jpg' in the archive\"",
+      "error_type": "KeyError",
+      "model": "rbf",
+      "seed": 7,
+      "stage": "feature_cache",
+      "status": "skipped_cache_failure"
+    },
+    {
+      "backbone": "plantnet",
+      "dataset": "acre",
+      "error": "\"There is no item named 'Maize/2022-06-08-16-44/rgb-2022-10-10-17-27-34-232094.jpg' in the archive\"",
+      "error_type": "KeyError",
+      "model": "logreg",
+      "seed": 7,
+      "stage": "feature_cache",
+      "status": "skipped_cache_failure"
+    },
+    {
+      "backbone": "plantnet",
+      "dataset": "acre",
+      "error": "\"There is no item named 'Maize/2022-06-08-16-44/rgb-2022-10-10-17-27-34-232094.jpg' in the archive\"",
+      "error_type": "KeyError",
+      "model": "poly2",
+      "seed": 8,
+      "stage": "feature_cache",
+      "status": "skipped_cache_failure"
+    },
+    {
+      "backbone": "plantnet",
+      "dataset": "acre",
+      "error": "\"There is no item named 'Maize/2022-06-08-16-44/rgb-2022-10-10-17-27-34-232094.jpg' in the archive\"",
+      "error_type": "KeyError",
+      "model": "rbf",
+      "seed": 8,
+      "stage": "feature_cache",
+      "status": "skipped_cache_failure"
+    },
+    {
+      "backbone": "plantnet",
+      "dataset": "acre",
+      "error": "\"There is no item named 'Maize/2022-06-08-16-44/rgb-2022-10-10-17-27-34-232094.jpg' in the archive\"",
+      "error_type": "KeyError",
+      "model": "logreg",
+      "seed": 8,
+      "stage": "feature_cache",
+      "status": "skipped_cache_failure"
+    },
+    {
+      "backbone": "plantnet",
+      "dataset": "acre",
+      "error": "\"There is no item named 'Maize/2022-06-08-16-44/rgb-2022-10-10-17-27-34-232094.jpg' in the archive\"",
+      "error_type": "KeyError",
+      "model": "poly2",
+      "seed": 9,
+      "stage": "feature_cache",
+      "status": "skipped_cache_failure"
+    },
+    {
+      "backbone": "plantnet",
+      "dataset": "acre",
+      "error": "\"There is no item named 'Maize/2022-06-08-16-44/rgb-2022-10-10-17-27-34-232094.jpg' in the archive\"",
+      "error_type": "KeyError",
+      "model": "rbf",
+      "seed": 9,
+      "stage": "feature_cache",
+      "status": "skipped_cache_failure"
+    },
+    {
+      "backbone": "plantnet",
+      "dataset": "acre",
+      "error": "\"There is no item named 'Maize/2022-06-08-16-44/rgb-2022-10-10-17-27-34-232094.jpg' in the archive\"",
+      "error_type": "KeyError",
+      "model": "logreg",
+      "seed": 9,
+      "stage": "feature_cache",
+      "status": "skipped_cache_failure"
+    },
+    {
+      "backbone": "imagenet",
+      "dataset": "acre",
+      "error": "\"There is no item named 'Maize/2022-06-08-16-44/rgb-2022-10-10-17-27-34-232094.jpg' in the archive\"",
+      "error_type": "KeyError",
+      "model": "poly2",
+      "seed": 0,
+      "stage": "feature_cache",
+      "status": "skipped_cache_failure"
+    },
+    {
+      "backbone": "imagenet",
+      "dataset": "acre",
+      "error": "\"There is no item named 'Maize/2022-06-08-16-44/rgb-2022-10-10-17-27-34-232094.jpg' in the archive\"",
+      "error_type": "KeyError",
+      "model": "rbf",
+      "seed": 0,
+      "stage": "feature_cache",
+      "status": "skipped_cache_failure"
+    },
+    {
+      "backbone": "imagenet",
+      "dataset": "acre",
+      "error": "\"There is no item named 'Maize/2022-06-08-16-44/rgb-2022-10-10-17-27-34-232094.jpg' in the archive\"",
+      "error_type": "KeyError",
+      "model": "logreg",
+      "seed": 0,
+      "stage": "feature_cache",
+      "status": "skipped_cache_failure"
+    },
+    {
+      "backbone": "imagenet",
+      "dataset": "acre",
+      "error": "\"There is no item named 'Maize/2022-06-08-16-44/rgb-2022-10-10-17-27-34-232094.jpg' in the archive\"",
+      "error_type": "KeyError",
+      "model": "poly2",
+      "seed": 1,
+      "stage": "feature_cache",
+      "status": "skipped_cache_failure"
+    },
+    {
+      "backbone": "imagenet",
+      "dataset": "acre",
+      "error": "\"There is no item named 'Maize/2022-06-08-16-44/rgb-2022-10-10-17-27-34-232094.jpg' in the archive\"",
+      "error_type": "KeyError",
+      "model": "rbf",
+      "seed": 1,
+      "stage": "feature_cache",
+      "status": "skipped_cache_failure"
+    },
+    {
+      "backbone": "imagenet",
+      "dataset": "acre",
+      "error": "\"There is no item named 'Maize/2022-06-08-16-44/rgb-2022-10-10-17-27-34-232094.jpg' in the archive\"",
+      "error_type": "KeyError",
+      "model": "logreg",
+      "seed": 1,
+      "stage": "feature_cache",
+      "status": "skipped_cache_failure"
+    },
+    {
+      "backbone": "imagenet",
+      "dataset": "acre",
+      "error": "\"There is no item named 'Maize/2022-06-08-16-44/rgb-2022-10-10-17-27-34-232094.jpg' in the archive\"",
+      "error_type": "KeyError",
+      "model": "poly2",
+      "seed": 2,
+      "stage": "feature_cache",
+      "status": "skipped_cache_failure"
+    },
+    {
+      "backbone": "imagenet",
+      "dataset": "acre",
+      "error": "\"There is no item named 'Maize/2022-06-08-16-44/rgb-2022-10-10-17-27-34-232094.jpg' in the archive\"",
+      "error_type": "KeyError",
+      "model": "rbf",
+      "seed": 2,
+      "stage": "feature_cache",
+      "status": "skipped_cache_failure"
+    },
+    {
+      "backbone": "imagenet",
+      "dataset": "acre",
+      "error": "\"There is no item named 'Maize/2022-06-08-16-44/rgb-2022-10-10-17-27-34-232094.jpg' in the archive\"",
+      "error_type": "KeyError",
+      "model": "logreg",
+      "seed": 2,
+      "stage": "feature_cache",
+      "status": "skipped_cache_failure"
+    },
+    {
+      "backbone": "imagenet",
+      "dataset": "acre",
+      "error": "\"There is no item named 'Maize/2022-06-08-16-44/rgb-2022-10-10-17-27-34-232094.jpg' in the archive\"",
+      "error_type": "KeyError",
+      "model": "poly2",
+      "seed": 3,
+      "stage": "feature_cache",
+      "status": "skipped_cache_failure"
+    },
+    {
+      "backbone": "imagenet",
+      "dataset": "acre",
+      "error": "\"There is no item named 'Maize/2022-06-08-16-44/rgb-2022-10-10-17-27-34-232094.jpg' in the archive\"",
+      "error_type": "KeyError",
+      "model": "rbf",
+      "seed": 3,
+      "stage": "feature_cache",
+      "status": "skipped_cache_failure"
+    },
+    {
+      "backbone": "imagenet",
+      "dataset": "acre",
+      "error": "\"There is no item named 'Maize/2022-06-08-16-44/rgb-2022-10-10-17-27-34-232094.jpg' in the archive\"",
+      "error_type": "KeyError",
+      "model": "logreg",
+      "seed": 3,
+      "stage": "feature_cache",
+      "status": "skipped_cache_failure"
+    },
+    {
+      "backbone": "imagenet",
+      "dataset": "acre",
+      "error": "\"There is no item named 'Maize/2022-06-08-16-44/rgb-2022-10-10-17-27-34-232094.jpg' in the archive\"",
+      "error_type": "KeyError",
+      "model": "poly2",
+      "seed": 4,
+      "stage": "feature_cache",
+      "status": "skipped_cache_failure"
+    },
+    {
+      "backbone": "imagenet",
+      "dataset": "acre",
+      "error": "\"There is no item named 'Maize/2022-06-08-16-44/rgb-2022-10-10-17-27-34-232094.jpg' in the archive\"",
+      "error_type": "KeyError",
+      "model": "rbf",
+      "seed": 4,
+      "stage": "feature_cache",
+      "status": "skipped_cache_failure"
+    },
+    {
+      "backbone": "imagenet",
+      "dataset": "acre",
+      "error": "\"There is no item named 'Maize/2022-06-08-16-44/rgb-2022-10-10-17-27-34-232094.jpg' in the archive\"",
+      "error_type": "KeyError",
+      "model": "logreg",
+      "seed": 4,
+      "stage": "feature_cache",
+      "status": "skipped_cache_failure"
+    },
+    {
+      "backbone": "imagenet",
+      "dataset": "acre",
+      "error": "\"There is no item named 'Maize/2022-06-08-16-44/rgb-2022-10-10-17-27-34-232094.jpg' in the archive\"",
+      "error_type": "KeyError",
+      "model": "poly2",
+      "seed": 5,
+      "stage": "feature_cache",
+      "status": "skipped_cache_failure"
+    },
+    {
+      "backbone": "imagenet",
+      "dataset": "acre",
+      "error": "\"There is no item named 'Maize/2022-06-08-16-44/rgb-2022-10-10-17-27-34-232094.jpg' in the archive\"",
+      "error_type": "KeyError",
+      "model": "rbf",
+      "seed": 5,
+      "stage": "feature_cache",
+      "status": "skipped_cache_failure"
+    },
+    {
+      "backbone": "imagenet",
+      "dataset": "acre",
+      "error": "\"There is no item named 'Maize/2022-06-08-16-44/rgb-2022-10-10-17-27-34-232094.jpg' in the archive\"",
+      "error_type": "KeyError",
+      "model": "logreg",
+      "seed": 5,
+      "stage": "feature_cache",
+      "status": "skipped_cache_failure"
+    },
+    {
+      "backbone": "imagenet",
+      "dataset": "acre",
+      "error": "\"There is no item named 'Maize/2022-06-08-16-44/rgb-2022-10-10-17-27-34-232094.jpg' in the archive\"",
+      "error_type": "KeyError",
+      "model": "poly2",
+      "seed": 6,
+      "stage": "feature_cache",
+      "status": "skipped_cache_failure"
+    },
+    {
+      "backbone": "imagenet",
+      "dataset": "acre",
+      "error": "\"There is no item named 'Maize/2022-06-08-16-44/rgb-2022-10-10-17-27-34-232094.jpg' in the archive\"",
+      "error_type": "KeyError",
+      "model": "rbf",
+      "seed": 6,
+      "stage": "feature_cache",
+      "status": "skipped_cache_failure"
+    },
+    {
+      "backbone": "imagenet",
+      "dataset": "acre",
+      "error": "\"There is no item named 'Maize/2022-06-08-16-44/rgb-2022-10-10-17-27-34-232094.jpg' in the archive\"",
+      "error_type": "KeyError",
+      "model": "logreg",
+      "seed": 6,
+      "stage": "feature_cache",
+      "status": "skipped_cache_failure"
+    },
+    {
+      "backbone": "imagenet",
+      "dataset": "acre",
+      "error": "\"There is no item named 'Maize/2022-06-08-16-44/rgb-2022-10-10-17-27-34-232094.jpg' in the archive\"",
+      "error_type": "KeyError",
+      "model": "poly2",
+      "seed": 7,
+      "stage": "feature_cache",
+      "status": "skipped_cache_failure"
+    },
+    {
+      "backbone": "imagenet",
+      "dataset": "acre",
+      "error": "\"There is no item named 'Maize/2022-06-08-16-44/rgb-2022-10-10-17-27-34-232094.jpg' in the archive\"",
+      "error_type": "KeyError",
+      "model": "rbf",
+      "seed": 7,
+      "stage": "feature_cache",
+      "status": "skipped_cache_failure"
+    },
+    {
+      "backbone": "imagenet",
+      "dataset": "acre",
+      "error": "\"There is no item named 'Maize/2022-06-08-16-44/rgb-2022-10-10-17-27-34-232094.jpg' in the archive\"",
+      "error_type": "KeyError",
+      "model": "logreg",
+      "seed": 7,
+      "stage": "feature_cache",
+      "status": "skipped_cache_failure"
+    },
+    {
+      "backbone": "imagenet",
+      "dataset": "acre",
+      "error": "\"There is no item named 'Maize/2022-06-08-16-44/rgb-2022-10-10-17-27-34-232094.jpg' in the archive\"",
+      "error_type": "KeyError",
+      "model": "poly2",
+      "seed": 8,
+      "stage": "feature_cache",
+      "status": "skipped_cache_failure"
+    },
+    {
+      "backbone": "imagenet",
+      "dataset": "acre",
+      "error": "\"There is no item named 'Maize/2022-06-08-16-44/rgb-2022-10-10-17-27-34-232094.jpg' in the archive\"",
+      "error_type": "KeyError",
+      "model": "rbf",
+      "seed": 8,
+      "stage": "feature_cache",
+      "status": "skipped_cache_failure"
+    },
+    {
+      "backbone": "imagenet",
+      "dataset": "acre",
+      "error": "\"There is no item named 'Maize/2022-06-08-16-44/rgb-2022-10-10-17-27-34-232094.jpg' in the archive\"",
+      "error_type": "KeyError",
+      "model": "logreg",
+      "seed": 8,
+      "stage": "feature_cache",
+      "status": "skipped_cache_failure"
+    },
+    {
+      "backbone": "imagenet",
+      "dataset": "acre",
+      "error": "\"There is no item named 'Maize/2022-06-08-16-44/rgb-2022-10-10-17-27-34-232094.jpg' in the archive\"",
+      "error_type": "KeyError",
+      "model": "poly2",
+      "seed": 9,
+      "stage": "feature_cache",
+      "status": "skipped_cache_failure"
+    },
+    {
+      "backbone": "imagenet",
+      "dataset": "acre",
+      "error": "\"There is no item named 'Maize/2022-06-08-16-44/rgb-2022-10-10-17-27-34-232094.jpg' in the archive\"",
+      "error_type": "KeyError",
+      "model": "rbf",
+      "seed": 9,
+      "stage": "feature_cache",
+      "status": "skipped_cache_failure"
+    },
+    {
+      "backbone": "imagenet",
+      "dataset": "acre",
+      "error": "\"There is no item named 'Maize/2022-06-08-16-44/rgb-2022-10-10-17-27-34-232094.jpg' in the archive\"",
+      "error_type": "KeyError",
+      "model": "logreg",
+      "seed": 9,
+      "stage": "feature_cache",
+      "status": "skipped_cache_failure"
+    }
+  ]
+}

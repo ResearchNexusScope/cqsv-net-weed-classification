@@ -396,5 +396,8 @@ Central verifier AFTER batching fix: 230 passed / 13 skipped, exit 0. Quantum ve
 **[129 | 2026-11-23] RESULT → FRESH-PROTOCOL — mother (MaizeSet unusable, honest skip)**
 Real MaizeSet run: all 60 runs recorded as skipped_cache_failure with the real ValueError — the downloaded dataset has 3,330/3,330 maize_* images and only YOLO class 0, no weed class. No fabricated metrics. Registry + acquisition doc updated. DeepWeeds 70:20:10 run started.
 
+**[130 | 2026-11-23] RESULT → FRESH-PROTOCOL — mother (DeepWeeds success, ACRE path blocker)**
+DeepWeeds 60/60 runs succeeded: PlantNet poly2 0.9042±0.0056 (AUC 0.966), rbf 0.9046±0.0080; ImageNet poly2 0.8681±0.0073, rbf 0.8653±0.0089; logreg significantly worse (p_holm ~1e-8, power 1.0). ACRE preparation failed: COCO file_name omits the archive's `data/` prefix; all 60 runs honestly skipped with the real KeyError. Fix dispatched.
+
 **Gate rule:** a D is not accepted until the central verifier passes and a Critic audit
 returns PASS. Mother commits D-by-D after the gate.
