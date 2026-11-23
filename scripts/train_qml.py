@@ -52,12 +52,45 @@ CONFIG_KEYS = frozenset(
         "projection_dim",
         "classical_dim",
         "backbone",
+        "loss",
+        "class_weight",
+        "focal_gamma",
+        "focal_alpha",
+        "early_metric",
+        "early_min_delta",
+        "temperature_calibration",
+        "balanced_sampler",
     }
 )
 
-# Local mirror of QMLConfig's allowed backbones so dry-run validation needs no
+# Local mirrors of QMLConfig's allowed values so dry-run validation needs no
 # heavy import (the config module itself is standard-library only).
 ALLOWED_BACKBONES = frozenset({"plantnet", "imagenet"})
+ALLOWED_LOSSES = frozenset({"ce", "focal"})
+ALLOWED_CLASS_WEIGHTS = frozenset({"none", "balanced"})
+ALLOWED_EARLY_METRICS = frozenset({"val_loss", "balanced_accuracy", "macro_f1"})
+
+# QHEAD-D01 CLI defaults.  These deliberately differ from the QMLConfig
+# dataclass defaults (which preserve legacy behaviour for reproducibility).
+# Each choice is written to provenance.json with its rationale so no balanced
+# setting is mistaken for a legacy result.
+RECIPE_DEFAULTS = {
+    "loss": "focal",
+    "class_weight": "balanced",
+    "focal_gamma": 2.0,
+    "focal_alpha": None,
+    "early_metric": "balanced_accuracy",
+    "early_min_delta": 0.0,
+    "temperature_calibration": True,
+    "balanced_sampler": False,
+}
+RECIPE_DEFAULT_NOTES = {
+    "loss": "focal down-weights easy examples; --loss ce --class-weight balanced gives standard balanced CE",
+    "class_weight": "weights n/(K*count) are computed from TRAIN labels only",
+    "early_metric": "balanced_accuracy prevents a collapsed single-class model from being checkpointed",
+    "temperature_calibration": "temperature (+ logit adjustment) fitted on ID_VAL only; never on OOD",
+    "balanced_sampler": "off by default to avoid triple correction; opt in with --balanced-sampler",
+}
 
 # Raw (pre-projection) feature width emitted by each frozen backbone.  The
 # feature-fed QNN projection consumes this many inputs, so ``classical_dim``
@@ -88,6 +121,54 @@ def _build_parser() -> argparse.ArgumentParser:
         choices=("plantnet", "imagenet"),
         default=None,
         help="frozen feature backbone (default plantnet; may also be set via --config-json)",
+    )
+    parser.add_argument(
+        "--loss",
+        choices=sorted(ALLOWED_LOSSES),
+        default=None,
+        help="training objective (QML CLI default: focal; legacy: ce)",
+    )
+    parser.add_argument(
+        "--class-weight",
+        choices=sorted(ALLOWED_CLASS_WEIGHTS),
+        default=None,
+        help="per-class loss weights from TRAIN labels (default: balanced; legacy: none)",
+    )
+    parser.add_argument(
+        "--early-metric",
+        choices=sorted(ALLOWED_EARLY_METRICS),
+        default=None,
+        help="checkpoint/early-stop metric (default: balanced_accuracy; legacy: val_loss)",
+    )
+    calibration_group = parser.add_mutually_exclusive_group()
+    calibration_group.add_argument(
+        "--temperature-calibration",
+        dest="temperature_calibration",
+        action="store_true",
+        default=None,
+        help="fit temperature/logit adjustment on ID_VAL only (default: on)",
+    )
+    calibration_group.add_argument(
+        "--no-temperature-calibration",
+        dest="temperature_calibration",
+        action="store_false",
+        default=None,
+        help="disable ID_VAL calibration (legacy behaviour)",
+    )
+    sampler_group = parser.add_mutually_exclusive_group()
+    sampler_group.add_argument(
+        "--balanced-sampler",
+        dest="balanced_sampler",
+        action="store_true",
+        default=None,
+        help="use a class-balanced sampler built from TRAIN labels (default: off)",
+    )
+    sampler_group.add_argument(
+        "--no-balanced-sampler",
+        dest="balanced_sampler",
+        action="store_false",
+        default=None,
+        help="disable the class-balanced sampler",
     )
     parser.add_argument(
         "--smoke",
@@ -156,9 +237,47 @@ def _resolve_plan(args: argparse.Namespace) -> tuple[dict, list[str]]:
         "seed": int(choose(None, "seed", os.getenv("QC_SEED", "42"))),
         "noise_depolarizing": choose(None, "noise_depolarizing", None),
         "backbone": backbone,
+        "loss": str(choose(args.loss, "loss", RECIPE_DEFAULTS["loss"])).lower(),
+        "class_weight": str(
+            choose(args.class_weight, "class_weight", RECIPE_DEFAULTS["class_weight"])
+        ).lower(),
+        "focal_gamma": float(choose(None, "focal_gamma", RECIPE_DEFAULTS["focal_gamma"])),
+        "focal_alpha": (
+            None
+            if choose(None, "focal_alpha", RECIPE_DEFAULTS["focal_alpha"]) is None
+            else float(choose(None, "focal_alpha", RECIPE_DEFAULTS["focal_alpha"]))
+        ),
+        "early_metric": str(
+            choose(args.early_metric, "early_metric", RECIPE_DEFAULTS["early_metric"])
+        ).lower(),
+        "early_min_delta": float(
+            choose(None, "early_min_delta", RECIPE_DEFAULTS["early_min_delta"])
+        ),
+        "temperature_calibration": bool(
+            choose(
+                args.temperature_calibration,
+                "temperature_calibration",
+                RECIPE_DEFAULTS["temperature_calibration"],
+            )
+        ),
+        "balanced_sampler": bool(
+            choose(
+                args.balanced_sampler,
+                "balanced_sampler",
+                RECIPE_DEFAULTS["balanced_sampler"],
+            )
+        ),
     }
     if args.smoke:
         warnings.append("smoke mode: subset capped, epochs forced to 1")
+    warnings.append(
+        "QHEAD-D01 CLI balance defaults: "
+        + ", ".join(f"{key}={plan[key]}" for key in RECIPE_DEFAULT_NOTES)
+        + ". Legacy recipe: --loss ce --class-weight none --early-metric val_loss "
+        "--no-temperature-calibration --no-balanced-sampler."
+    )
+    for key, note in RECIPE_DEFAULT_NOTES.items():
+        warnings.append(f"default rationale [{key}]: {note}")
     return plan, warnings
 
 
@@ -187,6 +306,18 @@ def _validate_plan(plan: dict) -> list[str]:
         problems.append("embedding must be a non-empty string")
     if str(plan["backbone"]) not in ALLOWED_BACKBONES:
         problems.append(f"backbone must be one of {sorted(ALLOWED_BACKBONES)}")
+    if str(plan["loss"]) not in ALLOWED_LOSSES:
+        problems.append(f"loss must be one of {sorted(ALLOWED_LOSSES)}")
+    if str(plan["class_weight"]) not in ALLOWED_CLASS_WEIGHTS:
+        problems.append(f"class_weight must be one of {sorted(ALLOWED_CLASS_WEIGHTS)}")
+    if str(plan["early_metric"]) not in ALLOWED_EARLY_METRICS:
+        problems.append(f"early_metric must be one of {sorted(ALLOWED_EARLY_METRICS)}")
+    if float(plan["focal_gamma"]) < 0:
+        problems.append("focal_gamma must be non-negative")
+    if plan["focal_alpha"] is not None and not (0 <= float(plan["focal_alpha"]) <= 1):
+        problems.append("focal_alpha must be None or in [0, 1]")
+    if float(plan["early_min_delta"]) < 0:
+        problems.append("early_min_delta must be non-negative")
     return problems
 
 
@@ -417,11 +548,28 @@ def _prepare_data(plan: dict, smoke: bool) -> dict:
         raise RuntimeError("no Kaggle training samples were available")
 
     generator = torch.Generator().manual_seed(int(plan["seed"]))
+    train_dataset = TensorDataset(X_train, y_train)
+    sampler = None
+    if bool(plan["balanced_sampler"]):
+        from qmlpipe.train import build_balanced_sampler
+
+        sampler = build_balanced_sampler(y_train.numpy(), seed=int(plan["seed"]))
+        if sampler is None:
+            warnings.append(
+                "balanced sampler requested but the TRAIN label set was empty; disabled"
+            )
     train_loader = DataLoader(
-        TensorDataset(X_train, y_train),
+        train_dataset,
         batch_size=int(plan["batch_size"]),
-        shuffle=True,
-        generator=generator,
+        shuffle=sampler is None,
+        sampler=sampler,
+        generator=generator if sampler is None else None,
+    )
+    train_counts = np.bincount(y_train.numpy().astype(np.int64), minlength=2)
+    from qmlpipe.losses import class_weights_from_labels
+
+    derived_weights = class_weights_from_labels(
+        y_train.numpy(), n_classes=2, mode=str(plan["class_weight"])
     )
     val_loader = None
     if X_val is not None and len(X_val) > 0:
@@ -448,6 +596,10 @@ def _prepare_data(plan: dict, smoke: bool) -> dict:
             "val": 0 if X_val is None else int(len(X_val)),
             "ood": 0 if X_ood is None else int(len(X_ood)),
         },
+        "train_labels": y_train,
+        "train_class_counts": [int(v) for v in train_counts],
+        "train_class_weights": [float(v) for v in derived_weights],
+        "sampler": "weighted_random_sampler" if sampler is not None else "none",
         "data_paths": data_paths,
         "subset_files": subset_files,
         "ood_per_class": per_class,
@@ -497,10 +649,12 @@ def main(argv: list[str] | None = None) -> int:
         )
         return 0
 
+    checkpoint_path = output_dir / "checkpoints" / "best.pt"
     try:
         cfg = _build_config(plan)
+        from qmlpipe.heads import fit_calibration, write_calibration_to_checkpoint
         from qmlpipe.models import build_transfer_qnn
-        from qmlpipe.train import evaluate, seed_everything, train
+        from qmlpipe.train import evaluate, load_checkpoint, seed_everything, train
 
         seed_everything(int(plan["seed"]))
         bundle = _prepare_data(plan, args.smoke)
@@ -516,8 +670,30 @@ def main(argv: list[str] | None = None) -> int:
             cfg,
             output_dir=output_dir,
             history_path=output_dir / "history.json",
-            ckpt_path=output_dir / "checkpoints" / "best.pt",
+            ckpt_path=checkpoint_path,
         )
+        # Evaluate the SELECTED checkpoint, not the last epoch's weights.
+        selected = load_checkpoint(model, checkpoint_path)
+        calibration = {"status": "skipped", "reason": "calibration not requested"}
+        if bool(plan["temperature_calibration"]):
+            if bundle["val_loader"] is None:
+                calibration = {
+                    "status": "skipped",
+                    "reason": "no ID_VAL split available; calibration not applied",
+                    "fitted_on_split": "id_val",
+                    "ood_labels_used": False,
+                }
+            else:
+                # ID_VAL only. The OOD loader is deliberately never passed here.
+                calibration = fit_calibration(
+                    model,
+                    bundle["val_loader"],
+                    bundle["train_labels"],
+                    cfg,
+                    n_classes=2,
+                )
+                if calibration.get("status") == "fitted":
+                    write_calibration_to_checkpoint(model, checkpoint_path, calibration)
         ood_metrics = (
             evaluate(model, bundle["ood_loader"], cfg)
             if bundle["ood_loader"] is not None
@@ -532,6 +708,10 @@ def main(argv: list[str] | None = None) -> int:
         f"feature backbone '{bundle['backbone_name']}' is frozen; its weights "
         "are not updated during training"
     )
+    all_warnings.append(
+        "Calibration (if fitted) used ID_VAL only; a validation-only gain is NOT "
+        "evidence of improved OOD performance. OOD metrics come from an untouched split."
+    )
     commit = _git_commit_hash()
     _write_json(
         output_dir / "metrics.json",
@@ -544,11 +724,26 @@ def main(argv: list[str] | None = None) -> int:
                 "best_epoch": summary["best_epoch"],
                 "best_val_loss": summary["best_val_loss"],
                 "best_val_accuracy": summary["best_val_accuracy"],
+                "best_val_metric": summary["best_val_metric"],
+                "early_metric": summary["early_metric"],
+                "loss": summary["loss"],
+                "class_weight": summary["class_weight"],
+                "class_weights_source": summary["class_weights_source"],
+                "class_weights": summary["class_weights"],
+                "train_class_counts": summary["train_class_counts"],
+                "balanced_sampler": summary["balanced_sampler"],
                 "epochs_run": summary["epochs_run"],
                 "early_stopped": summary["early_stopped"],
                 "optimizer": summary["optimizer"],
+                "selected_checkpoint_epoch": selected["epoch"],
             },
+            "calibration": calibration,
             "ood": ood_metrics,
+            "claim_boundary": (
+                "Calibration (if any) was fitted on ID_VAL only. A validation-only "
+                "improvement is not evidence of improved OOD performance; OOD numbers "
+                "are reported separately from an untouched split."
+            ),
             "warnings": all_warnings,
         },
     )
@@ -567,7 +762,32 @@ def main(argv: list[str] | None = None) -> int:
                 "ninja_subset_files": bundle["subset_files"],
                 "ood_per_class": bundle["ood_per_class"],
                 "adaptation_per_class": bundle["adaptation_per_class"],
+                "train_class_counts": bundle["train_class_counts"],
             },
+            "training_recipe": {
+                "loss": summary["loss"],
+                "class_weight": summary["class_weight"],
+                "class_weights_source": summary["class_weights_source"],
+                "class_weights": summary["class_weights"],
+                "train_class_counts": summary["train_class_counts"],
+                "sampler": bundle["sampler"],
+                "early_metric": summary["early_metric"],
+                "early_min_delta": plan["early_min_delta"],
+                "focal_gamma": plan["focal_gamma"],
+                "focal_alpha": plan["focal_alpha"],
+                "defaults": RECIPE_DEFAULTS,
+                "default_rationale": RECIPE_DEFAULT_NOTES,
+                "legacy_restore_flags": (
+                    "--loss ce --class-weight none --early-metric val_loss "
+                    "--no-temperature-calibration --no-balanced-sampler"
+                ),
+            },
+            "calibration": calibration,
+            "claim_boundary": (
+                "Any temperature/logit adjustment was fitted on ID_VAL only; OOD "
+                "labels were never used for fitting or for checkpoint selection. "
+                "No OOD improvement is inferred from a validation-only gain."
+            ),
             "backbone": bundle["backbone_provenance"],
             "command": "python scripts/train_qml.py " + " ".join(argv or sys.argv[1:]),
             "generated_at": datetime.now(timezone.utc).isoformat(),

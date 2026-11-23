@@ -32,6 +32,7 @@ from torch import nn
 from torch.nn import functional as F
 
 from qmlpipe.config import QMLConfig
+from qmlpipe.heads import build_classification_head
 
 try:  # pragma: no cover - depends on the environment
     import pennylane as qml
@@ -201,7 +202,10 @@ class _TorchQNN(nn.Module):
         finally:
             np.random.set_state(rng_state)
 
-        self.head = nn.Linear(self.n_qubits, 2)
+        # Configurable wrapper that is numerically identical to the legacy
+        # ``nn.Linear(n_qubits, 2)`` by default (T=1, zero logit adjustment).
+        # Calibration is fitted later on ID_VAL only (see qmlpipe.heads).
+        self.head = build_classification_head(self.n_qubits, cfg=cfg, n_classes=2)
 
     def _make_qnode(self, cfg: QMLConfig, device_name: str, shots):
         """Build the trainable QNode.

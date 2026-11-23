@@ -294,5 +294,8 @@ Owner writes docs/METHODOLOGY_V2.md, scripts/derive_methodology.py, tests/test_m
 **[95 | 2026-11-23] REPORT → METH-D01 — METH-D01 (methodology v2 delivered, create-only)**
 Created docs/METHODOLOGY_V2.md, scripts/derive_methodology.py, tests/test_methodology.py; no existing files modified. Recommendation: classical poly-2 SVM + supervised source-domain mixing as primary; all QNN/quantum-advantage checks fail against current evidence. Verifier/Critic pending.
 
+**[96 | 2026-11-23] REPORT → QHEAD-D01 — QHEAD-D01 (QNN head/training delivered)**
+Balanced focal loss, train-only class weights, balanced early-stop metric, ID_VAL-only temperature/logit calibration, CLI flags, provenance/claim boundary, 9 synthetic tests. No OOD improvement claimed. Verifier/Critic pending.
+
 **Gate rule:** a D is not accepted until the central verifier passes and a Critic audit
 returns PASS. Mother commits D-by-D after the gate.

@@ -31,6 +31,9 @@ _ALLOWED_ANSATZE = frozenset({"strongly_entangling", "basic_entangler"})
 _ALLOWED_DEVICES = frozenset({"default.qubit", "lightning.qubit"})
 _ALLOWED_OPTIMIZERS = frozenset({"adamw", "adam", "sgd", "spsa"})
 _ALLOWED_BACKBONES = frozenset({"plantnet", "imagenet"})
+_ALLOWED_LOSSES = frozenset({"ce", "focal"})
+_ALLOWED_CLASS_WEIGHTS = frozenset({"none", "balanced"})
+_ALLOWED_EARLY_METRICS = frozenset({"val_loss", "balanced_accuracy", "macro_f1"})
 
 
 def _env_int(name: str, default: int) -> int:
@@ -62,6 +65,13 @@ def _env_opt_float(name: str) -> float | None:
     return float(raw)
 
 
+def _env_bool(name: str, default: bool) -> bool:
+    raw = os.getenv(name)
+    if raw is None or raw.strip() == "":
+        return default
+    return raw.strip().lower() in {"1", "true", "yes", "on"}
+
+
 @dataclass(frozen=True)
 class QMLConfig:
     """Frozen, serialisable configuration for the QML pipeline.
@@ -88,6 +98,21 @@ class QMLConfig:
     noise_depolarizing: float | None = None
     output_dir: str = "results/qml"
     backbone: str = "plantnet"
+
+    # --- QHEAD-D01: class-balance / head / calibration recipe -------------------
+    # Dataclass defaults intentionally preserve the legacy recipe for
+    # reproducibility (plain CE, no weights, val_loss checkpointing, no
+    # calibration, no sampler).  The QML *CLI* chooses balanced defaults and
+    # records every choice in provenance; callers can restore legacy behaviour
+    # explicitly with these fields.
+    loss: str = "ce"                       # {"ce", "focal"}
+    class_weight: str = "none"             # {"none", "balanced"}; weights from TRAIN labels
+    focal_gamma: float = 2.0
+    focal_alpha: float | None = None
+    early_metric: str = "val_loss"         # {"val_loss", "balanced_accuracy", "macro_f1"}
+    early_min_delta: float = 0.0
+    temperature_calibration: bool = False  # fit T (and optional logit adjust) on ID_VAL only
+    balanced_sampler: bool = False         # WeightedRandomSampler from TRAIN labels only
 
     # ------------------------------------------------------------------ properties
     @property
@@ -130,6 +155,14 @@ class QMLConfig:
             noise_depolarizing=_env_opt_float("QML_NOISE_DEPOLARIZING"),
             output_dir=_env_str("QML_OUTPUT_DIR", "results/qml"),
             backbone=_env_str("QML_BACKBONE", "plantnet").lower(),
+            loss=_env_str("QML_LOSS", "ce").lower(),
+            class_weight=_env_str("QML_CLASS_WEIGHT", "none").lower(),
+            focal_gamma=_env_float("QML_FOCAL_GAMMA", 2.0),
+            focal_alpha=_env_opt_float("QML_FOCAL_ALPHA"),
+            early_metric=_env_str("QML_EARLY_METRIC", "val_loss").lower(),
+            early_min_delta=_env_float("QML_EARLY_MIN_DELTA", 0.0),
+            temperature_calibration=_env_bool("QML_TEMPERATURE_CALIBRATION", False),
+            balanced_sampler=_env_bool("QML_BALANCED_SAMPLER", False),
         )
 
     # ------------------------------------------------------------------ serialisation
@@ -201,6 +234,24 @@ class QMLConfig:
             0.0 <= float(self.noise_depolarizing) <= 1.0
         ):
             problems.append("noise_depolarizing must be None or in [0, 1].")
+        if str(self.loss).lower() not in _ALLOWED_LOSSES:
+            problems.append(f"loss={self.loss!r} must be one of {sorted(_ALLOWED_LOSSES)}.")
+        if str(self.class_weight).lower() not in _ALLOWED_CLASS_WEIGHTS:
+            problems.append(
+                f"class_weight={self.class_weight!r} must be one of "
+                f"{sorted(_ALLOWED_CLASS_WEIGHTS)}."
+            )
+        if str(self.early_metric).lower() not in _ALLOWED_EARLY_METRICS:
+            problems.append(
+                f"early_metric={self.early_metric!r} must be one of "
+                f"{sorted(_ALLOWED_EARLY_METRICS)}."
+            )
+        if float(self.focal_gamma) < 0.0:
+            problems.append("focal_gamma must be non-negative.")
+        if self.focal_alpha is not None and not (0.0 <= float(self.focal_alpha) <= 1.0):
+            problems.append("focal_alpha must be None or in [0, 1].")
+        if float(self.early_min_delta) < 0.0:
+            problems.append("early_min_delta must be non-negative.")
 
         # Hard contract: never construct a pipeline with a mismatched embedding
         # width.  The AssertionError message names both values for diagnostics.
