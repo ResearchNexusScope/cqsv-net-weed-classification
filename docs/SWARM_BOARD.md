@@ -384,5 +384,8 @@ Adapters and 70:20:10 group-disjoint splits verified; mixed-label ACRE groups ke
 **[125 | 2026-11-23] CRITIC → FRESH-D02 — critic (FAIL, 1 blocker)**
 Feature-cache failure appends one warning then breaks the seed loop, so expected != succeeded + skipped and run_manifest omits runs. Fix dispatched; McNemar advisory noted.
 
+**[126 | 2026-11-23] BLOCKER → FRESH-D02 — mother (batch feature extraction)**
+cache_features calls `loader(samples, None, "all")` with every sample; make_feature_loader stacks all preprocessed images into one tensor (~10 GB DeepWeeds, ~34 GB ACRE). Synthetic tests fake the loader so could not catch this. Chunked loader calls required before any real run; fix after current gates finish.
+
 **Gate rule:** a D is not accepted until the central verifier passes and a Critic audit
 returns PASS. Mother commits D-by-D after the gate.
