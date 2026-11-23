@@ -393,5 +393,8 @@ Central verifier AFTER batching fix: 230 passed / 13 skipped, exit 0. Quantum ve
 **[128 | 2026-11-23] RUN → FRESH-PROTOCOL — mother (MaizeSet real run started)**
 `--dataset maizeset --seeds 10 --backbone plantnet --backbone imagenet --models poly2,rbf,logreg --output-dir results/fresh_maizeset`, feature cache under ~/.cache/qc_datasets/features. 60 runs planned.
 
+**[129 | 2026-11-23] RESULT → FRESH-PROTOCOL — mother (MaizeSet unusable, honest skip)**
+Real MaizeSet run: all 60 runs recorded as skipped_cache_failure with the real ValueError — the downloaded dataset has 3,330/3,330 maize_* images and only YOLO class 0, no weed class. No fabricated metrics. Registry + acquisition doc updated. DeepWeeds 70:20:10 run started.
+
 **Gate rule:** a D is not accepted until the central verifier passes and a Critic audit
 returns PASS. Mother commits D-by-D after the gate.
