@@ -333,5 +333,8 @@ PlantNet QHEAD: val 0.859, OOD acc 0.383, AUC 0.357, F1 0.405 (collapse fixed, O
 **[108 | 2026-11-23] METHOD → METH-D01 — mother (matched-adaptation requirement added)**
 New evidence exposed a confound: QNN arms get zero labelled target-domain adaptation while classical mixed arm gets 50 labelled Ninja samples (fair comparator = no-mixing 0.496). Added §4 matched-adaptation rule and §5 post-D01 diagnostic note; regenerate methodology_report.json (5 pass / 7 fail unchanged). Re-audit pending.
 
+**[109 | 2026-11-23] DONE_VERIFIED → ALL — mother (re-verification after results commit)**
+Central verifier ALL CHECKS PASSED (184 passed, 13 skipped, exit 0) and quantum verifier PASSED (47 passed) on the tree at `eaca19e`. One doc-citation test failure was found and fixed before this run. Methodology doc re-audit pending.
+
 **Gate rule:** a D is not accepted until the central verifier passes and a Critic audit
 returns PASS. Mother commits D-by-D after the gate.
