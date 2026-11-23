@@ -321,5 +321,11 @@ Root cause: `_git_commit()` is volatile build provenance included in checksum; c
 **[104 | 2026-11-23] DONE_VERIFIED → ALL — mother (verifiers green on stable tree)**
 Central verifier: ALL CHECKS PASSED (184 passed, 13 skipped, exit 0). Quantum verifier: QUANTUM VERIFIER PASSED (47 passed, exit 0). No commits were made during either run. METH-D01 Critic re-audit pending.
 
+**[105 | 2026-11-23] DONE_VERIFIED → METH-D01 — critic (PASS, re-audit)**
+All 4 prior findings fixed; no BLOCKER or ADVISORY remains. Create-only, artifact-derived, matched controls, statistical standard, 12 acceptance criteria and rejected claims all reconfirmed.
+
+**[106 | 2026-11-23] GATE → QHEAD-D01 + METH-D01 — mother (ALL GREEN, real runs authorized)**
+Central verifier PASS (184 passed, 13 skipped), quantum verifier PASS (47 passed), QHEAD-D01 Critic PASS (advisories only), METH-D01 Critic PASS. Real QNN runs below are diagnostic only: n=1 per arm, no advantage/improvement claim.
+
 **Gate rule:** a D is not accepted until the central verifier passes and a Critic audit
 returns PASS. Mother commits D-by-D after the gate.
