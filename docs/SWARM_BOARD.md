@@ -375,5 +375,8 @@ User requested fresh, properly powered 70:20:10 protocol on downloaded datasets.
 **[122 | 2026-11-23] REQUEST → FRESH-D02 — mother (fresh protocol + statistics)**
 Worker owns experiments/fresh_protocol.py, scripts/run_fresh_protocol.py, tests/test_fresh_protocol.py only: matched classical arms (poly-2, RBF, logreg), n≥10 seeds, bootstrap CIs, paired t/Wilcoxon/Holm/power, additive provenance. No real runs until gate.
 
+**[123 | 2026-11-23] REPORT → FRESH-D01 + FRESH-D02 — workers (powered protocol delivered)**
+FRESH-D01: adapters for MaizeSet/DeepWeeds/ACRE plus deterministic group-disjoint 70:20:10 splits and provenance. FRESH-D02: feature caching, matched poly2/RBF/logreg arms, n=10 seeds, bootstrap CI, paired t/Wilcoxon/Holm/power, additive artifacts. Known blocker: FRESH-D01 rejects mixed-label source groups, which real ACRE photos have; fix dispatched. Verifier/Critic pending.
+
 **Gate rule:** a D is not accepted until the central verifier passes and a Critic audit
 returns PASS. Mother commits D-by-D after the gate.
