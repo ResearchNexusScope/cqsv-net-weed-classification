@@ -3,8 +3,9 @@
 > This document is written **backwards from the committed result artifacts** under `results/**`.
 > Every measurement below is cited inline as `artifact → key = value`, taken from the artifact
 > itself; no figure is copied from prose, a legacy manuscript, or memory. The machine-readable
-> companion `scripts/derive_methodology.py` recomputes the same evidence table and evaluates the
-> acceptance criteria directly from those artifacts. If an artifact changes, regenerate both the
+> companion `scripts/derive_methodology.py` recomputes the **quantitative** evidence and the
+> acceptance verdicts directly from those artifacts; qualitative and hand-cited rows (for example
+> the model-card row) are not machine-verified. If an artifact changes, regenerate both the
 > numbers and the verdicts — do not edit this document by hand to make a claim survive.
 
 ## 0. Regenerating the evidence
@@ -115,7 +116,7 @@ Current state: the data/protocol and classical-control checks pass; every claim-
 
 1. **Quantum advantage — rejected.** The quantum kernel's per-run values are identical to the classical poly-2 oracle (`results/real_run10/qc-52fcca25a5b8/metrics/metrics.json → aggregates["qsvc_mixed_variance/qsvc_quantum_kernel"].accuracy.values == aggregates["qsvc_mixed_variance/svc_poly2_classical"].accuracy.values`), the paired difference is `0.0` with power `0.05` and an `inconclusive` decision, and the classical RBF mean `0.922` exceeds the quantum mean `0.918` (same artifact). No advantage can be asserted from a parameter-free classical kernel or a simulated, classically simulable circuit.
 2. **Unsupported noise robustness — rejected.** At every recorded sigma the quantum and poly-2 accuracies are identical (`results/real_run10/qc-52fcca25a5b8/metrics/metrics.json → noise_robustness/…`), and the original claim had no matched classical control. "Robust to noise" may only be claimed after check 7 passes with a real backend and matched corruption draws.
-3. **Hardcoded figures — rejected.** No manuscript number may be retyped from prose. Values must be regenerated from artifacts by `scripts/derive_methodology.py` (or an equivalent pipeline) and cited with artifact path + key, as done throughout this document. Legacy single-run figures (`results/real_run/qc-ac9a06bc595c/metrics/metrics.json → accuracy.n = 1`) and post-hoc thresholds (`results/qml_plantnet/threshold_analysis.json → provenance.note`) are not reportable results.
+3. **Hardcoded figures — rejected.** No manuscript number may be retyped from prose. Values must be regenerated from artifacts by `scripts/derive_methodology.py` (or an equivalent pipeline) and cited with artifact path + key, as done throughout this document. Legacy single-run figures (`results/real_run/qc-ac9a06bc595c/metrics/metrics.json → aggregates["qsvc_mixed_variance/qsvc_quantum_kernel"].accuracy.n = 1`) and post-hoc thresholds (`results/qml_plantnet/threshold_analysis.json → provenance.note`) are not reportable results.
 4. **QNN OOD generalisation — rejected as evidence.** Both QNN OOD arms are at/below chance with a single-class collapse in one arm (`results/qml_full/metrics.json → ood.auc = 0.37545000000000006`; `results/qml_plantnet/metrics.json → ood.f1 = 0.0`). Until checks 4–6 pass, QNN results are architecture diagnostics only.
 5. **Significance without paired power — rejected.** Any comparison lacking ≥2 paired runs, Holm-adjusted p, an interval excluding zero and power at the declared floor must be labelled `inconclusive`, never "significant" (`results/real_run10/qc-52fcca25a5b8/metrics/metrics.json → comparisons[0].decision = "inconclusive"`).
 

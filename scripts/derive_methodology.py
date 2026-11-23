@@ -698,8 +698,16 @@ def acceptance_checks(artifacts: Mapping[str, Any]) -> list[dict[str, Any]]:
 def build_report(root: str | Path = REPO_ROOT) -> dict[str, Any]:
     """Load artifacts under *root* and emit the full evidence + acceptance report."""
     artifacts = load_artifacts(root)
-    evidence = evidence_table(artifacts)
-    acceptance = acceptance_checks(artifacts)
+    try:
+        evidence = evidence_table(artifacts)
+        acceptance = acceptance_checks(artifacts)
+    except (KeyError, IndexError, TypeError) as exc:
+        # Direct lookups inside the derivation helpers can also fail when an
+        # artifact lacks a required key; surface all of them as ArtifactError
+        # so the CLI reports a clean message and a non-zero exit.
+        raise ArtifactError(
+            f"artifact lacks a required key for derivation: {exc!r}"
+        ) from exc
     passed = sum(row["passed"] for row in acceptance)
     return {
         "schema_version": "1.0",

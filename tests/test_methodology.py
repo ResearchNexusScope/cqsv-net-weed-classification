@@ -299,7 +299,7 @@ def test_report_end_to_end_from_synthetic_files(tmp_path: Path) -> None:
     }
     checks = {row["id"] for row in report["acceptance"]}
     assert "mixing_gain_above_control_noise" in checks
-    assert "ablation_manifest_complete" in checks
+    assert "ablation_run_manifest_complete" in checks
 
 
 def test_missing_artifact_raises_with_path(tmp_path: Path) -> None:
@@ -318,6 +318,21 @@ def test_malformed_artifact_raises(tmp_path: Path) -> None:
 def test_observed_missing_key_raises() -> None:
     with pytest.raises(dm.ArtifactError, match="absent"):
         dm.observed({"real_run": {}}, "real_run", "aggregates", "absent")
+
+
+def test_keyless_artifact_raises_artifact_error_and_clean_cli_exit(tmp_path: Path) -> None:
+    artifacts = make_artifacts()
+    del artifacts["qml_full"]["ood"]["auc"]
+    for name, rel in dm.ARTIFACT_PATHS.items():
+        path = tmp_path / rel
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_text(
+            json.dumps(artifacts[name]) if path.suffix == ".json" else artifacts[name]["text"],
+            encoding="utf-8",
+        )
+    with pytest.raises(dm.ArtifactError, match="required key"):
+        dm.build_report(tmp_path)
+    assert dm.main(["--root", str(tmp_path)]) == 2
 
 
 def test_cli_reports_missing_artifacts_cleanly(tmp_path: Path) -> None:
