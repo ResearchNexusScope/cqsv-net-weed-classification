@@ -103,7 +103,7 @@ REGISTRY: tuple[ExternalDataset, ...] = (
         sources=("https://github.com/mshahabalam/MaizeSet",),
         artifact="maizeset/",
         format="14 image zips + 14 label zips",
-        size_bytes=271_000_000,
+        size_bytes=255_094_669,
         status="fetchable",
         notes="License gap: research use only until the author confirms terms. Closest same-task match.",
     ),
