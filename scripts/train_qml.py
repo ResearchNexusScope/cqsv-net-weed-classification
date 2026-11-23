@@ -12,6 +12,19 @@ imported only inside the real-run path.  ``--dry-run`` therefore resolves and
 validates the plan and prints it without importing a simulator or writing a
 single file, which keeps it usable in the central verifier's minimal
 environment.
+
+QHEAD-D02 -- matched labelled adaptation for the QNN
+----------------------------------------------------
+The matched classical "mixed" arm trains on 50 labelled target-domain (Ninja)
+samples, while a bare QNN arm previously received zero.  ``--adaptation-samples``
+mixes labelled samples from ``manifest.splits[Split.ADAPTATION]`` into the TRAIN
+tensor *only*.  The OOD test split is never used as a source, never featurised,
+and never used for checkpoint/threshold selection; a group (source-image) level
+disjointness assertion is enforced before any feature extraction.  The default
+is deliberately **0** so a bare invocation reproduces the previous QNN numbers;
+the matched protocol is opt-in via ``--adaptation-samples 50``.  No improved OOD
+performance is claimed by this recipe change -- it only makes the comparison
+matched under Methodology V2 section 4.
 """
 from __future__ import annotations
 
@@ -23,7 +36,7 @@ import platform
 import sys
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import Any
+from typing import Any, Sequence
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
 if str(REPO_ROOT) not in sys.path:
@@ -60,6 +73,11 @@ CONFIG_KEYS = frozenset(
         "early_min_delta",
         "temperature_calibration",
         "balanced_sampler",
+        # QHEAD-D02 matched-adaptation knobs (not QMLConfig fields; consumed by
+        # the data path and recorded in provenance, ignored by _build_config).
+        "adaptation_samples",
+        "adaptation_per_class_mix",
+        "adaptation_seed",
     }
 )
 
@@ -91,6 +109,30 @@ RECIPE_DEFAULT_NOTES = {
     "temperature_calibration": "temperature (+ logit adjustment) fitted on ID_VAL only; never on OOD",
     "balanced_sampler": "off by default to avoid triple correction; opt in with --balanced-sampler",
 }
+
+# QHEAD-D02: matched labelled-adaptation recipe.  ``Split.ADAPTATION`` is the
+# ONLY permitted source.  String constants are kept here (stdlib-only module)
+# and cross-checked against the real ``Split`` enum inside the data path.
+ADAPTATION_SPLIT_NAME = "adaptation"
+OOD_TEST_SPLIT_NAME = "ood_test"
+ADAPTATION_LABEL_SOURCE = (
+    "ground-truth class labels from DatasetNinja JSON box annotations, carried "
+    "by manifest.splits[Split.ADAPTATION].samples (target domain, labelled)"
+)
+ADAPTATION_DEFAULT_NOTE = (
+    "--adaptation-samples defaults to 0 so a bare invocation reproduces the prior "
+    "QNN recipe exactly. The matched classical mixed protocol uses 50 labelled "
+    "Ninja adaptation samples (qsvc_target_adaptation_per_run=50), so pass "
+    "--adaptation-samples 50 to match it; this is recorded in provenance."
+)
+ADAPTATION_RECIPE_NOTE = (
+    "QHEAD-D02: labelled ADAPTATION-split target-domain samples are mixed into "
+    "TRAIN only, through the same frozen feature loader; ID_VAL and OOD_TEST "
+    "loaders are untouched and OOD_TEST is never used as a mixing source. "
+    "Source-image (group) disjointness from OOD_TEST is asserted. This makes the "
+    "training budget matched to the classical mixed arm; it is NOT a claim of "
+    "improved OOD generalisation."
+)
 
 # Raw (pre-projection) feature width emitted by each frozen backbone.  The
 # feature-fed QNN projection consumes this many inputs, so ``classical_dim``
@@ -169,6 +211,35 @@ def _build_parser() -> argparse.ArgumentParser:
         action="store_false",
         default=None,
         help="disable the class-balanced sampler",
+    )
+    parser.add_argument(
+        "--adaptation-samples",
+        type=int,
+        default=0,
+        metavar="N",
+        help=(
+            "total labelled target-domain adaptation samples to mix into TRAIN "
+            "(default 0 = no adaptation, reproduces prior QNN numbers; pass 50 "
+            "to match the classical mixed protocol). Source is always "
+            "Split.ADAPTATION, never Split.OOD_TEST."
+        ),
+    )
+    parser.add_argument(
+        "--adaptation-per-class",
+        type=int,
+        default=None,
+        metavar="N",
+        help=(
+            "optional per-class adaptation quota; overrides --adaptation-samples "
+            "with 2*N total (balanced across the two label classes)."
+        ),
+    )
+    parser.add_argument(
+        "--adaptation-seed",
+        type=int,
+        default=None,
+        metavar="N",
+        help="seed for deterministic adaptation subsampling (default: the run seed)",
     )
     parser.add_argument(
         "--smoke",
@@ -267,7 +338,25 @@ def _resolve_plan(args: argparse.Namespace) -> tuple[dict, list[str]]:
                 RECIPE_DEFAULTS["balanced_sampler"],
             )
         ),
+        # QHEAD-D02: default 0 keeps the no-adaptation recipe byte-identical.
+        "adaptation_samples": int(choose(args.adaptation_samples, "adaptation_samples", 0)),
+        "adaptation_per_class_mix": (
+            None
+            if choose(args.adaptation_per_class, "adaptation_per_class_mix", None) is None
+            else int(choose(args.adaptation_per_class, "adaptation_per_class_mix", None))
+        ),
+        "adaptation_seed": (
+            None
+            if choose(args.adaptation_seed, "adaptation_seed", None) is None
+            else int(choose(args.adaptation_seed, "adaptation_seed", None))
+        ),
     }
+    # A per-class quota implies the total budget (2*N) unless --adaptation-samples
+    # already set one explicitly.  This keeps per-class flags self-contained.
+    if plan["adaptation_per_class_mix"] is not None:
+        implied_total = 2 * int(plan["adaptation_per_class_mix"])
+        if plan["adaptation_samples"] == 0:
+            plan["adaptation_samples"] = implied_total
     if args.smoke:
         warnings.append("smoke mode: subset capped, epochs forced to 1")
     warnings.append(
@@ -282,6 +371,10 @@ def _resolve_plan(args: argparse.Namespace) -> tuple[dict, list[str]]:
     )
     for key, note in RECIPE_DEFAULT_NOTES.items():
         warnings.append(f"default rationale [{key}]: {note}")
+    # QHEAD-D02 adaptation recipe: documented like every other default, and
+    # explicit that no OOD improvement is implied by mixing labelled data.
+    warnings.append(ADAPTATION_RECIPE_NOTE)
+    warnings.append(f"default rationale [adaptation_samples]: {ADAPTATION_DEFAULT_NOTE}")
     return plan, warnings
 
 
@@ -322,6 +415,26 @@ def _validate_plan(plan: dict) -> list[str]:
         problems.append("focal_alpha must be None or in [0, 1]")
     if float(plan["early_min_delta"]) < 0:
         problems.append("early_min_delta must be non-negative")
+
+    # QHEAD-D02 adaptation knobs.
+    total = int(plan["adaptation_samples"])
+    per_class = plan["adaptation_per_class_mix"]
+    if total < 0:
+        problems.append("adaptation_samples must be non-negative")
+    if per_class is not None and int(per_class) < 0:
+        problems.append("adaptation_per_class_mix must be non-negative or None")
+    if plan["adaptation_seed"] is not None:
+        try:
+            int(plan["adaptation_seed"])
+        except (TypeError, ValueError):
+            problems.append("adaptation_seed must be an integer or None")
+    if per_class is not None:
+        expected_total = 2 * int(per_class)
+        if total not in (0, expected_total):
+            problems.append(
+                f"adaptation_samples={total} conflicts with "
+                f"adaptation_per_class_mix={per_class} (expected 0 or {expected_total})"
+            )
     return problems
 
 
@@ -477,6 +590,308 @@ def _backbone_provenance(name: str, feature_dim: int) -> dict:
     return info
 
 
+# ---------------------------------------------------------------------------
+# QHEAD-D02: matched labelled-adaptation mixing.
+#
+# The first three helpers are stdlib-only so they can be unit-tested with
+# synthetic Sample-like objects without importing torch / the dataset layer.
+# Only ``_mix_adaptation_into_train`` imports torch/numpy, and does so lazily.
+# ---------------------------------------------------------------------------
+def _split_samples_by_name(manifest: Any, name: str) -> tuple[Any, ...]:
+    """Return samples of a split identified by enum value / string name.
+
+    Dependency-free (plain string keys work) so synthetic manifests are
+    testable.  The real path cross-checks these names against ``Split``.
+    """
+    found = None
+    for key, record in manifest.splits.items():
+        if str(getattr(key, "value", key)) == name:
+            found = record
+            break
+    if found is None:
+        available = sorted(str(getattr(k, "value", k)) for k in manifest.splits)
+        raise KeyError(
+            f"manifest has no split named {name!r} (available: {available}); "
+            "refusing to guess an adaptation source"
+        )
+    return tuple(found.samples)
+
+
+def _adaptation_pool(manifest: Any) -> tuple[tuple[Any, ...], tuple[Any, ...]]:
+    """Return (ADAPTATION samples, OOD_TEST samples) from the manifest.
+
+    OOD_TEST is returned ONLY so the disjointness gate can inspect it; it is
+    never a mixing source and is never featurised.
+    """
+    adaptation = _split_samples_by_name(manifest, ADAPTATION_SPLIT_NAME)
+    ood = _split_samples_by_name(manifest, OOD_TEST_SPLIT_NAME)
+    return adaptation, ood
+
+
+def _source_image_id(sample: Any) -> str | None:
+    """Source-image identity: explicit ``source_image_id`` else ``group_id``.
+
+    In this repository ``Sample.group_id`` *is* the source-image key (raw-file
+    hash for Kaggle, photo stem for Ninja), so both names resolve to the same
+    physical photograph.
+    """
+    for attr in ("source_image_id", "group_id"):
+        value = getattr(sample, attr, None)
+        if value is not None and str(value) != "":
+            return str(value)
+    return None
+
+
+def _select_adaptation_samples(
+    samples: Sequence[Any],
+    total: int,
+    seed: int,
+    per_class: int | None = None,
+) -> tuple[list[Any], dict]:
+    """Deterministically select labelled adaptation samples for TRAIN mixing.
+
+    Selection is seeded and input-order independent: samples are put in
+    canonical ``sample_id`` order, then shuffled with ``random.Random(seed)``.
+    The default allocation is class-balanced (half per label); a class
+    shortfall is reallocated to the other class up to availability.  Passing
+    ``per_class`` requests exactly N per label (2N total).
+    """
+    import random  # stdlib only: importable without numpy/torch
+
+    total = int(total)
+    seed = int(seed)
+    ordered = sorted(samples, key=lambda s: str(getattr(s, "sample_id", "")))
+    by_class: dict[int, list[Any]] = {0: [], 1: []}
+    for sample in ordered:
+        label = int(getattr(sample, "label", -1))
+        if label in by_class:
+            by_class[label].append(sample)
+
+    if per_class is not None:
+        per_class = int(per_class)
+        quotas = {0: per_class, 1: per_class}
+        total = 2 * per_class
+    else:
+        base, extra = divmod(total, 2)
+        quotas = {0: base + extra, 1: base}
+        for label in (0, 1):
+            shortfall = max(0, quotas[label] - len(by_class[label]))
+            if shortfall:
+                other = 1 - label
+                capacity = max(0, len(by_class[other]) - quotas[other])
+                move = min(shortfall, capacity)
+                quotas[label] -= move
+                quotas[other] += move
+
+    rng = random.Random(seed)
+    chosen: list[Any] = []
+    for label in (0, 1):
+        pool = list(by_class[label])
+        rng.shuffle(pool)
+        chosen.extend(pool[: quotas[label]])
+    chosen.sort(key=lambda s: str(getattr(s, "sample_id", "")))
+    selected_class_counts = {0: 0, 1: 0}
+    for sample in chosen:
+        label = int(getattr(sample, "label", -1))
+        selected_class_counts[label] = selected_class_counts.get(label, 0) + 1
+    info = {
+        "requested_total": int(total),
+        "per_class": None if per_class is None else int(per_class),
+        "selection_seed": seed,
+        "selection_method": (
+            "seeded shuffle of canonical sample_id order, class-balanced; "
+            "deterministic and input-order independent"
+        ),
+        "available_class_counts": {k: len(v) for k, v in by_class.items()},
+        "selected_class_counts": {k: int(selected_class_counts[k]) for k in (0, 1)},
+        "selected": len(chosen),
+    }
+    return chosen, info
+
+
+def _assert_adaptation_ood_disjoint(
+    adaptation_samples: Sequence[Any], ood_samples: Sequence[Any]
+) -> dict:
+    """Fail loudly if a selected adaptation sample shares a source image with OOD.
+
+    The primary key is the source-image/group id; ``sample_id``,
+    ``content_hash`` and ``path`` are defence in depth.  Returns a provenance
+    block with ``passed=True`` on success; raises ``RuntimeError`` naming the
+    offenders on failure (never fails silently).
+    """
+    checked = ("source_image_id/group_id", "sample_id", "content_hash", "path")
+    overlap: dict[str, list[str]] = {}
+    for field in checked:
+        if field == "source_image_id/group_id":
+            a = {
+                value
+                for value in (_source_image_id(s) for s in adaptation_samples)
+                if value is not None
+            }
+            b = {
+                value
+                for value in (_source_image_id(s) for s in ood_samples)
+                if value is not None
+            }
+        else:
+            a = {
+                str(v)
+                for v in (getattr(s, field, None) for s in adaptation_samples)
+                if v is not None and str(v) != ""
+            }
+            b = {
+                str(v)
+                for v in (getattr(s, field, None) for s in ood_samples)
+                if v is not None and str(v) != ""
+            }
+        shared = sorted(a & b)
+        if shared:
+            overlap[field] = shared
+    if overlap:
+        raise RuntimeError(
+            "QHEAD-D02 adaptation/OOD disjointness assertion FAILED: "
+            + "; ".join(f"{key} overlap={values[:5]}" for key, values in overlap.items())
+            + ". Refusing to mix labelled adaptation samples into TRAIN."
+        )
+    return {
+        "passed": True,
+        "checked_fields": list(checked),
+        "overlap": {},
+        "adaptation_sample_count": len(adaptation_samples),
+        "ood_sample_count": len(ood_samples),
+        "note": (
+            "Selected ADAPTATION samples share no source-image/group, sample_id, "
+            "content_hash or path with the capped OOD_TEST split."
+        ),
+    }
+
+
+def _adaptation_common_provenance(adaptation_samples: Sequence[Any], seed: int) -> dict:
+    """Fields shared by the mixed and no-op adaptation provenance blocks."""
+    return {
+        "adaptation_source_split": ADAPTATION_SPLIT_NAME,
+        "adaptation_label_source": ADAPTATION_LABEL_SOURCE,
+        "adaptation_source_image_ids_all_available": sorted(
+            {v for v in (_source_image_id(s) for s in adaptation_samples) if v is not None}
+        ),
+        "adaptation_source_image_ids": [],  # filled with selected ids when mixing
+        "adaptation_sample_ids": [],  # filled with selected ids when mixing
+        "ood_labels_used": False,
+        "default_choice": ADAPTATION_DEFAULT_NOTE,
+        "recipe_note": ADAPTATION_RECIPE_NOTE,
+        "class_weights_and_sampler_source": (
+            "augmented TRAIN tensor (Kaggle TRAIN + selected labelled ADAPTATION)"
+        ),
+        "val_loader_unchanged": True,
+        "ood_loader_unchanged": True,
+        "selection_seed": int(seed),
+    }
+
+
+def _mix_adaptation_into_train(
+    X_train,
+    y_train,
+    *,
+    adaptation_samples: Sequence[Any],
+    ood_samples: Sequence[Any],
+    feature_loader,
+    cfg,
+    total: int,
+    seed: int,
+    per_class: int | None = None,
+) -> tuple[Any, Any, dict]:
+    """Select, verify, featurise and append labelled adaptation samples to TRAIN.
+
+    Only the returned ``X_train`` / ``y_train`` change; ID_VAL and OOD tensors
+    (built by the caller) are never touched and OOD labels are never read.
+    ``total == 0`` returns the input tensors unchanged (a true no-op) so the
+    prior QNN recipe is reproduced exactly.
+    """
+    import numpy as np
+    import torch
+
+    requested = int(total)
+    if requested == 0 and per_class in (None, 0):
+        prov = {
+            "adaptation_samples_used": 0,
+            "requested_adaptation_samples": 0,
+            "adaptation_per_class": None,
+            "selection_method": "no-op (--adaptation-samples 0)",
+            "available_class_counts": {
+                k: sum(
+                    1
+                    for s in adaptation_samples
+                    if int(getattr(s, "label", -1)) == k
+                )
+                for k in (0, 1)
+            },
+            "selected_class_counts": {0: 0, 1: 0},
+            "disjointness_assertion": {
+                "passed": True,
+                "checked_fields": [
+                    "source_image_id/group_id", "sample_id", "content_hash", "path"
+                ],
+                "overlap": {},
+                "adaptation_sample_count": 0,
+                "ood_sample_count": len(ood_samples),
+                "note": "No adaptation samples selected; mixing disabled.",
+            },
+            "warnings": [
+                "adaptation mixing disabled (--adaptation-samples 0): TRAIN tensors "
+                "are unchanged and reproduce the prior QNN recipe exactly; pass "
+                "--adaptation-samples 50 for the matched mixed protocol"
+            ],
+        }
+        prov.update(_adaptation_common_provenance(adaptation_samples, seed))
+        return X_train, y_train, prov
+
+    selected, selection_info = _select_adaptation_samples(
+        adaptation_samples, requested, seed, per_class
+    )
+    disjointness = _assert_adaptation_ood_disjoint(selected, ood_samples)
+    if not selected:
+        raise RuntimeError(
+            "QHEAD-D02: adaptation_samples > 0 but the ADAPTATION split yielded "
+            "no samples; refusing to train an unmatched arm"
+        )
+
+    features = np.asarray(
+        feature_loader(selected, cfg, ADAPTATION_SPLIT_NAME), dtype=np.float32
+    )
+    labels = np.asarray([int(s.label) for s in selected], dtype=np.int64)
+    X_new = torch.cat([X_train, torch.from_numpy(np.ascontiguousarray(features))], dim=0)
+    y_new = torch.cat([y_train, torch.as_tensor(labels, dtype=torch.long)], dim=0)
+
+    source_ids = sorted(
+        {v for v in (_source_image_id(s) for s in selected) if v is not None}
+    )
+    adaptation_warnings = [
+        f"adaptation mixing applied: {len(selected)} labelled ADAPTATION-split "
+        f"samples appended to TRAIN only (source-image ids: {source_ids}); "
+        "OOD_TEST untouched, ood_labels_used=false"
+    ]
+    if len(selected) < int(selection_info["requested_total"]):
+        adaptation_warnings.append(
+            f"adaptation shortfall: requested {selection_info['requested_total']} but only "
+            f"{len(selected)} labelled ADAPTATION samples were available; the arm is "
+            "NOT budget-matched to the classical mixed protocol"
+        )
+    prov = {
+        "adaptation_samples_used": int(len(selected)),
+        "requested_adaptation_samples": int(selection_info["requested_total"]),
+        "adaptation_per_class": selection_info["per_class"],
+        "selection_method": selection_info["selection_method"],
+        "available_class_counts": selection_info["available_class_counts"],
+        "selected_class_counts": selection_info["selected_class_counts"],
+        "disjointness_assertion": disjointness,
+        "warnings": adaptation_warnings,
+    }
+    prov.update(_adaptation_common_provenance(adaptation_samples, seed))
+    prov["adaptation_source_image_ids"] = source_ids
+    prov["adaptation_sample_ids"] = [str(getattr(s, "sample_id", "")) for s in selected]
+    return X_new, y_new, prov
+
+
 def _prepare_data(plan: dict, smoke: bool) -> dict:
     """Build leak-free train/val/OOD loaders and record the data provenance."""
     import numpy as np
@@ -551,10 +966,39 @@ def _prepare_data(plan: dict, smoke: bool) -> dict:
     if X_train is None or y_train is None:
         raise RuntimeError("no Kaggle training samples were available")
 
+    # A2: declared before any code that appends to it (adaptation + sampler).
+    warnings: list[str] = []
+
+    # QHEAD-D02: mix labelled ADAPTATION (target-domain) samples into TRAIN only.
+    # Cross-check the string names used by the dependency-free pool helper against
+    # the real Split enum, so a renamed split cannot silently redirect the source.
+    if (
+        str(Split.ADAPTATION.value) != ADAPTATION_SPLIT_NAME
+        or str(Split.OOD_TEST.value) != OOD_TEST_SPLIT_NAME
+    ):
+        raise RuntimeError(
+            "Split enum values no longer match the QHEAD-D02 adaptation source "
+            "contract; refusing to mix"
+        )
+    adaptation_samples, ood_pool = _adaptation_pool(manifest)
+    adaptation_seed = (
+        int(plan["seed"]) if plan["adaptation_seed"] is None else int(plan["adaptation_seed"])
+    )
+    X_train, y_train, adaptation_provenance = _mix_adaptation_into_train(
+        X_train,
+        y_train,
+        adaptation_samples=adaptation_samples,
+        ood_samples=ood_pool,
+        feature_loader=feature_loader,
+        cfg=cfg_exp,
+        total=int(plan["adaptation_samples"]),
+        seed=adaptation_seed,
+        per_class=plan["adaptation_per_class_mix"],
+    )
+    warnings.extend(adaptation_provenance["warnings"])
+
     generator = torch.Generator().manual_seed(int(plan["seed"]))
     train_dataset = TensorDataset(X_train, y_train)
-    # A2: declared before any code that appends to it (sampler block below).
-    warnings: list[str] = []
     sampler = None
     if bool(plan["balanced_sampler"]):
         from qmlpipe.train import build_balanced_sampler
@@ -616,6 +1060,9 @@ def _prepare_data(plan: dict, smoke: bool) -> dict:
         "subset_files": subset_files,
         "ood_per_class": per_class,
         "adaptation_per_class": int(data_scope["adaptation_per_class"]),
+        # QHEAD-D02 matched-adaptation provenance (source split, label source,
+        # selected ids/groups, disjointness gate, ood_labels_used=false).
+        "adaptation": adaptation_provenance,
         "backbone_name": backbone_name,
         "backbone_feature_dim": int(X_train.shape[1]),
         "backbone_provenance": _backbone_provenance(
@@ -729,6 +1176,16 @@ def main(argv: list[str] | None = None) -> int:
         "Calibration (if fitted) used ID_VAL only; a validation-only gain is NOT "
         "evidence of improved OOD performance. OOD metrics come from an untouched split."
     )
+    adaptation_block = bundle["adaptation"]
+    all_warnings.append(
+        f"QHEAD-D02 adaptation budget: {adaptation_block['adaptation_samples_used']} "
+        f"labelled ADAPTATION-split samples mixed into TRAIN (requested "
+        f"{adaptation_block['requested_adaptation_samples']}); "
+        f"source split={adaptation_block['adaptation_source_split']}; "
+        f"OOD disjointness passed="
+        f"{adaptation_block['disjointness_assertion']['passed']}; "
+        "ood_labels_used=false. This matches the training budget only; no OOD gain is claimed."
+    )
     commit = _git_commit_hash()
     _write_json(
         output_dir / "metrics.json",
@@ -756,10 +1213,14 @@ def main(argv: list[str] | None = None) -> int:
             },
             "calibration": calibration,
             "ood": ood_metrics,
+            "adaptation": adaptation_block,
             "claim_boundary": (
                 "Calibration (if any) was fitted on ID_VAL only. A validation-only "
                 "improvement is not evidence of improved OOD performance; OOD numbers "
-                "are reported separately from an untouched split."
+                "are reported separately from an untouched split. Mixing labelled "
+                "ADAPTATION-split samples into TRAIN matches the training budget of the "
+                "classical mixed arm; by itself it is not a claim of improved OOD "
+                "generalisation."
             ),
             "warnings": all_warnings,
         },
@@ -781,6 +1242,10 @@ def main(argv: list[str] | None = None) -> int:
                 "adaptation_per_class": bundle["adaptation_per_class"],
                 "train_class_counts": bundle["train_class_counts"],
             },
+            # QHEAD-D02: full matched-adaptation provenance (source split, label
+            # source, selected sample/group ids, disjointness gate result, and
+            # an explicit ood_labels_used=false for the adaptation step).
+            "adaptation": adaptation_block,
             "training_recipe": {
                 "loss": summary["loss"],
                 "class_weight": summary["class_weight"],
@@ -794,6 +1259,8 @@ def main(argv: list[str] | None = None) -> int:
                 "focal_alpha": plan["focal_alpha"],
                 "defaults": RECIPE_DEFAULTS,
                 "default_rationale": RECIPE_DEFAULT_NOTES,
+                "adaptation_default_note": ADAPTATION_DEFAULT_NOTE,
+                "matched_mixed_protocol_flags": "--adaptation-samples 50",
                 "legacy_restore_flags": (
                     "--loss ce --class-weight none --early-metric val_loss "
                     "--no-temperature-calibration --no-balanced-sampler"
@@ -803,7 +1270,10 @@ def main(argv: list[str] | None = None) -> int:
             "claim_boundary": (
                 "Any temperature/logit adjustment was fitted on ID_VAL only; OOD "
                 "labels were never used for fitting or for checkpoint selection. "
-                "No OOD improvement is inferred from a validation-only gain."
+                "No OOD improvement is inferred from a validation-only gain. "
+                "The adaptation step mixed labelled ADAPTATION-split samples into "
+                "TRAIN only with ood_labels_used=false; this matches the classical "
+                "mixed training budget and is not an OOD-generalisation claim."
             ),
             "backbone": bundle["backbone_provenance"],
             "command": "python scripts/train_qml.py " + " ".join(argv or sys.argv[1:]),

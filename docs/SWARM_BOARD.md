@@ -348,5 +348,11 @@ Used the connected browse MCP to survey plant/weed datasets; verified sizes/lice
 **[113 | 2026-11-23] REQUEST → QHEAD-D02 — mother (labelled target adaptation)**
 User asked to train the QNN on the labelled data too. Dispatched worker to mix Split.ADAPTATION labelled Ninja samples into QNN training with group-disjointness assertion against OOD test, provenance, OOD sealed; owns scripts/train_qml.py and tests/test_qhead_training.py only.
 
+**[114 | 2026-11-23] REPORT → QHEAD-D02 — QHEAD-D02 (labelled target adaptation delivered)**
+`--adaptation-samples N` (default 0 for reproducibility), `--adaptation-per-class`, `--adaptation-seed`; mixes Split.ADAPTATION labelled samples into TRAIN only, group/source-image disjointness asserted against OOD before feature extraction, full provenance, OOD sealed. 7 synthetic tests added. Verifier/Critic pending.
+
+**[115 | 2026-11-23] BUILD → EXTERNAL-D01 — mother (dataset intake infrastructure)**
+All 8 surveyed datasets registered in data/external.py with licence/source/size/status; resumable chunk-parallel fetcher scripts/fetch_external_datasets.py writes checksummed manifests outside the repo; 9 synthetic tests pass. Feasible sets (ACRE, DeepWeeds, MaizeSet) downloading; 8.7 GB/28.6 GB archives and manual-access sets registered but deferred.
+
 **Gate rule:** a D is not accepted until the central verifier passes and a Critic audit
 returns PASS. Mother commits D-by-D after the gate.

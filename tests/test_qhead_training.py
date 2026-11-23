@@ -20,6 +20,7 @@ import dataclasses
 import importlib
 import json
 from pathlib import Path
+from types import SimpleNamespace
 
 import numpy as np
 import pytest
@@ -383,3 +384,416 @@ def test_cli_recipe_defaults_and_legacy_flags():
     assert legacy_plan["balanced_sampler"] is True
     assert train_qml._validate_plan(legacy_plan) == []
     json.dumps(legacy_plan)  # provenance-serialisable
+
+
+# ---------------------------------------------------------------------------
+# QHEAD-D02: matched labelled adaptation mixing (synthetic only)
+#
+# Every sample, tensor and feature vector below is built locally.  No project
+# result, dataset path or paper number is used.  torch is already imported at
+# module scope via importorskip, so heavy-dependent tests skip cleanly.
+# ---------------------------------------------------------------------------
+def _sample(sample_id: str, label: int, group: str) -> SimpleNamespace:
+    """A minimal Sample-like object; group_id is the source-image identity."""
+    return SimpleNamespace(
+        sample_id=sample_id,
+        label=label,
+        group_id=group,
+        source_image_id=group,
+        content_hash="h:" + sample_id,
+        path="p:" + sample_id,
+        bbox=None,
+    )
+
+
+def _adaptation_pool(n_per_class: int = 6, prefix: str = "ad") -> list:
+    samples = []
+    for label in (0, 1):
+        for i in range(n_per_class):
+            samples.append(_sample(f"{prefix}-{label}-{i:02d}", label, f"{prefix}-g-{label}-{i:02d}"))
+    return samples
+
+
+def _fake_loader(feature_by_id: dict, calls: list):
+    """Feature loader recording (split, ids); returns vectors keyed by sample id."""
+
+    def loader(samples, cfg, split):
+        calls.append({"split": split, "ids": tuple(s.sample_id for s in samples)})
+        return np.stack([feature_by_id[s.sample_id] for s in samples]).astype(np.float32)
+
+    return loader
+
+
+def _feature_map(samples) -> dict:
+    return {
+        s.sample_id: np.asarray([float(i), float(s.label), 0.25], dtype=np.float32)
+        for i, s in enumerate(samples)
+    }
+
+
+def test_adaptation_cli_flags_defaults_and_validation(tmp_path):
+    """Flags exist, default to a no-op, and reject inconsistent quotas."""
+    from scripts import train_qml
+
+    parser = train_qml._build_parser()
+    args = parser.parse_args(["--dry-run"])
+    assert args.adaptation_samples == 0
+    assert args.adaptation_per_class is None
+    assert args.adaptation_seed is None
+
+    plan, warnings = train_qml._resolve_plan(args)
+    assert train_qml._validate_plan(plan) == []
+    assert plan["adaptation_samples"] == 0
+    assert plan["adaptation_per_class_mix"] is None
+    assert plan["adaptation_seed"] is None
+    assert any("adaptation" in w.lower() for w in warnings)
+    assert any("no OOD improvement" in w or "NOT a claim" in w for w in warnings)
+
+    explicit, _ = train_qml._resolve_plan(
+        parser.parse_args(["--adaptation-samples", "50", "--adaptation-seed", "11"])
+    )
+    assert explicit["adaptation_samples"] == 50
+    assert explicit["adaptation_seed"] == 11
+    assert train_qml._validate_plan(explicit) == []
+
+    per_class, _ = train_qml._resolve_plan(
+        parser.parse_args(["--adaptation-per-class", "25"])
+    )
+    assert per_class["adaptation_per_class_mix"] == 25
+    assert per_class["adaptation_samples"] == 50  # implied total
+
+    conflicting, _ = train_qml._resolve_plan(
+        parser.parse_args(["--adaptation-samples", "50", "--adaptation-per-class", "20"])
+    )
+    assert any("conflicts" in p for p in train_qml._validate_plan(conflicting))
+
+    negative, _ = train_qml._resolve_plan(
+        parser.parse_args(["--adaptation-samples", "-1"])
+    )
+    assert any("non-negative" in p for p in train_qml._validate_plan(negative))
+
+    cfg_file = tmp_path / "adapt.json"
+    cfg_file.write_text(json.dumps({"adaptation_samples": 12}), encoding="utf-8")
+    from_config, _ = train_qml._resolve_plan(
+        parser.parse_args(["--config-json", str(cfg_file)])
+    )
+    assert from_config["adaptation_samples"] == 12
+
+    # Extra plan keys are provenance-only: QMLConfig ignores them.
+    cfg = train_qml._build_config(explicit)
+    assert "adaptation_samples" not in cfg.as_dict()
+
+
+def test_adaptation_pool_reads_only_adaptation_split():
+    """OOD_TEST is returned only for the disjointness gate, never as a source."""
+    from scripts import train_qml
+
+    adaptation = tuple(_adaptation_pool(2))
+    ood = tuple(_sample(f"ood-{i}", i % 2, f"ood-g-{i}") for i in range(2))
+    train = tuple(_sample(f"tr-{i}", i % 2, f"tr-g-{i}") for i in range(2))
+    manifest = SimpleNamespace(
+        splits={
+            "train": SimpleNamespace(samples=train),
+            "adaptation": SimpleNamespace(samples=adaptation),
+            "ood_test": SimpleNamespace(samples=ood),
+        }
+    )
+    pool, ood_pool = train_qml._adaptation_pool(manifest)
+    assert pool == adaptation
+    assert ood_pool == ood
+    assert all(s not in pool for s in ood)
+    assert all(s not in pool for s in train)
+    # A missing ADAPTATION split fails loudly instead of falling back to OOD.
+    bad = SimpleNamespace(splits={"ood_test": SimpleNamespace(samples=ood)})
+    with pytest.raises(KeyError, match="adaptation"):
+        train_qml._adaptation_pool(bad)
+
+
+def test_adaptation_selection_is_deterministic_and_balanced():
+    """Fixed seed gives a stable, order-independent, class-balanced selection."""
+    from scripts import train_qml
+
+    pool = _adaptation_pool(n_per_class=8)
+    first, info = train_qml._select_adaptation_samples(pool, 6, seed=7)
+    again, _ = train_qml._select_adaptation_samples(pool, 6, seed=7)
+    reordered, _ = train_qml._select_adaptation_samples(list(reversed(pool)), 6, seed=7)
+
+    assert [s.sample_id for s in first] == [s.sample_id for s in again]
+    assert [s.sample_id for s in first] == [s.sample_id for s in reordered]
+    assert info["selected"] == 6
+    assert info["selected_class_counts"] == {0: 3, 1: 3}
+    assert info["selection_seed"] == 7
+    assert info["per_class"] is None
+
+    per_class_sel, per_class_info = train_qml._select_adaptation_samples(
+        pool, 0, seed=7, per_class=4
+    )
+    assert len(per_class_sel) == 8
+    assert per_class_info["selected_class_counts"] == {0: 4, 1: 4}
+    assert per_class_info["requested_total"] == 8
+
+    # Different seeds change the subset for at least one nearby seed.
+    variants = [train_qml._select_adaptation_samples(pool, 6, seed=s)[0] for s in (8, 9, 10)]
+    assert any(
+        [s.sample_id for s in v] != [s.sample_id for s in first] for v in variants
+    )
+
+
+def test_adaptation_appended_to_train_only_and_provenance_recorded():
+    """Adaptation features/labels are appended to TRAIN; VAL and OOD are untouched."""
+    from scripts import train_qml
+
+    train = [_sample(f"tr-{i}", i % 2, f"tr-g-{i}") for i in range(4)]
+    val = [_sample(f"va-{i}", i % 2, f"va-g-{i}") for i in range(2)]
+    ood = [_sample(f"oo-{i}", i % 2, f"oo-g-{i}") for i in range(2)]
+    adaptation = _adaptation_pool(n_per_class=4)
+    fmap = _feature_map(train + val + ood + adaptation)
+    calls: list = []
+    loader = _fake_loader(fmap, calls)
+
+    X_train = torch.stack([torch.from_numpy(fmap[s.sample_id]) for s in train])
+    y_train = torch.tensor([s.label for s in train], dtype=torch.long)
+    X_val = torch.stack([torch.from_numpy(fmap[s.sample_id]) for s in val])
+    y_val = torch.tensor([s.label for s in val], dtype=torch.long)
+    X_ood = torch.stack([torch.from_numpy(fmap[s.sample_id]) for s in ood])
+    y_ood = torch.tensor([s.label for s in ood], dtype=torch.long)
+
+    X_out, y_out, prov = train_qml._mix_adaptation_into_train(
+        X_train,
+        y_train,
+        adaptation_samples=adaptation,
+        ood_samples=ood,
+        feature_loader=loader,
+        cfg=SimpleNamespace(),
+        total=4,
+        seed=7,
+    )
+
+    assert tuple(X_out.shape) == (8, 3)
+    assert tuple(y_out.shape) == (8,)
+    assert torch.equal(X_out[:4], X_train)
+    assert torch.equal(y_out[:4], y_train)
+    selected_ids = prov["adaptation_sample_ids"]
+    expected_features = torch.stack(
+        [torch.from_numpy(fmap[sid]) for sid in selected_ids]
+    )
+    assert torch.equal(X_out[4:], expected_features)
+    label_by_id = {s.sample_id: s.label for s in adaptation}
+    selected_labels = [label_by_id[sid] for sid in selected_ids]
+    assert torch.equal(y_out[4:], torch.tensor(selected_labels, dtype=torch.long))
+
+    # The loader was called with split name "adaptation" and the same selected ids.
+    assert calls == [{"split": "adaptation", "ids": tuple(selected_ids)}]
+
+    # VAL/OOD tensors were never mutated.
+    assert torch.equal(X_val, torch.stack([torch.from_numpy(fmap[s.sample_id]) for s in val]))
+    assert torch.equal(y_val, torch.tensor([s.label for s in val], dtype=torch.long))
+    assert torch.equal(X_ood, torch.stack([torch.from_numpy(fmap[s.sample_id]) for s in ood]))
+    assert torch.equal(y_ood, torch.tensor([s.label for s in ood], dtype=torch.long))
+
+    # Provenance: source, label source, ids/groups, disjointness, ood_labels_used.
+    assert prov["adaptation_samples_used"] == 4
+    assert prov["adaptation_source_split"] == train_qml.ADAPTATION_SPLIT_NAME == "adaptation"
+    assert prov["adaptation_label_source"] == train_qml.ADAPTATION_LABEL_SOURCE
+    assert prov["adaptation_source_image_ids"] == sorted(
+        {s.group_id for s in adaptation if s.sample_id in selected_ids}
+    )
+    assert prov["disjointness_assertion"]["passed"] is True
+    assert "source_image_id/group_id" in prov["disjointness_assertion"]["checked_fields"]
+    assert prov["ood_labels_used"] is False
+    assert prov["val_loader_unchanged"] is True
+    assert prov["ood_loader_unchanged"] is True
+    assert prov["selection_seed"] == 7
+    json.dumps({k: v for k, v in prov.items() if k != "warnings"})
+
+
+def test_adaptation_disjointness_fails_loudly_on_group_overlap():
+    """A shared source-image group aborts mixing before any feature extraction."""
+    from scripts import train_qml
+
+    X_train = torch.zeros(2, 3)
+    y_train = torch.tensor([0, 1])
+    adaptation = [_sample("ad-0", 0, "shared-image")]
+    ood = [_sample("oo-0", 1, "shared-image")]
+    calls: list = []
+    loader = _fake_loader(
+        {"ad-0": np.zeros(3, dtype=np.float32), "oo-0": np.zeros(3, dtype=np.float32)},
+        calls,
+    )
+    with pytest.raises(RuntimeError, match="disjointness assertion FAILED"):
+        train_qml._mix_adaptation_into_train(
+            X_train,
+            y_train,
+            adaptation_samples=adaptation,
+            ood_samples=ood,
+            feature_loader=loader,
+            cfg=SimpleNamespace(),
+            total=1,
+            seed=7,
+        )
+    assert calls == []  # fail before the frozen feature loader ever runs
+
+
+def test_adaptation_zero_is_a_true_noop():
+    """--adaptation-samples 0 returns the original tensors without featurising."""
+    from scripts import train_qml
+
+    adaptation = _adaptation_pool()
+    ood = [_sample("oo-0", 1, "oo-g-0")]
+    X_train = torch.randn(3, 3)
+    y_train = torch.tensor([0, 1, 0])
+    calls: list = []
+    loader = _fake_loader(_feature_map(adaptation + ood), calls)
+
+    X_out, y_out, prov = train_qml._mix_adaptation_into_train(
+        X_train,
+        y_train,
+        adaptation_samples=adaptation,
+        ood_samples=ood,
+        feature_loader=loader,
+        cfg=SimpleNamespace(),
+        total=0,
+        seed=7,
+    )
+    assert X_out is X_train
+    assert y_out is y_train
+    assert calls == []
+    assert prov["adaptation_samples_used"] == 0
+    assert prov["requested_adaptation_samples"] == 0
+    assert prov["ood_labels_used"] is False
+    assert prov["disjointness_assertion"]["passed"] is True
+
+
+def test_prepare_data_mixes_only_train_and_leaves_val_ood_untouched(monkeypatch):
+    """End-to-end _prepare_data: only TRAIN grows; VAL/OOD loaders are identical."""
+    import sys
+    from enum import Enum
+
+    from scripts import train_qml
+
+    class FakeSplit(str, Enum):
+        TRAIN = "train"
+        ID_VAL = "id_val"
+        ID_TEST = "id_test"
+        ADAPTATION = "adaptation"
+        OOD_TEST = "ood_test"
+
+    train = [_sample(f"tr-{i}", i % 2, f"tr-g-{i}") for i in range(4)]
+    val = [_sample(f"va-{i}", i % 2, f"va-g-{i}") for i in range(2)]
+    ood = [_sample(f"oo-{i}", i % 2, f"oo-g-{i}") for i in range(2)]
+    adaptation = _adaptation_pool(n_per_class=3)
+    fmap = _feature_map(train + val + ood + adaptation)
+
+    def rec(samples):
+        return SimpleNamespace(samples=tuple(samples))
+
+    manifest = SimpleNamespace(
+        splits={
+            FakeSplit.TRAIN: rec(train),
+            FakeSplit.ID_VAL: rec(val),
+            FakeSplit.ADAPTATION: rec(adaptation),
+            FakeSplit.OOD_TEST: rec(ood),
+        }
+    )
+
+    loader_calls: list = []
+
+    class FakeSubsetManifest:
+        def __init__(self, base, ood_samples):
+            self.splits = dict(base.splits)
+            self.splits[FakeSplit.OOD_TEST] = rec(ood_samples)
+
+    modules: dict[str, SimpleNamespace] = {
+        "data": SimpleNamespace(build_splits=lambda *a, **k: manifest),
+        "data.splits": SimpleNamespace(Split=FakeSplit),
+        "qmlpipe.plant_backbone": SimpleNamespace(
+            build_backbone_extractor=lambda name, cfg: (object(), object())
+        ),
+        "qmlpipe.losses": SimpleNamespace(
+            class_weights_from_labels=lambda labels, n_classes, mode: np.ones(2)
+        ),
+        "qmlpipe.train": SimpleNamespace(
+            build_balanced_sampler=lambda labels, seed: None
+        ),
+        "scripts.run_real_benchmark": SimpleNamespace(
+            SubsetManifest=FakeSubsetManifest,
+            cap_ood_by_group=lambda samples, per_class: list(samples),
+            make_feature_loader=lambda extractor, preprocess, device: _fake_loader(
+                fmap, loader_calls
+            ),
+            prepare_ninja_subset=lambda n: None,
+        ),
+    }
+
+    @dataclasses.dataclass
+    class FakeExpConfig:
+        output_dir: str = "results"
+        n_qubits: int = 10
+        feature_dim: int = 1024
+        qnn_layers: int = 2
+        epochs: int = 1
+        batch_size: int = 32
+        learning_rate: float = 1e-3
+        seed: int = 42
+        adaptation_per_class: int = 200
+
+        @classmethod
+        def from_env(cls):
+            return cls()
+
+    modules["experiments.config"] = SimpleNamespace(ExperimentConfig=FakeExpConfig)
+    for name, module in modules.items():
+        monkeypatch.setitem(sys.modules, name, module)
+    monkeypatch.setattr(
+        train_qml,
+        "_build_config",
+        lambda plan: SimpleNamespace(qubits=3, classical_dim=3, projection_dim=8),
+    )
+    monkeypatch.setenv("KAGGLE_DATA_DIR", "synthetic/kaggle")
+    monkeypatch.setenv("NINJA_ANN_DIR", "synthetic/ann")
+    monkeypatch.setenv("NINJA_IMG_DIR", "synthetic/img")
+
+    parser = train_qml._build_parser()
+    plan, _ = train_qml._resolve_plan(
+        parser.parse_args(["--adaptation-samples", "4", "--backbone", "imagenet"])
+    )
+    bundle = train_qml._prepare_data(plan, smoke=False)
+
+    assert bundle["counts"] == {"train": 8, "val": 2, "ood": 2}
+    assert bundle["adaptation"]["adaptation_samples_used"] == 4
+    assert bundle["adaptation"]["ood_labels_used"] is False
+
+    train_ds = bundle["train_loader"].dataset
+    assert tuple(train_ds.tensors[0].shape) == (8, 3)
+    assert torch.equal(
+        train_ds.tensors[0][:4],
+        torch.stack([torch.from_numpy(fmap[s.sample_id]) for s in train]),
+    )
+    selected_ids = bundle["adaptation"]["adaptation_sample_ids"]
+    assert torch.equal(
+        train_ds.tensors[0][4:],
+        torch.stack([torch.from_numpy(fmap[sid]) for sid in selected_ids]),
+    )
+    label_by_id = {s.sample_id: s.label for s in adaptation}
+    assert torch.equal(
+        train_ds.tensors[1][4:],
+        torch.tensor([label_by_id[sid] for sid in selected_ids]),
+    )
+
+    val_ds = bundle["val_loader"].dataset
+    ood_ds = bundle["ood_loader"].dataset
+    assert torch.equal(
+        val_ds.tensors[0],
+        torch.stack([torch.from_numpy(fmap[s.sample_id]) for s in val]),
+    )
+    assert torch.equal(
+        ood_ds.tensors[0],
+        torch.stack([torch.from_numpy(fmap[s.sample_id]) for s in ood]),
+    )
+    assert torch.equal(
+        ood_ds.tensors[1], torch.tensor([s.label for s in ood])
+    )
+
+    splits_seen = [c["split"] for c in loader_calls]
+    assert splits_seen == ["train", "id_val", "ood_test", "adaptation"]
+    assert loader_calls[-1]["ids"] == tuple(selected_ids)
