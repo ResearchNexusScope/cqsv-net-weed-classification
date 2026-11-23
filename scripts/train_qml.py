@@ -276,6 +276,10 @@ def _resolve_plan(args: argparse.Namespace) -> tuple[dict, list[str]]:
         + ". Legacy recipe: --loss ce --class-weight none --early-metric val_loss "
         "--no-temperature-calibration --no-balanced-sampler."
     )
+    warnings.append(
+        "legacy-restore flags for reproducibility: --loss ce --class-weight none "
+        "--early-metric val_loss --no-temperature-calibration --no-balanced-sampler"
+    )
     for key, note in RECIPE_DEFAULT_NOTES.items():
         warnings.append(f"default rationale [{key}]: {note}")
     return plan, warnings
@@ -549,6 +553,8 @@ def _prepare_data(plan: dict, smoke: bool) -> dict:
 
     generator = torch.Generator().manual_seed(int(plan["seed"]))
     train_dataset = TensorDataset(X_train, y_train)
+    # A2: declared before any code that appends to it (sampler block below).
+    warnings: list[str] = []
     sampler = None
     if bool(plan["balanced_sampler"]):
         from qmlpipe.train import build_balanced_sampler
@@ -557,6 +563,13 @@ def _prepare_data(plan: dict, smoke: bool) -> dict:
         if sampler is None:
             warnings.append(
                 "balanced sampler requested but the TRAIN label set was empty; disabled"
+            )
+        elif str(plan["class_weight"]).lower() == "balanced":
+            # A4: class weighting and resampling both correct the same imbalance.
+            warnings.append(
+                "class_weight=balanced combined with balanced_sampler=True applies "
+                "class reweighting twice (double correction); this may over-correct "
+                "the minority class and is recorded for audit"
             )
     train_loader = DataLoader(
         train_dataset,
@@ -582,7 +595,6 @@ def _prepare_data(plan: dict, smoke: bool) -> dict:
             TensorDataset(X_ood, y_ood), batch_size=int(plan["batch_size"]), shuffle=False
         )
 
-    warnings: list[str] = []
     if val_loader is None:
         warnings.append("no held-out validation split; early stopping monitors train loss")
     if ood_loader is None:
@@ -674,7 +686,12 @@ def main(argv: list[str] | None = None) -> int:
         )
         # Evaluate the SELECTED checkpoint, not the last epoch's weights.
         selected = load_checkpoint(model, checkpoint_path)
-        calibration = {"status": "skipped", "reason": "calibration not requested"}
+        calibration = {
+            "status": "skipped",
+            "reason": "calibration not requested",
+            "fitted_on_split": "id_val",
+            "ood_labels_used": False,
+        }
         if bool(plan["temperature_calibration"]):
             if bundle["val_loader"] is None:
                 calibration = {

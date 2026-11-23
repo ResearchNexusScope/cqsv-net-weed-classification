@@ -17,6 +17,7 @@ Covered contracts:
 from __future__ import annotations
 
 import dataclasses
+import importlib
 import json
 from pathlib import Path
 
@@ -32,7 +33,10 @@ if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
 from qmlpipe import heads as heads_mod  # noqa: E402
-from qmlpipe import train as train_mod  # noqa: E402
+
+# ``qmlpipe.__init__`` re-exports a *function* named ``train``, so a plain
+# ``from qmlpipe import train`` would shadow the module. Resolve explicitly.
+train_mod = importlib.import_module("qmlpipe.train")  # noqa: E402
 from qmlpipe.heads import (  # noqa: E402
     ClassificationHead,
     build_classification_head,
@@ -122,12 +126,17 @@ def test_class_weights_derived_from_train_labels_only():
 
 def test_focal_loss_downweights_easy_examples():
     """Easy (high-confidence, correct) samples lose more weight than hard ones."""
-    logits = torch.tensor([[4.0, -4.0], [0.1, -0.1]])
-    labels = torch.tensor([0, 0])
+    # Mixed labels are required for the weight-effect assertion: PyTorch's
+    # weighted cross entropy normalises by the sum of the sample weights, so a
+    # single-class batch cancels the constant weight out.
+    logits = torch.tensor([[4.0, -4.0], [0.1, -0.1], [-3.0, 3.0]])
+    labels = torch.tensor([0, 0, 1])
 
     per_sample_focal = focal_loss(logits, labels, gamma=2.0, reduction="none")
     per_sample_ce = weighted_cross_entropy(logits, labels, reduction="none")
 
+    # The first two samples share class 0; their ratio isolates the focusing
+    # effect from any class-prior effect.
     ratio_focal = float(per_sample_focal[0] / per_sample_focal[1])
     ratio_ce = float(per_sample_ce[0] / per_sample_ce[1])
     assert ratio_focal < ratio_ce  # easy sample is relatively suppressed
@@ -139,6 +148,7 @@ def test_focal_loss_downweights_easy_examples():
     )
 
     weights = class_weights_from_labels(labels, n_classes=2, mode="balanced")
+    assert float(weights[1]) > float(weights[0])
     assert not torch.allclose(
         weighted_cross_entropy(logits, labels, weight=weights),
         weighted_cross_entropy(logits, labels),
@@ -227,7 +237,7 @@ def test_early_stopping_and_checkpoint_use_selected_metric(tmp_path, monkeypatch
         state["val_calls"] = 0
         cfg = _Cfg(epochs=5, patience=2, early_metric=metric)
         model = torch.nn.Linear(4, 2)
-        result = train(
+        result = train_mod.train(
             model, train_loader, train_loader, cfg, output_dir=tmp_path / tag
         )
         ckpt = torch.load(
