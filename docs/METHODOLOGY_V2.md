@@ -71,6 +71,17 @@ Every reported arm must be accompanied by all of the following, on the *same* gr
 | Chance / majority class | absolute floor | derived: `results/real_run10/qc-52fcca25a5b8/metrics/metrics.json → dataset_table[0].categories = 2` ⇒ chance `0.5`; majority-class recall must be reported because the no-mixing control reaches `recall: 0.96` with `accuracy: 0.48` |
 | Paired noise controls | noise robustness must be quantum-specific, not generic | `results/real_run10/qc-52fcca25a5b8/metrics/metrics.json → noise_robustness/qsvc_quantum_kernel/sigma=0.2.accuracy.mean = 0.512` vs `noise_robustness/svc_poly2_classical/sigma=0.2.accuracy.mean = 0.512` |
 
+**Matched adaptation data is part of the control, not a free variable.** On the committed
+real artifacts the classical `qsvc_mixed_variance` arm trains with 50 labelled Ninja
+(target-domain) samples mixed into the Kaggle training set, whereas the QNN arms train
+only on Kaggle `Split.TRAIN`/`Split.ID_VAL` and receive **zero** labelled target samples
+(`scripts/train_qml.py:548-550`). A QNN arm may therefore not be compared against the
+mixing accuracy 0.918; its matched comparator is the
+`qsvc_no_mixing_control` mean 0.496 unless it receives the same labelled adaptation
+budget under the same leakage discipline. Every arm must record its adaptation sample
+count and label source in provenance. This requirement was added after the QHEAD-D01
+diagnostic runs exposed the confound; it is a protocol rule, not a result claim.
+
 A quantum arm reported without its matched control row is an unsupported claim, not a result.
 
 ## 5. (d) QNN head and training requirements implied by the failures
@@ -90,6 +101,16 @@ The two OOD QNN arms failed in different but diagnostic ways. ImageNet-style: `r
 - **No significance for n < 2**, and n < 10 is exploratory only: report intervals, never a "significant" label. The legacy artifact's reason — `results/real_run/qc-ac9a06bc595c/metrics/metrics.json → table_status.comparisons.reason = "no pre-registered pair had two or more paired runs"` — is the rule applied correctly.
 - A "significant" decision requires all of: Holm-adjusted p below the declared alpha, a bootstrap CI excluding zero, and power at or above the declared minimum. Otherwise report `decision: "inconclusive"` with a `decision_reason`.
 - Report per-class metrics (precision, recall, F1, macro IoU, confusion matrix) alongside accuracy whenever classes are imbalanced or the control's recall is high while accuracy is near chance.
+
+**Post-D01 diagnostic (n=1 per arm; not admissible as evidence).** The corrected
+balanced/calibrated recipe was applied to both backbones. PlantNet:
+`results/qml_plantnet_qhead/metrics.json → ood = {accuracy: 0.3825, auc: 0.357225, f1: 0.40481927710843374, confusion_matrix: [[69,131],[116,84]]}` with `training.best_val_accuracy = 0.8592964824120602`.
+ImageNet: `results/qml_imagenet_qhead/metrics.json → ood = {accuracy: 0.4875, auc: 0.3904, f1: 0.6496, confusion_matrix: [[5,195],[10,190]]}` with `training.best_val_accuracy = 0.8543`.
+The exact single-class collapse is gone on PlantNet, but both OOD AUCs remain below
+chance and the large validation gains did not transfer; ImageNet instead drifts to a
+soft class-1 collapse. Under §7 this clears the no-collapse criterion for PlantNet but
+still fails the AUC-above-chance and ≥10-seeds criteria, so neither QNN arm is admissible.
+These runs are recorded in the private provenance journal and do not revise §1.
 
 ## 7. (f) Acceptance criteria with thresholds derived from observed controls
 

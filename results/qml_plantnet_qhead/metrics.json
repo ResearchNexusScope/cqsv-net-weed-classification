@@ -1,0 +1,125 @@
+{
+  "calibration": {
+    "class_prior_source": "train_labels",
+    "class_priors": [
+      0.6022584692597239,
+      0.397741530740276
+    ],
+    "fitted_on_split": "id_val",
+    "head_state": {
+      "logit_adjust": [
+        0.7098960280418396,
+        1.290734052658081
+      ],
+      "n_classes": 2,
+      "temperature": 0.05000000074505806
+    },
+    "logit_adjust": [
+      0.7098960280418396,
+      1.290734052658081
+    ],
+    "logit_adjustment_tau": 1.4000000000000001,
+    "method": "grid_nll_temperature_plus_logit_adjustment",
+    "n_val_samples": 199,
+    "note": "Calibration was fitted on ID_VAL only. A validation-only gain is NOT evidence of improved OOD performance; OOD metrics are reported separately from a distinct, untouched split. Temperature scaling and a constant class logit shift preserve the within-class logit ordering and cannot manufacture class separation that the representation lacks.",
+    "ood_labels_used": false,
+    "status": "fitted",
+    "temperature": 0.05
+  },
+  "claim_boundary": "Calibration (if any) was fitted on ID_VAL only. A validation-only improvement is not evidence of improved OOD performance; OOD numbers are reported separately from an untouched split.",
+  "commit_hash": "1d781a03aeff1944f961f549d922b179bf6ad70c",
+  "config": {
+    "ansatz": "strongly_entangling",
+    "backbone": "plantnet",
+    "balanced_sampler": false,
+    "batch_size": 32,
+    "class_weight": "balanced",
+    "classical_dim": 512,
+    "device_name": "default.qubit",
+    "early_metric": "balanced_accuracy",
+    "early_min_delta": 0.0,
+    "embedding": "amplitude",
+    "epochs": 5,
+    "focal_alpha": null,
+    "focal_gamma": 2.0,
+    "layers": 2,
+    "learning_rate": 0.001,
+    "loss": "focal",
+    "noise_depolarizing": null,
+    "optimizer": "adamw",
+    "output_dir": "results\\qml_plantnet_qhead",
+    "patience": 3,
+    "projection_dim": 1024,
+    "qubits": 10,
+    "seed": 42,
+    "shots": null,
+    "temperature_calibration": true,
+    "weight_decay": 0.0
+  },
+  "experiment_id": "qmlpipe_transfer_qnn",
+  "ood": {
+    "accuracy": 0.3825,
+    "auc": 0.357225,
+    "calibration": {
+      "brier_score": 0.29245611891496226,
+      "ece": 0.21350503202527765,
+      "n_bins": 10,
+      "n_samples": 400
+    },
+    "confusion_matrix": [
+      [
+        69,
+        131
+      ],
+      [
+        116,
+        84
+      ]
+    ],
+    "f1": 0.40481927710843374,
+    "iou_class0": 0.21835443037974683,
+    "iou_class1": 0.2537764350453172,
+    "log_loss": 0.7831328801124176,
+    "macro_iou": 0.23606543271253203,
+    "n_samples": 400,
+    "precision": 0.39069767441860465,
+    "recall": 0.42,
+    "support": 400
+  },
+  "schema_version": "1.0",
+  "training": {
+    "balanced_sampler": false,
+    "best_epoch": 4,
+    "best_val_accuracy": 0.8592964824120602,
+    "best_val_loss": 0.1567132084363669,
+    "best_val_metric": 0.8249472573839662,
+    "class_weight": "balanced",
+    "class_weights": [
+      0.8302083611488342,
+      1.257097840309143
+    ],
+    "class_weights_source": "train_labels",
+    "early_metric": "balanced_accuracy",
+    "early_stopped": false,
+    "epochs_run": 5,
+    "loss": "focal",
+    "optimizer": "adamw",
+    "selected_checkpoint_epoch": 4,
+    "train_class_counts": [
+      960,
+      634
+    ]
+  },
+  "warnings": [
+    "QHEAD-D01 CLI balance defaults: loss=focal, class_weight=balanced, early_metric=balanced_accuracy, temperature_calibration=True, balanced_sampler=False. Legacy recipe: --loss ce --class-weight none --early-metric val_loss --no-temperature-calibration --no-balanced-sampler.",
+    "legacy-restore flags for reproducibility: --loss ce --class-weight none --early-metric val_loss --no-temperature-calibration --no-balanced-sampler",
+    "default rationale [loss]: focal down-weights easy examples; --loss ce --class-weight balanced gives standard balanced CE",
+    "default rationale [class_weight]: weights n/(K*count) are computed from TRAIN labels only",
+    "default rationale [early_metric]: balanced_accuracy prevents a collapsed single-class model from being checkpointed",
+    "default rationale [temperature_calibration]: temperature (+ logit adjustment) fitted on ID_VAL only; never on OOD",
+    "default rationale [balanced_sampler]: off by default to avoid triple correction; opt in with --balanced-sampler",
+    "transfer QNN's image extractor replaced by its own projection so the model consumes cached feature-loader vectors (no double extraction)",
+    "feature backbone 'plantnet' is frozen; its weights are not updated during training",
+    "Calibration (if fitted) used ID_VAL only; a validation-only gain is NOT evidence of improved OOD performance. OOD metrics come from an untouched split."
+  ]
+}

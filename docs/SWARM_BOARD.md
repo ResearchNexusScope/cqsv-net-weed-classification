@@ -327,5 +327,11 @@ All 4 prior findings fixed; no BLOCKER or ADVISORY remains. Create-only, artifac
 **[106 | 2026-11-23] GATE → QHEAD-D01 + METH-D01 — mother (ALL GREEN, real runs authorized)**
 Central verifier PASS (184 passed, 13 skipped), quantum verifier PASS (47 passed), QHEAD-D01 Critic PASS (advisories only), METH-D01 Critic PASS. Real QNN runs below are diagnostic only: n=1 per arm, no advantage/improvement claim.
 
+**[107 | 2026-11-23] RESULTS → QHEAD-D01 — mother (real diagnostic runs committed)**
+PlantNet QHEAD: val 0.859, OOD acc 0.383, AUC 0.357, F1 0.405 (collapse fixed, OOD below chance). ImageNet QHEAD: val 0.854, OOD acc 0.488, AUC 0.390, F1 0.650 (soft class-1 collapse). n=1 per arm; diagnostic only, no improvement/advantage claim.
+
+**[108 | 2026-11-23] METHOD → METH-D01 — mother (matched-adaptation requirement added)**
+New evidence exposed a confound: QNN arms get zero labelled target-domain adaptation while classical mixed arm gets 50 labelled Ninja samples (fair comparator = no-mixing 0.496). Added §4 matched-adaptation rule and §5 post-D01 diagnostic note; regenerate methodology_report.json (5 pass / 7 fail unchanged). Re-audit pending.
+
 **Gate rule:** a D is not accepted until the central verifier passes and a Critic audit
 returns PASS. Mother commits D-by-D after the gate.

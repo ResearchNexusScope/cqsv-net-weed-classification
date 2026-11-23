@@ -69,3 +69,23 @@ See `docs/QML_IMPROVEMENT_PLAN.md` (P0 statistics/baseline honesty, P1 matched c
 - **Bias and subgroup audit.** Aggregate metrics can hide subgroup failures; per-subgroup performance and a decision-threshold audit are required before any operational use (ml-for-science best practice).
 - **Calibration.** Scores from precomputed-kernel SVC are internal Platt probabilities and neural softmax outputs are uncalibrated; no calibration claim is made unless a calibration result is explicitly supplied in `results`.
 - **Provenance and dual use.** Record the exact environment, seeds, data hashes and commit before release. Do not present simulated quantum results as hardware evidence or use them to justify high-stakes interventions.
+
+## Addendum: QHEAD-D01 diagnostic runs (hand-written; not part of the auto-generated ablation table)
+
+The tables above are generated from the 3-config ablation dictionary and are unchanged.
+This addendum records the later corrected-training diagnostic runs; it is not generated
+by `scripts/build_qml_card.py` and will be lost if that card is regenerated.
+
+| Arm (artifact) | Val acc | OOD acc | OOD AUC | OOD F1 | Confusion |
+| --- | ---: | ---: | ---: | ---: | --- |
+| PlantNet QHEAD (`results/qml_plantnet_qhead/metrics.json`) | 0.8593 | 0.3825 | 0.3572 | 0.4048 | `[[69,131],[116,84]]` |
+| ImageNet QHEAD (`results/qml_imagenet_qhead/metrics.json`) | 0.8543 | 0.4875 | 0.3904 | 0.6496 | `[[5,195],[10,190]]` |
+
+The balanced focal + ID_VAL-calibrated recipe removed PlantNet's exact single-class
+collapse (F1 0.0000→0.4048) but left both OOD AUCs below chance, and the large
+validation gains did not transfer. ImageNet QHEAD drifts to a soft class-1 collapse.
+These 5-epoch figures are n=1 per arm and are diagnostic only: no
+improvement, generalisation, noise-robustness or quantum-advantage claim is made.
+Calibration was fitted on ID_VAL only (`fitted_on_split=id_val`, `ood_labels_used=false`).
+Also note the matched-protocol confound in `docs/METHODOLOGY_V2.md` §4: these QNN arms
+receive no labelled target-domain adaptation data, unlike the classical mixed arm.

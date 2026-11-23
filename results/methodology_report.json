@@ -1,0 +1,703 @@
+{
+  "schema_version": "1.0",
+  "root": "C:\\Users\\sugee\\Github\\SugeethJSA\\Quantum_Classification",
+  "artifacts": {
+    "real_run": "results/real_run10/qc-52fcca25a5b8/metrics/metrics.json",
+    "qml_full": "results/qml_full/metrics.json",
+    "qml_plantnet": "results/qml_plantnet/metrics.json",
+    "threshold": "results/qml_plantnet/threshold_analysis.json",
+    "ablation": "results/qml_ablation/ablation_summary.json",
+    "model_card": "results/qml_ablation/model_card.md"
+  },
+  "policy": {
+    "alpha": 0.05,
+    "min_power": 0.8,
+    "min_n_for_significance": 2,
+    "min_n_recommended": 10,
+    "sd_margin": 2.0,
+    "advantage_min_gain": 0.0,
+    "equivalence_tol": 1e-12,
+    "min_recall_share": 0.5,
+    "min_retention": 0.8
+  },
+  "evidence": [
+    {
+      "id": "primary_classical_mixed_kernel",
+      "approach": "classical poly-2 kernel with supervised domain mixing",
+      "status": "supported",
+      "reason": "classical poly-2 reproduces the mixing gain on the same run vectors without any quantum backend",
+      "observations": [
+        {
+          "artifact": "results/real_run10/qc-52fcca25a5b8/metrics/metrics.json",
+          "key": "aggregates.qsvc_mixed_variance/svc_poly2_classical.accuracy.mean",
+          "value": 0.918
+        },
+        {
+          "artifact": "results/real_run10/qc-52fcca25a5b8/metrics/metrics.json",
+          "key": "aggregates.qsvc_mixed_variance/svc_poly2_classical.accuracy.values",
+          "value": [
+            0.96,
+            0.94,
+            0.94,
+            0.92,
+            0.9,
+            0.8,
+            0.9,
+            0.94,
+            0.92,
+            0.96
+          ]
+        },
+        {
+          "artifact": "results/real_run10/qc-52fcca25a5b8/metrics/metrics.json",
+          "key": "aggregates.qsvc_mixed_variance/qsvc_no_mixing_control.accuracy.mean",
+          "value": 0.496
+        }
+      ],
+      "artifacts": [
+        "results/real_run10/qc-52fcca25a5b8/metrics/metrics.json"
+      ]
+    },
+    {
+      "id": "supervised_domain_mixing",
+      "approach": "supervised source-domain mixing before kernel fit",
+      "status": "partially_supported",
+      "reason": "consistent large gain over the no-mixing control, but no pre-registered paired contrast for this comparison is recorded in the artifacts",
+      "observations": [
+        {
+          "artifact": "results/real_run10/qc-52fcca25a5b8/metrics/metrics.json",
+          "key": "aggregates.qsvc_mixed_variance/qsvc_quantum_kernel.accuracy.mean",
+          "value": 0.918
+        },
+        {
+          "artifact": "results/real_run10/qc-52fcca25a5b8/metrics/metrics.json",
+          "key": "aggregates.qsvc_mixed_variance/qsvc_quantum_kernel.accuracy.std",
+          "value": 0.0466190233
+        },
+        {
+          "artifact": "results/real_run10/qc-52fcca25a5b8/metrics/metrics.json",
+          "key": "aggregates.qsvc_mixed_variance/qsvc_quantum_kernel.accuracy.n",
+          "value": 10
+        },
+        {
+          "artifact": "results/real_run10/qc-52fcca25a5b8/metrics/metrics.json",
+          "key": "aggregates.qsvc_mixed_variance/qsvc_no_mixing_control.accuracy.mean",
+          "value": 0.496
+        },
+        {
+          "artifact": "results/real_run10/qc-52fcca25a5b8/metrics/metrics.json",
+          "key": "aggregates.qsvc_mixed_variance/qsvc_no_mixing_control.accuracy.std",
+          "value": 0.0323865541
+        },
+        {
+          "artifact": "results/real_run10/qc-52fcca25a5b8/metrics/metrics.json",
+          "key": "aggregates.qsvc_mixed_variance/qsvc_no_mixing_control.accuracy.n",
+          "value": 10
+        }
+      ],
+      "artifacts": [
+        "results/real_run10/qc-52fcca25a5b8/metrics/metrics.json"
+      ]
+    },
+    {
+      "id": "quantum_kernel_advantage",
+      "approach": "QSVC quantum kernel as a source of advantage",
+      "status": "failed",
+      "reason": "quantum kernel is numerically indistinguishable from the matched classical poly-2 oracle and the paired test is inconclusive/underpowered",
+      "observations": [
+        {
+          "artifact": "results/real_run10/qc-52fcca25a5b8/metrics/metrics.json",
+          "key": "aggregates.qsvc_mixed_variance/qsvc_quantum_kernel.accuracy.values",
+          "value": [
+            0.96,
+            0.94,
+            0.94,
+            0.92,
+            0.9,
+            0.8,
+            0.9,
+            0.94,
+            0.92,
+            0.96
+          ]
+        },
+        {
+          "artifact": "results/real_run10/qc-52fcca25a5b8/metrics/metrics.json",
+          "key": "aggregates.qsvc_mixed_variance/svc_poly2_classical.accuracy.values",
+          "value": [
+            0.96,
+            0.94,
+            0.94,
+            0.92,
+            0.9,
+            0.8,
+            0.9,
+            0.94,
+            0.92,
+            0.96
+          ]
+        },
+        {
+          "artifact": "results/real_run10/qc-52fcca25a5b8/metrics/metrics.json",
+          "key": "comparisons.0",
+          "value": {
+            "ci95_high": 0.0,
+            "ci95_low": 0.0,
+            "cohens_dz": 0.0,
+            "decision": "inconclusive",
+            "decision_reason": "descriptive: p_holm, bootstrap CI includes 0, power<0.80 or unavailable",
+            "df": 9,
+            "mean_difference": 0.0,
+            "multiplicity": {
+              "available": true,
+              "m": 1,
+              "method": "holm",
+              "reason": null
+            },
+            "n": 10,
+            "p_holm": null,
+            "p_raw": null,
+            "pair": [
+              "qsvc_quantum_kernel",
+              "svc_poly2_classical"
+            ],
+            "power_at_observed_dz": 0.05,
+            "primary_test": "paired_t_test (scipy.stats.ttest_rel, two-sided)",
+            "secondary_tests": {
+              "mcnemar_exact": {
+                "n_discordant": 0,
+                "p": null
+              },
+              "wilcoxon_signed_rank": {
+                "p": 1.0
+              }
+            },
+            "t_statistic": null
+          }
+        },
+        {
+          "artifact": "results/real_run10/qc-52fcca25a5b8/metrics/metrics.json",
+          "key": "warnings",
+          "value": [
+            "PennyLane is not installed; used classical (A@B.T)^2 oracle",
+            "PennyLane is not installed; used classical (A@B.T)^2 oracle",
+            "PennyLane is not installed; used classical (A@B.T)^2 oracle",
+            "PennyLane is not installed; used classical (A@B.T)^2 oracle",
+            "PennyLane is not installed; used classical (A@B.T)^2 oracle",
+            "PennyLane is not installed; used classical (A@B.T)^2 oracle",
+            "PennyLane is not installed; used classical (A@B.T)^2 oracle",
+            "PennyLane is not installed; used classical (A@B.T)^2 oracle",
+            "PennyLane is not installed; used classical (A@B.T)^2 oracle",
+            "PennyLane is not installed; used classical (A@B.T)^2 oracle",
+            "PennyLane is not installed; used classical (A@B.T)^2 oracle",
+            "PennyLane is not installed; used classical (A@B.T)^2 oracle",
+            "PennyLane is not installed; used classical (A@B.T)^2 oracle",
+            "PennyLane is not installed; used classical (A@B.T)^2 oracle",
+            "PennyLane is not installed; used classical (A@B.T)^2 oracle",
+            "PennyLane is not installed; used classical (A@B.T)^2 oracle",
+            "PennyLane is not installed; used classical (A@B.T)^2 oracle",
+            "PennyLane is not installed; used classical (A@B.T)^2 oracle",
+            "PennyLane is not installed; used classical (A@B.T)^2 oracle",
+            "PennyLane is not installed; used classical (A@B.T)^2 oracle",
+            "PennyLane is not installed; used classical (A@B.T)^2 oracle",
+            "PennyLane is not installed; used classical (A@B.T)^2 oracle",
+            "PennyLane is not installed; used classical (A@B.T)^2 oracle",
+            "PennyLane is not installed; used classical (A@B.T)^2 oracle",
+            "PennyLane is not installed; used classical (A@B.T)^2 oracle",
+            "PennyLane is not installed; used classical (A@B.T)^2 oracle",
+            "PennyLane is not installed; used classical (A@B.T)^2 oracle",
+            "PennyLane is not installed; used classical (A@B.T)^2 oracle",
+            "PennyLane is not installed; used classical (A@B.T)^2 oracle",
+            "PennyLane is not installed; used classical (A@B.T)^2 oracle",
+            "PennyLane is not installed; used classical (A@B.T)^2 oracle",
+            "PennyLane is not installed; used classical (A@B.T)^2 oracle",
+            "PennyLane is not installed; used classical (A@B.T)^2 oracle",
+            "PennyLane is not installed; used classical (A@B.T)^2 oracle",
+            "PennyLane is not installed; used classical (A@B.T)^2 oracle",
+            "PennyLane is not installed; used classical (A@B.T)^2 oracle",
+            "PennyLane is not installed; used classical (A@B.T)^2 oracle",
+            "PennyLane is not installed; used classical (A@B.T)^2 oracle",
+            "PennyLane is not installed; used classical (A@B.T)^2 oracle",
+            "PennyLane is not installed; used classical (A@B.T)^2 oracle",
+            "PennyLane is not installed; used classical (A@B.T)^2 oracle",
+            "PennyLane is not installed; used classical (A@B.T)^2 oracle",
+            "PennyLane is not installed; used classical (A@B.T)^2 oracle",
+            "PennyLane is not installed; used classical (A@B.T)^2 oracle",
+            "PennyLane is not installed; used classical (A@B.T)^2 oracle",
+            "PennyLane is not installed; used classical (A@B.T)^2 oracle",
+            "PennyLane is not installed; used classical (A@B.T)^2 oracle",
+            "PennyLane is not installed; used classical (A@B.T)^2 oracle",
+            "PennyLane is not installed; used classical (A@B.T)^2 oracle",
+            "PennyLane is not installed; used classical (A@B.T)^2 oracle",
+            "PennyLane is not installed; used classical (A@B.T)^2 oracle",
+            "PennyLane is not installed; used classical (A@B.T)^2 oracle",
+            "PennyLane is not installed; used classical (A@B.T)^2 oracle",
+            "PennyLane is not installed; used classical (A@B.T)^2 oracle",
+            "PennyLane is not installed; used classical (A@B.T)^2 oracle",
+            "PennyLane is not installed; used classical (A@B.T)^2 oracle",
+            "PennyLane is not installed; used classical (A@B.T)^2 oracle",
+            "PennyLane is not installed; used classical (A@B.T)^2 oracle",
+            "PennyLane is not installed; used classical (A@B.T)^2 oracle",
+            "PennyLane is not installed; used classical (A@B.T)^2 oracle",
+            "PennyLane is not installed; used classical (A@B.T)^2 oracle",
+            "PennyLane is not installed; used classical (A@B.T)^2 oracle",
+            "PennyLane is not installed; used classical (A@B.T)^2 oracle",
+            "PennyLane is not installed; used classical (A@B.T)^2 oracle",
+            "PennyLane is not installed; used classical (A@B.T)^2 oracle",
+            "PennyLane is not installed; used classical (A@B.T)^2 oracle",
+            "PennyLane is not installed; used classical (A@B.T)^2 oracle",
+            "PennyLane is not installed; used classical (A@B.T)^2 oracle",
+            "PennyLane is not installed; used classical (A@B.T)^2 oracle",
+            "PennyLane is not installed; used classical (A@B.T)^2 oracle",
+            "PennyLane is not installed; used classical (A@B.T)^2 oracle",
+            "PennyLane is not installed; used classical (A@B.T)^2 oracle",
+            "PennyLane is not installed; used classical (A@B.T)^2 oracle",
+            "PennyLane is not installed; used classical (A@B.T)^2 oracle",
+            "PennyLane is not installed; used classical (A@B.T)^2 oracle",
+            "PennyLane is not installed; used classical (A@B.T)^2 oracle",
+            "PennyLane is not installed; used classical (A@B.T)^2 oracle",
+            "PennyLane is not installed; used classical (A@B.T)^2 oracle",
+            "PennyLane is not installed; used classical (A@B.T)^2 oracle",
+            "PennyLane is not installed; used classical (A@B.T)^2 oracle"
+          ]
+        }
+      ],
+      "artifacts": [
+        "results/real_run10/qc-52fcca25a5b8/metrics/metrics.json"
+      ]
+    },
+    {
+      "id": "qnn_ood_generalization",
+      "approach": "entangling QNN head for OOD generalization",
+      "status": "failed",
+      "reason": "OOD AUC is at/below chance and one QNN arm collapses to a single predicted class",
+      "observations": [
+        {
+          "artifact": "results/qml_full/metrics.json",
+          "key": "ood.accuracy",
+          "value": 0.4275
+        },
+        {
+          "artifact": "results/qml_full/metrics.json",
+          "key": "ood.auc",
+          "value": 0.37545000000000006
+        },
+        {
+          "artifact": "results/qml_full/metrics.json",
+          "key": "ood.f1",
+          "value": 0.4989059080962801
+        },
+        {
+          "artifact": "results/qml_full/metrics.json",
+          "key": "training.best_val_accuracy",
+          "value": 0.8040201005025126
+        },
+        {
+          "artifact": "results/qml_plantnet/metrics.json",
+          "key": "ood.accuracy",
+          "value": 0.5
+        },
+        {
+          "artifact": "results/qml_plantnet/metrics.json",
+          "key": "ood.auc",
+          "value": 0.44125000000000003
+        },
+        {
+          "artifact": "results/qml_plantnet/metrics.json",
+          "key": "ood.f1",
+          "value": 0.0
+        },
+        {
+          "artifact": "results/qml_plantnet/metrics.json",
+          "key": "ood.confusion_matrix",
+          "value": [
+            [
+              200,
+              0
+            ],
+            [
+              200,
+              0
+            ]
+          ]
+        }
+      ],
+      "artifacts": [
+        "results/qml_full/metrics.json",
+        "results/qml_plantnet/metrics.json"
+      ]
+    },
+    {
+      "id": "posthoc_threshold_selection",
+      "approach": "post-hoc OOD threshold sweep as a usable decision rule",
+      "status": "failed",
+      "reason": "post-hoc sweep yields no operating point that improves on chance with non-degenerate recall",
+      "observations": [
+        {
+          "artifact": "results/qml_plantnet/threshold_analysis.json",
+          "key": "best_by_balanced_accuracy",
+          "value": {
+            "accuracy": 0.5025,
+            "balanced_accuracy": 0.5025,
+            "confusion": [
+              [
+                200,
+                0
+              ],
+              [
+                199,
+                1
+              ]
+            ],
+            "f1": 0.009950248756218907,
+            "precision": 1.0,
+            "recall": 0.005,
+            "threshold": 0.4444444444444445
+          }
+        },
+        {
+          "artifact": "results/qml_plantnet/threshold_analysis.json",
+          "key": "best_by_f1",
+          "value": {
+            "accuracy": 0.5,
+            "balanced_accuracy": 0.5,
+            "confusion": [
+              [
+                0,
+                200
+              ],
+              [
+                0,
+                200
+              ]
+            ],
+            "f1": 0.6666666666666666,
+            "precision": 0.5,
+            "recall": 1.0,
+            "threshold": 0.0
+          }
+        },
+        {
+          "artifact": "results/qml_plantnet/threshold_analysis.json",
+          "key": "scores_summary",
+          "value": {
+            "max": 0.4462487995624542,
+            "mean": 0.4211926320195198,
+            "min": 0.4029652178287506,
+            "std": 0.007185933260782454
+          }
+        },
+        {
+          "artifact": "results/qml_plantnet/threshold_analysis.json",
+          "key": "provenance.note",
+          "value": "Thresholds sweep the saved model's own OOD probabilities; no labels were used to fit weights, only to select a reported operating point. This is post-hoc analysis, not a claim of improved generalization."
+        }
+      ],
+      "artifacts": [
+        "results/qml_plantnet/threshold_analysis.json"
+      ]
+    },
+    {
+      "id": "quantum_noise_robustness",
+      "approach": "quantum-specific robustness to correlated noise",
+      "status": "failed",
+      "reason": "noisy quantum-kernel accuracies equal the classical oracle at every recorded sigma and retention falls below the required floor",
+      "observations": [
+        {
+          "artifact": "results/real_run10/qc-52fcca25a5b8/metrics/metrics.json",
+          "key": "aggregates.noise_robustness/qsvc_quantum_kernel/sigma=0.05.accuracy.mean",
+          "value": 0.784
+        },
+        {
+          "artifact": "results/real_run10/qc-52fcca25a5b8/metrics/metrics.json",
+          "key": "aggregates.noise_robustness/svc_poly2_classical/sigma=0.05.accuracy.mean",
+          "value": 0.784
+        },
+        {
+          "artifact": "results/real_run10/qc-52fcca25a5b8/metrics/metrics.json",
+          "key": "dataset_table.0.categories",
+          "value": 2
+        }
+      ],
+      "artifacts": [
+        "results/real_run10/qc-52fcca25a5b8/metrics/metrics.json"
+      ]
+    },
+    {
+      "id": "architecture_ablation",
+      "approach": "qubit/layer/encoding ablation as evidence of improvement",
+      "status": "partially_supported",
+      "reason": "three configurations were measured but n is below the recommended minimum and the accuracy CI spans chance",
+      "observations": [
+        {
+          "artifact": "results/qml_ablation/ablation_summary.json",
+          "key": "metrics.accuracy.mean",
+          "value": 0.5241666666666666
+        },
+        {
+          "artifact": "results/qml_ablation/ablation_summary.json",
+          "key": "metrics.accuracy.std",
+          "value": 0.03394235309069385
+        },
+        {
+          "artifact": "results/qml_ablation/ablation_summary.json",
+          "key": "metrics.accuracy.n",
+          "value": 3
+        },
+        {
+          "artifact": "results/qml_ablation/ablation_summary.json",
+          "key": "metrics.accuracy.ci95_low",
+          "value": 0.48500000000000004
+        },
+        {
+          "artifact": "results/qml_ablation/ablation_summary.json",
+          "key": "metrics.accuracy.ci95_high",
+          "value": 0.545
+        },
+        {
+          "artifact": "results/qml_ablation/ablation_summary.json",
+          "key": "n_configs",
+          "value": 3
+        }
+      ],
+      "artifacts": [
+        "results/qml_ablation/ablation_summary.json"
+      ]
+    }
+  ],
+  "acceptance": [
+    {
+      "id": "mixing_gain_above_control_noise",
+      "criterion": "A primary-model gain must exceed a control-noise margin of two control SDs.",
+      "threshold": {
+        "margin": 0.0647731082,
+        "rule": "2 * no_mixing_control_std"
+      },
+      "observed": {
+        "gain": 0.42200000000000004,
+        "control_std": 0.0323865541,
+        "n": [
+          10,
+          10
+        ]
+      },
+      "passed": true,
+      "artifacts": [
+        "results/real_run10/qc-52fcca25a5b8/metrics/metrics.json"
+      ]
+    },
+    {
+      "id": "quantum_advantage_over_matched_classical",
+      "criterion": "Quantum advantage requires a positive paired difference, Holm p below alpha, a CI excluding zero, and power at the required minimum.",
+      "threshold": {
+        "min_mean_difference": 0.0,
+        "max_p_holm": 0.05,
+        "min_power": 0.8,
+        "ci_excludes_zero": true
+      },
+      "observed": {
+        "difference_vs_best_classical": -0.0040000000000000036,
+        "mean_difference": 0.0,
+        "ci95": [
+          0.0,
+          0.0
+        ],
+        "p_holm": null,
+        "power": 0.05,
+        "decision": "inconclusive"
+      },
+      "passed": false,
+      "artifacts": [
+        "results/real_run10/qc-52fcca25a5b8/metrics/metrics.json"
+      ]
+    },
+    {
+      "id": "classical_control_reproduces_gain",
+      "criterion": "A matched classical control must reproduce the gain at the required n before any quantum mechanism is credited.",
+      "threshold": {
+        "rule": "classical_acc > control_acc + 2 * control_std",
+        "margin": 0.0647731082
+      },
+      "observed": {
+        "poly2_acc": 0.918,
+        "rbf_acc": 0.922,
+        "control_acc": 0.496,
+        "n": 10
+      },
+      "passed": true,
+      "artifacts": [
+        "results/real_run10/qc-52fcca25a5b8/metrics/metrics.json"
+      ]
+    },
+    {
+      "id": "qnn_ood_beats_chance",
+      "criterion": "Every QNN OOD arm must exceed chance accuracy and chance AUC.",
+      "threshold": {
+        "min_accuracy": 0.5,
+        "min_auc": 0.5
+      },
+      "observed": {
+        "imageNet_accuracy": 0.4275,
+        "imageNet_auc": 0.37545000000000006,
+        "plantNet_accuracy": 0.5,
+        "plantNet_auc": 0.44125000000000003
+      },
+      "passed": false,
+      "artifacts": [
+        "results/qml_full/metrics.json",
+        "results/qml_plantnet/metrics.json"
+      ]
+    },
+    {
+      "id": "qnn_predicts_all_classes",
+      "criterion": "The QNN must emit non-degenerate predictions for every dataset class.",
+      "threshold": {
+        "min_predicted_classes": 2,
+        "min_f1": 1e-12
+      },
+      "observed": {
+        "predicted_classes": 1,
+        "plantNet_f1": 0.0,
+        "imageNet_f1": 0.4989059080962801
+      },
+      "passed": false,
+      "artifacts": [
+        "results/qml_plantnet/metrics.json"
+      ]
+    },
+    {
+      "id": "threshold_operating_point_usable",
+      "criterion": "A reported threshold must beat chance with balanced recall and precision at least half of chance (chance derived from the class count).",
+      "threshold": {
+        "min_balanced_accuracy": 0.500000000001,
+        "min_recall": 0.25,
+        "min_precision": 0.25
+      },
+      "observed": {
+        "best_balanced_accuracy": 0.5025,
+        "recall_at_that_point": 0.005,
+        "best_f1": 0.0,
+        "precision_at_best_f1": 0.5,
+        "balanced_accuracy_at_best_f1": 0.5
+      },
+      "passed": false,
+      "artifacts": [
+        "results/qml_plantnet/threshold_analysis.json"
+      ]
+    },
+    {
+      "id": "noise_robustness_is_quantum_specific",
+      "criterion": "A noise-robustness claim requires a quantum/classical gap at a recorded sigma and accuracy retention at the required floor.",
+      "threshold": {
+        "min_paired_gap": 1e-12,
+        "min_retention": 0.8
+      },
+      "observed": {
+        "max_paired_gap": 0.0,
+        "worst_sigma": 0.05,
+        "quantum_retention": 0.8540305010893247
+      },
+      "passed": false,
+      "artifacts": [
+        "results/real_run10/qc-52fcca25a5b8/metrics/metrics.json"
+      ]
+    },
+    {
+      "id": "ablation_conclusive",
+      "criterion": "Architecture ablations need the recommended sample size and an accuracy CI excluding chance.",
+      "threshold": {
+        "min_n": 10,
+        "ci_excludes_chance": true,
+        "chance": 0.5
+      },
+      "observed": {
+        "n": 3,
+        "ci95": [
+          0.48500000000000004,
+          0.545
+        ]
+      },
+      "passed": false,
+      "artifacts": [
+        "results/qml_ablation/ablation_summary.json"
+      ]
+    },
+    {
+      "id": "no_quantum_backend_fallback",
+      "criterion": "A quantum run must not fall back to a classical oracle.",
+      "threshold": {
+        "max_fallback_warnings": 0
+      },
+      "observed": {
+        "fallback_warnings": 80
+      },
+      "passed": false,
+      "artifacts": [
+        "results/real_run10/qc-52fcca25a5b8/metrics/metrics.json"
+      ]
+    },
+    {
+      "id": "reporting_fields_complete",
+      "criterion": "Every compared aggregate must carry n, ddof=1 SD, full values and a CI.",
+      "threshold": {
+        "required_fields": [
+          "n",
+          "std",
+          "values",
+          "ci95_low",
+          "ci95_high"
+        ],
+        "min_n_for_significance": 2
+      },
+      "observed": {
+        "complete": true,
+        "sample_sizes": [
+          10,
+          10,
+          10,
+          10
+        ]
+      },
+      "passed": true,
+      "artifacts": [
+        "results/real_run10/qc-52fcca25a5b8/metrics/metrics.json"
+      ]
+    },
+    {
+      "id": "no_significance_under_minimum_n",
+      "criterion": "No comparison may be labelled significant below the minimum paired n.",
+      "threshold": {
+        "min_n": 2,
+        "max_violations": 0
+      },
+      "observed": {
+        "violations": 0
+      },
+      "passed": true,
+      "artifacts": [
+        "results/real_run10/qc-52fcca25a5b8/metrics/metrics.json"
+      ]
+    },
+    {
+      "id": "ablation_run_manifest_complete",
+      "criterion": "Every declared ablation configuration must report a run.",
+      "threshold": {
+        "n_configs": 3
+      },
+      "observed": {
+        "n_success": 3,
+        "n_failed": 0
+      },
+      "passed": true,
+      "artifacts": [
+        "results/qml_ablation/ablation_summary.json"
+      ]
+    }
+  ],
+  "summary": {
+    "n_evidence": 7,
+    "n_checks": 12,
+    "n_passed": 5,
+    "n_failed": 7
+  }
+}
