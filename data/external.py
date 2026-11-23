@@ -105,7 +105,7 @@ REGISTRY: tuple[ExternalDataset, ...] = (
         format="14 image zips + 14 label zips",
         size_bytes=255_094_669,
         status="fetchable",
-        notes="License gap: research use only until the author confirms terms. Closest same-task match.",
+        notes="BLOCKED for binary crop-vs-weed: all 3,330 images are maize_* with YOLO class 0 only; no weed class despite repo description. Also no licence stated. Verified 2026-11-23 from prepared data.",
     ),
     ExternalDataset(
         id="cornweed_full",

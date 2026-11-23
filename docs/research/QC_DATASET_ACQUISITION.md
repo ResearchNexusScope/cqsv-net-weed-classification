@@ -17,6 +17,15 @@
 Spot check: `maizeset/images_01.zip` contains 250 entries such as
 `images_01/maize_1.jpg`, confirming the maize-vs-weed image layout.
 
+**MaizeSet binary-task blocker (found on the first real 70:20:10 run, 2026-11-23).**
+Although the repository describes "maize plants and weeds", the downloaded data
+contains **3,330 images, all named `maize_*`**, and all 14 `labels_*.zip` files
+contain only YOLO class `0` (11,738 boxes) — there is no weed class. The split
+therefore has only label 0 and `grouped_split` correctly refused to build a binary
+train fold. MaizeSet is retained for provenance but is **not usable for this binary
+task** as downloaded. No metric was fabricated for it; all 60 planned runs were
+recorded as `skipped_cache_failure` with the real `ValueError`.
+
 DeepWeeds parquet read back after installing `pyarrow`: shape `(17509, 3)` with
 columns `image`, `label`, `species`. Label counts are `{0:1125, 1:1064, 2:1031,
 3:1022, 4:1062, 5:1009, 6:1074, 7:1016, 8:9106}` - eight weed species at roughly
