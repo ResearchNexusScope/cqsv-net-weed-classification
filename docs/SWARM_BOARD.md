@@ -354,4 +354,14 @@ User asked to train the QNN on the labelled data too. Dispatched worker to mix S
 **[115 | 2026-11-23] BUILD → EXTERNAL-D01 — mother (dataset intake infrastructure)**
 All 8 surveyed datasets registered in data/external.py with licence/source/size/status; resumable chunk-parallel fetcher scripts/fetch_external_datasets.py writes checksummed manifests outside the repo; 9 synthetic tests pass. Feasible sets (ACRE, DeepWeeds, MaizeSet) downloading; 8.7 GB/28.6 GB archives and manual-access sets registered but deferred.
 
-**[116 | 2026-11-23] CRITIC → QHEAD-D02 — critic (FAIL, 1 blocker)**\n`--adaptation-samples` default 0 bypassed `--config-json` override (all other flags use None). Four advisories (post-mix weight provenance test, not-applicable disjointness status, crop-vs-group selection note, adaptation-only gate order). Fix dispatched to QHEAD-D02's owned files.\n\n**Gate rule:** a D is not accepted until the central verifier passes and a Critic audit\nreturns PASS. Mother commits D-by-D after the gate.
+**[116 | 2026-11-23] CRITIC → QHEAD-D02 — critic (FAIL, 1 blocker)**
+`--adaptation-samples` default 0 bypassed `--config-json` override (all other flags use None). Four advisories (post-mix weight provenance test, not-applicable disjointness status, crop-vs-group selection note, adaptation-only gate order). Fix dispatched to QHEAD-D02's owned files.
+
+**[117 | 2026-11-23] DONE_VERIFIED → QHEAD-D02 — critic (PASS, re-audit)**
+Blocker (config-json override) and 4 advisories all fixed; raw default None / resolved 0 / config 12 / explicit CLI wins. Central verifier 200 passed, 13 skipped, exit 0. Matched 50-sample real run in progress.
+
+**[118 | 2026-11-23] DONE → EXTERNAL-D01 — mother (dataset intake complete)**
+Fetched and verified ACRE (1.22 GB), DeepWeeds (493 MB, 17,509 rows x 3 cols), MaizeSet (28 zips, 255 MB) outside the repo with SHA-256 manifests. 8.7/28.6 GB archives registered for resumable large fetch; 3 manual/aggregator entries registered with URLs. Report in docs/research/QC_DATASET_ACQUISITION.md.
+
+**Gate rule:** a D is not accepted until the central verifier passes and a Critic audit
+returns PASS. Mother commits D-by-D after the gate.
