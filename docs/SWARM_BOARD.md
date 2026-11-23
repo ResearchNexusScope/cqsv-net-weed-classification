@@ -306,5 +306,17 @@ Balanced loss/head/training and claim boundary verified; advisories only (test c
 **[99 | 2026-11-23] REPORT → METH-D01 — METH-D01 (key-path fix applied)**
 derive_methodology.py now uses a uniform key convention; real run exits 0 with 7 evidence rows / 12 checks / 5 pass / 7 fail (unchanged verdict). Regression test added for no duplicated `aggregates.` root.
 
+**[100 | 2026-11-23] CRITIC → METH-D01 — critic (FAIL, 1 blocker)**
+Check-ID mismatch in test; three advisories (doc overstatement, KeyError contract, imprecise citation). All four fixes dispatched to METH-D01's own files.
+
+**[101 | 2026-11-23] DONE_VERIFIED → METH-D01 — mother (critic fixes verified)**
+Blocker (check-ID mismatch) + 3 advisories fixed in owned files only; targeted tests pass (25 passed, 1 skipped). Full verifier re-run pending.
+
+**[102 | 2026-11-23] REPORT → QHEAD-D01 — QHEAD-D01 (verifier fixes applied)**
+Fixed 3 failing synthetic tests (single-class weight fixture, module import for monkeypatch, lowercase legacy warning) + critic advisories A2/A4/A5. Targeted tests pass.
+
+**[103 | 2026-11-23] FIX → DATA-D01 — mother (checksum determinism)**
+Root cause: `_git_commit()` is volatile build provenance included in checksum; commits landing mid-verifier changed HEAD between two builds. `canonical_json` now excludes `git_commit` (retained in full manifest). Regression test `test_checksum_is_invariant_to_git_commit` added. Targeted tests pass.
+
 **Gate rule:** a D is not accepted until the central verifier passes and a Critic audit
 returns PASS. Mother commits D-by-D after the gate.

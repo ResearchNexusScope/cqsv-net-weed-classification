@@ -70,6 +70,10 @@ def canonical_json(payload: Mapping) -> str:
     snapshot = clean.get("config_snapshot")
     if isinstance(snapshot, dict):
         snapshot.pop("generated_at", None)
+        # git_commit is volatile build provenance, not data/config content.  Including
+        # it would make the checksum change on every commit and break the
+        # determinism contract for two identical builds made across a commit boundary.
+        snapshot.pop("git_commit", None)
     return json.dumps(clean, sort_keys=True, separators=(",", ":"), ensure_ascii=False)
 
 

@@ -226,6 +226,19 @@ def test_kaggle_seed_determinism_and_sensitivity(synthetic) -> None:
     assert third.splits[Split.TRAIN].sample_ids != first.splits[Split.TRAIN].sample_ids
 
 
+def test_checksum_is_invariant_to_git_commit(synthetic, monkeypatch) -> None:
+    """git_commit is build provenance, not data: two identical builds across a
+    commit boundary must share a checksum, while the manifest still records it."""
+    cfg, root = synthetic
+    monkeypatch.setattr("data.splits._git_commit", lambda: "aaaaaaa")
+    first = build_splits(cfg, kaggle_root=root / "kaggle", num_workers=0)
+    monkeypatch.setattr("data.splits._git_commit", lambda: "bbbbbbb")
+    second = build_splits(cfg, kaggle_root=root / "kaggle", num_workers=0)
+    assert first.checksum_sha256 == second.checksum_sha256
+    # Provenance is preserved in the full manifest even though it is not hashed.
+    assert second.config_snapshot["git_commit"] == "bbbbbbb"
+
+
 # --- T5 --------------------------------------------------------------------
 def test_ninja_parse_polygon_and_filter(tmp_path: Path) -> None:
     images = tmp_path / "img"
