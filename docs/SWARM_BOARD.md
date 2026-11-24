@@ -432,5 +432,14 @@ Central verifier 251 passed / 15 skipped, exit 0; both Critics PASS (advisories 
 **[141 | 2026-11-24] CHECKPOINT → QC-REBUILD-2026-11-22 — mother (end-of-turn)**
 Final tree `090d2d8` verified: central verifier ALL CHECKS PASSED (251 passed, 15 skipped, exit 0); quantum verifier PASSED (47 passed) on `b0b372e`, qmlpipe core and pins unchanged since. All Ds gated with Critic PASS. Fresh protocol complete: classical DeepWeeds/ACRE, QNN and hybrid on DeepWeeds with properly powered paired stats and honest no-advantage boundary; MaizeSet rejected on data grounds. Journal §§8-9, timeline S32-35, board, ledger, registry and acquisition docs current; .paper/ private and gitignored; working tree clean.
 
+**[142 | 2026-11-24] RESEARCH → QNN ARCHITECTURE — mother (model-choice diagnosis)**
+User challenged that the negative QNN result may reflect a wrong model. Web research confirmed: our amplitude-embedding QNN with PCA-to-16 is the weak baseline the literature warns about; data re-uploading (Pérez-Salinas 2020) and QCNN with arbitrary-dim padding are the supported architectures. Findings + citations in docs/research/QC_QNN_ARCHITECTURE_RESEARCH.md. Proper replacements dispatched.
+
+**[143 | 2026-11-24] REQUEST → REUPLOAD-D01 — mother (data re-uploading QNN)**
+Worker owns qmlpipe/reupload_qnn.py, scripts/run_reupload_qnn.py, tests/test_reupload_qnn.py only: angle-encoding QNN with L repeated data re-uploads and independent trainable entangling layers, same fresh splits/controls.
+
+**[144 | 2026-11-24] REQUEST → QCNN-D01 — mother (QCNN arbitrary-dim)**
+Worker owns qmlpipe/fresh_qcnn.py, scripts/run_fresh_qcnn.py, tests/test_fresh_qcnn.py only: convolutional+pooling QNN with single-ancilla padding / skip pooling for arbitrary feature width, same fresh splits/controls.
+
 **Gate rule:** a D is not accepted until the central verifier passes and a Critic audit
 returns PASS. Mother commits D-by-D after the gate.
