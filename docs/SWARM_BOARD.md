@@ -453,5 +453,8 @@ n=10 each, 1 epoch, cap 500: old amplitude QNN acc 0.509/AUC 0.501; re-upload (3
 **[148 | 2026-11-24] CHECKPOINT → QC-REBUILD-2026-11-22 — mother (end-of-turn)**
 Final tree `507c962` verified: central verifier ALL CHECKS PASSED (280 passed, 20 skipped, exit 0); quantum verifier PASSED (47 passed) on `b0b372e`, qmlpipe core and pins unchanged since. All Ds gated with Critic PASS including the re-audited baseline-path fix. Proper QNN architectures (re-uploading, QCNN) researched, implemented and tested in a budget-matched n=10 comparison; no advantage claim. Journal §§8-10, timeline S32-36, research docs, board, ledger current; .paper/ private and gitignored; working tree clean.
 
+**[149 | 2026-11-24] RECORD → failure register — mother (user request)**
+User asked whether failures were recorded. Created private `.paper/journal/07_failures.md` consolidating 37 entries: 26 resolved code/verifier defects (with root cause, fix, board/commit evidence), 6 data/resource blockers (mostly open), 5 scientific negative results, gate discipline and explicit open-items list. Journal README + timeline S37 updated.
+
 **Gate rule:** a D is not accepted until the central verifier passes and a Critic audit
 returns PASS. Mother commits D-by-D after the gate.
