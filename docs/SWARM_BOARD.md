@@ -450,5 +450,8 @@ Budget-matched n=10 comparison at 3 qubits / 1 epoch / 500-train cap: old amplit
 **[147 | 2026-11-24] RESULTS → architecture comparison — mother (matched budget, negative)**
 n=10 each, 1 epoch, cap 500: old amplitude QNN acc 0.509/AUC 0.501; re-upload (3q/3L) 0.492/0.480; QCNN (4q) 0.502/0.500. All at chance; paired differences vs old QNN inconclusive (low power). Classical poly2 0.904 remains far ahead. Resource-limited negative: published gains used 5-49 qubits and 100-500 iterations. Silent baseline-drop defect in --qnn-results fixed. No advantage claim.
 
+**[148 | 2026-11-24] CHECKPOINT → QC-REBUILD-2026-11-22 — mother (end-of-turn)**
+Final tree `507c962` verified: central verifier ALL CHECKS PASSED (280 passed, 20 skipped, exit 0); quantum verifier PASSED (47 passed) on `b0b372e`, qmlpipe core and pins unchanged since. All Ds gated with Critic PASS including the re-audited baseline-path fix. Proper QNN architectures (re-uploading, QCNN) researched, implemented and tested in a budget-matched n=10 comparison; no advantage claim. Journal §§8-10, timeline S32-36, research docs, board, ledger current; .paper/ private and gitignored; working tree clean.
+
 **Gate rule:** a D is not accepted until the central verifier passes and a Critic audit
 returns PASS. Mother commits D-by-D after the gate.
