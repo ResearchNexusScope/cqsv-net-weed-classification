@@ -1,0 +1,219 @@
+{
+  "additive": true,
+  "backbone": "plantnet",
+  "circuit": {
+    "circuit_depth_proxy": 24,
+    "data_insertions": 2,
+    "device": "default.qubit",
+    "diff_method": "backprop",
+    "distinct_variational_param_sets": 2,
+    "encoding_gate_count": 6,
+    "entanglement": "CNOT ring + per-wire RY/RZ per upload",
+    "entangling_gate_count": 6,
+    "interface": "torch",
+    "n_qubits": 3,
+    "n_readouts": 3,
+    "shots": null,
+    "shots_note": "CPU analytic simulation; no shot-noise or device-speedup claim",
+    "upload_formula": "prod_{i=1..L} [ V(omega_i) U_phi(x) ] |0>^n",
+    "uploads": 2
+  },
+  "claim_boundary": "Genuine data-re-uploading QNN (Perez-Salinas et al., Quantum 4:226, 2020) on the fresh grouped-split protocol. No quantum advantage is asserted. The default 6 qubits and 4 uploads are CPU-feasibility choices, not a hardware, scaling or quantum-advantage claim. The circuit is simulated analytically with shots=None (default.qubit, interface=torch, backprop) on CPU; no device speedup is claimed. A win is admissible only if the per-seed PAIRED comparison against the committed classical poly-2 arm (and the old amplitude QNN when present) is 'significant' after Holm correction with achieved power >= 0.8, n >= 10, a bootstrap CI of the paired difference excluding zero, and a matched data/input-information budget. The only classical reduction is a TRAIN-only linear projection to n*L features (plus TRAIN-only standardisation and a tanh bound), recorded explicitly as classical_preprocessing; VAL/TEST never fit it. The sealed TEST is scored exactly once per seed. Failures are recorded as warnings, never fabricated, and no performance difference is attributed to quantum effects without matched-budget paired evidence.",
+  "comparison_notes": {
+    "amplitude_qnn_arm": "results/fresh_qnn_deepweeds/metrics.json",
+    "baselines_loaded": [
+      "classical_poly2",
+      "fresh_qnn_amplitude"
+    ],
+    "classical_arm": "results/fresh_deepweeds/metrics.json",
+    "cpu_note": "3 qubits / 2 uploads are chosen for CPU feasibility only; not a hardware, scaling or quantum-advantage claim; shots=None analytic CPU simulation.",
+    "n_budget_matched": false,
+    "note": "The committed controls used their own TRAIN budgets while this arm caps TRAIN at the configured value; a paired win is only admissible after budget matching in addition to the statistical gates.",
+    "test_scoring": "exactly one forward pass per seed via evaluate_once"
+  },
+  "config": {
+    "amplitude_qnn_control": "results/fresh_qnn_deepweeds/metrics.json",
+    "backbone": "plantnet",
+    "cache_dir": "C:\\Users\\sugee\\.cache\\qc_datasets\\features",
+    "circuit": {
+      "circuit_depth_proxy": 24,
+      "data_insertions": 2,
+      "distinct_variational_param_sets": 2,
+      "encoding_gate_count": 6,
+      "entangling_gate_count": 6,
+      "n_qubits": 3,
+      "n_readouts": 3,
+      "shots": null,
+      "uploads": 2
+    },
+    "claim_boundary": "Genuine data-re-uploading QNN (Perez-Salinas et al., Quantum 4:226, 2020) on the fresh grouped-split protocol. No quantum advantage is asserted. The default 6 qubits and 4 uploads are CPU-feasibility choices, not a hardware, scaling or quantum-advantage claim. The circuit is simulated analytically with shots=None (default.qubit, interface=torch, backprop) on CPU; no device speedup is claimed. A win is admissible only if the per-seed PAIRED comparison against the committed classical poly-2 arm (and the old amplitude QNN when present) is 'significant' after Holm correction with achieved power >= 0.8, n >= 10, a bootstrap CI of the paired difference excluding zero, and a matched data/input-information budget. The only classical reduction is a TRAIN-only linear projection to n*L features (plus TRAIN-only standardisation and a tanh bound), recorded explicitly as classical_preprocessing; VAL/TEST never fit it. The sealed TEST is scored exactly once per seed. Failures are recorded as warnings, never fabricated, and no performance difference is attributed to quantum effects without matched-budget paired evidence.",
+    "classical_control": "results/fresh_deepweeds/metrics.json",
+    "classical_preprocessing": "TRAIN-only PCA to n*L = 6 features, TRAIN-only standardisation and a tanh bound; fitted on TRAIN only",
+    "cpu_note": "3 qubits / 2 uploads are chosen for CPU feasibility only; not a hardware, scaling or quantum-advantage claim; shots=None analytic CPU simulation.",
+    "dataset": "deepweeds",
+    "entangler": "cnot",
+    "epochs": 1,
+    "feature_dim": 6,
+    "max_batches_per_epoch": 32,
+    "max_total_steps": 512,
+    "output_dir": "results\\reupload_smoke",
+    "projection_target_dim": 6,
+    "protocol": "reupload_qnn.v1",
+    "qubits": 3,
+    "runs_planned": 1,
+    "seeds": [
+      0
+    ],
+    "train_cap": 500,
+    "uploads": 2
+  },
+  "dataset": "deepweeds",
+  "environment": {
+    "commit_hash": null,
+    "note": "versions importable in the executing interpreter; no installs performed",
+    "packages": {
+      "PennyLane": "0.40.0",
+      "numpy": "2.0.2",
+      "scikit-learn": "1.9.1",
+      "scipy": "1.17.1",
+      "statsmodels": "0.15.0",
+      "torch": "2.15.0+xpu"
+    },
+    "platform": "Windows_NT",
+    "python": "3.11.9",
+    "python_executable": "C:\\Users\\sugee\\AppData\\Local\\Programs\\Python\\Python311\\python.exe"
+  },
+  "feature_cache": {
+    "cache_hit": true,
+    "cache_path": "C:\\Users\\sugee\\.cache\\qc_datasets\\features\\deepweeds_plantnet_37a8eec1ce19.npz",
+    "feature_dim": 512,
+    "frozen": true
+  },
+  "projection_budget": {
+    "classical_preprocessing": {
+      "fitted_on": "train_only",
+      "input_dim": 512,
+      "method": "train_pca_standardize_tanh",
+      "note": "Mild TRAIN-only linear reduction to exactly n*L features, the minimum required by the angle encoding; no VAL/TEST information is used and no heavy classical preprocessing hides the quantum component.",
+      "projection_budget": "512 -> 6 (= 3 qubits x 2 uploads)",
+      "steps": [
+        {
+          "fitted_on": "train",
+          "statistic": "train_mean",
+          "step": "center"
+        },
+        {
+          "explained_variance_ratio_sum": 0.3961421251296997,
+          "fitted_on": "train",
+          "kind": "pca",
+          "n_components": 6,
+          "step": "linear_projection"
+        },
+        {
+          "fitted_on": "train",
+          "statistic": "train_component_mean_std",
+          "step": "standardize"
+        },
+        {
+          "fitted_on": null,
+          "range": [
+            -1.0,
+            1.0
+          ],
+          "step": "tanh_bound"
+        }
+      ],
+      "target_dim": 6,
+      "val_test_used_for_fit": false
+    },
+    "formula": "n * L",
+    "target_dim": 6
+  },
+  "run_manifest": [
+    {
+      "backbone": "plantnet",
+      "circuit": {
+        "circuit_depth_proxy": 24,
+        "data_insertions": 2,
+        "distinct_variational_param_sets": 2,
+        "encoding_gate_count": 6,
+        "entangling_gate_count": 6,
+        "n_readouts": 3,
+        "n_variational_layers": 2,
+        "qubits": 3,
+        "shots": null,
+        "tape_counts_match_spec": false,
+        "tape_encoding_gate_count": 18,
+        "tape_entangling_gate_count": 6,
+        "tape_measurement_count": 3,
+        "tape_note": null,
+        "tape_verified": true,
+        "trainable_param_count": 26,
+        "uploads": 2
+      },
+      "classical_preprocessing": {
+        "fitted_on": "train_only",
+        "input_dim": 512,
+        "method": "train_pca_standardize_tanh",
+        "note": "Mild TRAIN-only linear reduction to exactly n*L features, the minimum required by the angle encoding; no VAL/TEST information is used and no heavy classical preprocessing hides the quantum component.",
+        "projection_budget": "512 -> 6 (= 3 qubits x 2 uploads)",
+        "steps": [
+          {
+            "fitted_on": "train",
+            "statistic": "train_mean",
+            "step": "center"
+          },
+          {
+            "explained_variance_ratio_sum": 0.3961421251296997,
+            "fitted_on": "train",
+            "kind": "pca",
+            "n_components": 6,
+            "step": "linear_projection"
+          },
+          {
+            "fitted_on": "train",
+            "statistic": "train_component_mean_std",
+            "step": "standardize"
+          },
+          {
+            "fitted_on": null,
+            "range": [
+              -1.0,
+              1.0
+            ],
+            "step": "tanh_bound"
+          }
+        ],
+        "target_dim": 6,
+        "val_test_used_for_fit": false
+      },
+      "dataset": "deepweeds",
+      "grad_norms_first_batch": {
+        "data_scales": 0.08906756341457367,
+        "head": 0.9261333346366882,
+        "omega": 0.28490710258483887
+      },
+      "model": "reupload_qnn",
+      "param_delta": 0.11750847660005093,
+      "seed": 0,
+      "status": "ok",
+      "train_cap": {
+        "cap_applied": true,
+        "class_counts_after": {
+          "0": 261,
+          "1": 239
+        },
+        "class_counts_before": {
+          "0": 6403,
+          "1": 5853
+        },
+        "note": "stratified TRAIN subsample to at most 500 rows (seed 0)",
+        "train_cap": 500,
+        "train_size_after": 500,
+        "train_size_before": 12256
+      }
+    }
+  ],
+  "schema": "reupload_qnn.provenance.v1",
+  "warnings": []
+}
