@@ -447,5 +447,8 @@ Central verifier 275 passed / 20 skipped, exit 0; both Critics PASS (advisories 
 **[146 | 2026-11-24] RUN → matched architecture comparison — mother (started)**
 Budget-matched n=10 comparison at 3 qubits / 1 epoch / 500-train cap: old amplitude QNN (results/qnn_matched_deepweeds) then re-uploading QNN with the same budget, followed by QCNN. This isolates architecture effect; classical poly-2 remains an unmatched-budget comparator.
 
+**[147 | 2026-11-24] RESULTS → architecture comparison — mother (matched budget, negative)**
+n=10 each, 1 epoch, cap 500: old amplitude QNN acc 0.509/AUC 0.501; re-upload (3q/3L) 0.492/0.480; QCNN (4q) 0.502/0.500. All at chance; paired differences vs old QNN inconclusive (low power). Classical poly2 0.904 remains far ahead. Resource-limited negative: published gains used 5-49 qubits and 100-500 iterations. Silent baseline-drop defect in --qnn-results fixed. No advantage claim.
+
 **Gate rule:** a D is not accepted until the central verifier passes and a Critic audit
 returns PASS. Mother commits D-by-D after the gate.
