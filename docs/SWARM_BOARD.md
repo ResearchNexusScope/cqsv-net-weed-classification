@@ -459,5 +459,8 @@ User asked whether failures were recorded. Created private `.paper/journal/07_fa
 **[150 | 2026-11-24] RESEARCH → hardware options — mother (user question)**
 User asked what hardware can run multi-qubit QNNs. Measured local machine: 7.8 GB RAM, Intel Iris Xe 2 GB, no NVIDIA CUDA → ~24–26 qubit statevector ceiling. Researched tiers: AWS Braket SV1 (34 qubits, $0.075/min, 1 free h/month), TN1 (50 qubits), IBM Open Plan free real QPU (~10 min/28 days), NVIDIA lightning.gpu (H100 80 GB measured 29 qubits, 30 OOM), multi-GPU MPI (16×A100 → 32, 500 GPUs → 41). Report + PennyLane device-switch snippets in docs/research/QC_HARDWARE_OPTIONS.md.
 
+**[151 | 2026-11-24] SYNC → Drive research paper folder — mother (user request, @amazeswarm)**
+User asked to push gitignored `.paper` and legacy `runs` to Drive under the associated paper folder, and to combine the same paper's two journal variants. Used declared `research` shared folder (local `~/Research` junction → `gdrive/My Drive/Research`; no second copy). Target: `02 Applied - Journals/Pavithra/AIA/CQSV-Net Weed`. Copied `.paper/` (55 files/11.64 MB), `runs/` (32 files/13.22 MB), and `Journal variants/Weed Detection/` (11 files/22.16 MB from `Front. Plant Sci/Weed Detection`). SHA-256 spot checks MATCH. Ledger `act_20261124T135743607_6bb682`; board `msg_20261124T135802140_74a7d6`. No private material entered git.
+
 **Gate rule:** a D is not accepted until the central verifier passes and a Critic audit
 returns PASS. Mother commits D-by-D after the gate.
