@@ -347,7 +347,7 @@ def test_claim_boundary_forbids_advantage() -> None:
     assert "no quantum advantage is asserted" in low
     assert "power >= 0.8" in low
     assert "holm" in low
-    assert "shots none" in low or "shots=None" in low
+    assert "shots none" in low or "shots=none" in low
     assert "train-only" in low
     assert "test is scored exactly once" in low
 
