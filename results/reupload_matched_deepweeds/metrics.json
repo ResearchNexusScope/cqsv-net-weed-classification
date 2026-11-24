@@ -1,0 +1,1539 @@
+{
+  "accounting_invariant": true,
+  "aggregates": {
+    "reupload_qnn": {
+      "accuracy": {
+        "boot_B": 2000,
+        "boot_seed": 42,
+        "ci95_high": 0.5138235294117648,
+        "ci95_low": 0.47093089663049686,
+        "mean": 0.4918903483723587,
+        "model": "reupload_qnn",
+        "n": 10,
+        "std": 0.03620390749839402,
+        "values": [
+          0.5111364934323244,
+          0.47401484865790977,
+          0.5002855511136494,
+          0.48657909765848084,
+          0.48657909765848084,
+          0.47801256424900057,
+          0.48600799543118217,
+          0.4249000571102227,
+          0.500856653340948,
+          0.5705311250713878
+        ]
+      },
+      "auc": {
+        "boot_B": 2000,
+        "boot_seed": 42,
+        "ci95_high": 0.5190295010336904,
+        "ci95_low": 0.44340774038883374,
+        "mean": 0.48025018173397155,
+        "model": "reupload_qnn",
+        "n": 10,
+        "std": 0.06492399827315977,
+        "values": [
+          0.5196287192012818,
+          0.46645926730496584,
+          0.47685768878378065,
+          0.4726508674683703,
+          0.43239227728253093,
+          0.40733276875143765,
+          0.5488249118683901,
+          0.38524061546173993,
+          0.4918029346805374,
+          0.6013117665366801
+        ]
+      },
+      "f1": {
+        "boot_B": 2000,
+        "boot_seed": 42,
+        "ci95_high": 0.5865714393168578,
+        "ci95_low": 0.3634051114049696,
+        "mean": 0.4925231448096337,
+        "model": "reupload_qnn",
+        "n": 10,
+        "std": 0.19391543713930143,
+        "values": [
+          0.47029702970297027,
+          0.4353157572041692,
+          0.004550625711035267,
+          0.6093003042155585,
+          0.6546292739147138,
+          0.6468315301391035,
+          0.6541122213681784,
+          0.4629333333333333,
+          0.5476190476190477,
+          0.4396423248882265
+        ]
+      },
+      "n_runs": 10,
+      "precision": {
+        "boot_B": 2000,
+        "boot_seed": 42,
+        "ci95_high": 0.5059525755409982,
+        "ci95_low": 0.3606843944061898,
+        "mean": 0.44743942835371825,
+        "model": "reupload_qnn",
+        "n": 10,
+        "std": 0.129926204044663,
+        "values": [
+          0.507343124165554,
+          0.45629820051413883,
+          0.09523809523809523,
+          0.48782185107863607,
+          0.48657909765848084,
+          0.47855917667238423,
+          0.48600799543118217,
+          0.4246575342465753,
+          0.47232142857142856,
+          0.5795677799607073
+        ]
+      },
+      "recall": {
+        "boot_B": 2000,
+        "boot_seed": 42,
+        "ci95_high": 0.8072490254595043,
+        "ci95_low": 0.42032445255057976,
+        "mean": 0.6180172949793072,
+        "model": "reupload_qnn",
+        "n": 10,
+        "std": 0.3346774675680178,
+        "values": [
+          0.43829296424452135,
+          0.41617819460726846,
+          0.002331002331002331,
+          0.8113425925925926,
+          1.0,
+          0.9976162097735399,
+          1.0,
+          0.5087924970691676,
+          0.6514778325123153,
+          0.35414165666266506
+        ]
+      },
+      "seeds": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ]
+    }
+  },
+  "backbone": "plantnet",
+  "claim_boundary": "Genuine data-re-uploading QNN (Perez-Salinas et al., Quantum 4:226, 2020) on the fresh grouped-split protocol. No quantum advantage is asserted. The default 6 qubits and 4 uploads are CPU-feasibility choices, not a hardware, scaling or quantum-advantage claim. The circuit is simulated analytically with shots=None (default.qubit, interface=torch, backprop) on CPU; no device speedup is claimed. A win is admissible only if the per-seed PAIRED comparison against the committed classical poly-2 arm (and the old amplitude QNN when present) is 'significant' after Holm correction with achieved power >= 0.8, n >= 10, a bootstrap CI of the paired difference excluding zero, and a matched data/input-information budget. The only classical reduction is a TRAIN-only linear projection to n*L features (plus TRAIN-only standardisation and a tanh bound), recorded explicitly as classical_preprocessing; VAL/TEST never fit it. The sealed TEST is scored exactly once per seed. Failures are recorded as warnings, never fabricated, and no performance difference is attributed to quantum effects without matched-budget paired evidence.",
+  "comparisons": [
+    {
+      "alpha": 0.05,
+      "boot_B": 2000,
+      "boot_seed": 42,
+      "ci95_high": -0.39171758994860084,
+      "ci95_low": -0.4330682467161623,
+      "claim_note": "Descriptive paired evidence only; no quantum advantage is asserted without matched budgets, n>=10, power>=0.8 and Holm-corrected CI.",
+      "cohens_dz": -11.976542438889025,
+      "decision": "inconclusive",
+      "decision_reason": "descriptive: power<0.8 or unavailable",
+      "df": 9,
+      "mean_baseline": 0.9042261564820103,
+      "mean_difference": -0.4123358081096516,
+      "mean_reupload": 0.4918903483723587,
+      "metric": "accuracy",
+      "multiplicity": {
+        "alpha": 0.05,
+        "m": 1,
+        "method": "holm"
+      },
+      "n": 10,
+      "p_holm": 3.095810664849619e-11,
+      "p_raw": 3.095810664849619e-11,
+      "pair": [
+        "reupload_qnn",
+        "classical_poly2"
+      ],
+      "power_at_observed_dz": null,
+      "primary_test": "paired_t_test (scipy.stats.ttest_rel, two-sided)",
+      "quantum_advantage_supported": false,
+      "secondary_tests": {
+        "wilcoxon_signed_rank": {
+          "note": null,
+          "p": 0.001953125
+        }
+      },
+      "seeds": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "t_statistic": -37.873152600557276,
+      "wilcoxon_note": null,
+      "wilcoxon_p": 0.001953125
+    }
+  ],
+  "config": {
+    "amplitude_qnn_control": "results\\qnn_matched_deepweeds",
+    "backbone": "plantnet",
+    "cache_dir": "C:\\Users\\sugee\\.cache\\qc_datasets\\features",
+    "circuit": {
+      "circuit_depth_proxy": 36,
+      "data_insertions": 3,
+      "distinct_variational_param_sets": 3,
+      "encoding_gate_count": 9,
+      "entangling_gate_count": 9,
+      "n_qubits": 3,
+      "n_readouts": 3,
+      "shots": null,
+      "uploads": 3
+    },
+    "claim_boundary": "Genuine data-re-uploading QNN (Perez-Salinas et al., Quantum 4:226, 2020) on the fresh grouped-split protocol. No quantum advantage is asserted. The default 6 qubits and 4 uploads are CPU-feasibility choices, not a hardware, scaling or quantum-advantage claim. The circuit is simulated analytically with shots=None (default.qubit, interface=torch, backprop) on CPU; no device speedup is claimed. A win is admissible only if the per-seed PAIRED comparison against the committed classical poly-2 arm (and the old amplitude QNN when present) is 'significant' after Holm correction with achieved power >= 0.8, n >= 10, a bootstrap CI of the paired difference excluding zero, and a matched data/input-information budget. The only classical reduction is a TRAIN-only linear projection to n*L features (plus TRAIN-only standardisation and a tanh bound), recorded explicitly as classical_preprocessing; VAL/TEST never fit it. The sealed TEST is scored exactly once per seed. Failures are recorded as warnings, never fabricated, and no performance difference is attributed to quantum effects without matched-budget paired evidence.",
+    "classical_control": "results/fresh_deepweeds/metrics.json",
+    "classical_preprocessing": "TRAIN-only PCA to n*L = 9 features, TRAIN-only standardisation and a tanh bound; fitted on TRAIN only",
+    "cpu_note": "3 qubits / 3 uploads are chosen for CPU feasibility only; not a hardware, scaling or quantum-advantage claim; shots=None analytic CPU simulation.",
+    "dataset": "deepweeds",
+    "entangler": "cnot",
+    "epochs": 1,
+    "feature_dim": 9,
+    "max_batches_per_epoch": 32,
+    "max_total_steps": 512,
+    "output_dir": "results\\reupload_matched_deepweeds",
+    "projection_target_dim": 9,
+    "protocol": "reupload_qnn.v1",
+    "qubits": 3,
+    "runs_planned": 10,
+    "seeds": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9
+    ],
+    "train_cap": 500,
+    "uploads": 3
+  },
+  "dataset": "deepweeds",
+  "n_runs_expected": 10,
+  "n_runs_skipped": 0,
+  "n_runs_succeeded": 10,
+  "runs": [
+    {
+      "backbone": "plantnet",
+      "cache_path": "C:\\Users\\sugee\\.cache\\qc_datasets\\features\\deepweeds_plantnet_37a8eec1ce19.npz",
+      "dataset": "deepweeds",
+      "group_disjoint": true,
+      "history": {
+        "best_val_loss": 0.6992028177567443,
+        "circuit": {
+          "circuit_depth_proxy": 36,
+          "data_insertions": 3,
+          "distinct_variational_param_sets": 3,
+          "encoding_gate_count": 9,
+          "entangling_gate_count": 9,
+          "n_readouts": 3,
+          "n_variational_layers": 3,
+          "qubits": 3,
+          "shots": null,
+          "tape_counts_match_spec": false,
+          "tape_encoding_gate_count": 27,
+          "tape_entangling_gate_count": 9,
+          "tape_measurement_count": 3,
+          "tape_note": null,
+          "tape_verified": true,
+          "trainable_param_count": 35,
+          "uploads": 3
+        },
+        "class_weight_mode": "balanced",
+        "classical_preprocessing": {
+          "fitted_on": "train_only",
+          "input_dim": 512,
+          "method": "train_pca_standardize_tanh",
+          "note": "Mild TRAIN-only linear reduction to exactly n*L features, the minimum required by the angle encoding; no VAL/TEST information is used and no heavy classical preprocessing hides the quantum component.",
+          "projection_budget": "512 -> 9 (= 3 qubits x 3 uploads)",
+          "steps": [
+            {
+              "fitted_on": "train",
+              "statistic": "train_mean",
+              "step": "center"
+            },
+            {
+              "explained_variance_ratio_sum": 0.4860621690750122,
+              "fitted_on": "train",
+              "kind": "pca",
+              "n_components": 9,
+              "step": "linear_projection"
+            },
+            {
+              "fitted_on": "train",
+              "statistic": "train_component_mean_std",
+              "step": "standardize"
+            },
+            {
+              "fitted_on": null,
+              "range": [
+                -1.0,
+                1.0
+              ],
+              "step": "tanh_bound"
+            }
+          ],
+          "target_dim": 9,
+          "val_test_used_for_fit": false
+        },
+        "epoch_log": [
+          {
+            "epoch": 0,
+            "n_batches": 16,
+            "n_train_seen": 500,
+            "train_acc": 0.528,
+            "train_loss": 0.6918480973243714,
+            "val_loss": 0.6992028177567443
+          }
+        ],
+        "epochs_configured": 1,
+        "grad_norms_first_batch": {
+          "data_scales": 0.03515591099858284,
+          "head": 0.5753643214702606,
+          "omega": 0.1414848268032074
+        },
+        "max_batches_per_epoch": 32,
+        "max_total_steps": 512,
+        "model": "reupload_qnn",
+        "optimizer": "adam",
+        "param_delta": 0.08189851278439164,
+        "seed": 0,
+        "total_steps": 16
+      },
+      "metrics": {
+        "accuracy": 0.5111364934323244,
+        "auc": 0.5196287192012818,
+        "confusion_matrix": [
+          [
+            515,
+            369
+          ],
+          [
+            487,
+            380
+          ]
+        ],
+        "f1": 0.47029702970297027,
+        "iou_class0": 0.37563822027717,
+        "iou_class1": 0.3074433656957929,
+        "macro_iou": 0.34154079298648143,
+        "model": "reupload_qnn",
+        "n": 1751,
+        "precision": 0.507343124165554,
+        "recall": 0.43829296424452135,
+        "score_kind": "softmax(logits)[:,1]",
+        "test_evaluations": 1
+      },
+      "model": "reupload_qnn",
+      "seed": 0,
+      "status": "ok",
+      "train_cap": {
+        "cap_applied": true,
+        "class_counts_after": {
+          "0": 261,
+          "1": 239
+        },
+        "class_counts_before": {
+          "0": 6403,
+          "1": 5853
+        },
+        "note": "stratified TRAIN subsample to at most 500 rows (seed 0)",
+        "train_cap": 500,
+        "train_size_after": 500,
+        "train_size_before": 12256
+      }
+    },
+    {
+      "backbone": "plantnet",
+      "cache_path": "C:\\Users\\sugee\\.cache\\qc_datasets\\features\\deepweeds_plantnet_37a8eec1ce19.npz",
+      "dataset": "deepweeds",
+      "group_disjoint": true,
+      "history": {
+        "best_val_loss": 0.7135953186989376,
+        "circuit": {
+          "circuit_depth_proxy": 36,
+          "data_insertions": 3,
+          "distinct_variational_param_sets": 3,
+          "encoding_gate_count": 9,
+          "entangling_gate_count": 9,
+          "n_readouts": 3,
+          "n_variational_layers": 3,
+          "qubits": 3,
+          "shots": null,
+          "tape_counts_match_spec": false,
+          "tape_encoding_gate_count": 27,
+          "tape_entangling_gate_count": 9,
+          "tape_measurement_count": 3,
+          "tape_note": null,
+          "tape_verified": true,
+          "trainable_param_count": 35,
+          "uploads": 3
+        },
+        "class_weight_mode": "balanced",
+        "classical_preprocessing": {
+          "fitted_on": "train_only",
+          "input_dim": 512,
+          "method": "train_pca_standardize_tanh",
+          "note": "Mild TRAIN-only linear reduction to exactly n*L features, the minimum required by the angle encoding; no VAL/TEST information is used and no heavy classical preprocessing hides the quantum component.",
+          "projection_budget": "512 -> 9 (= 3 qubits x 3 uploads)",
+          "steps": [
+            {
+              "fitted_on": "train",
+              "statistic": "train_mean",
+              "step": "center"
+            },
+            {
+              "explained_variance_ratio_sum": 0.4884868264198303,
+              "fitted_on": "train",
+              "kind": "pca",
+              "n_components": 9,
+              "step": "linear_projection"
+            },
+            {
+              "fitted_on": "train",
+              "statistic": "train_component_mean_std",
+              "step": "standardize"
+            },
+            {
+              "fitted_on": null,
+              "range": [
+                -1.0,
+                1.0
+              ],
+              "step": "tanh_bound"
+            }
+          ],
+          "target_dim": 9,
+          "val_test_used_for_fit": false
+        },
+        "epoch_log": [
+          {
+            "epoch": 0,
+            "n_batches": 16,
+            "n_train_seen": 500,
+            "train_acc": 0.452,
+            "train_loss": 0.7192440071105957,
+            "val_loss": 0.7135953186989376
+          }
+        ],
+        "epochs_configured": 1,
+        "grad_norms_first_batch": {
+          "data_scales": 0.044681861996650696,
+          "head": 0.09006705973297358,
+          "omega": 0.08750037103891373
+        },
+        "max_batches_per_epoch": 32,
+        "max_total_steps": 512,
+        "model": "reupload_qnn",
+        "optimizer": "adam",
+        "param_delta": 0.10622868221253157,
+        "seed": 1,
+        "total_steps": 16
+      },
+      "metrics": {
+        "accuracy": 0.47401484865790977,
+        "auc": 0.46645926730496584,
+        "confusion_matrix": [
+          [
+            475,
+            423
+          ],
+          [
+            498,
+            355
+          ]
+        ],
+        "f1": 0.4353157572041692,
+        "iou_class0": 0.34025787965616044,
+        "iou_class1": 0.2782131661442006,
+        "macro_iou": 0.3092355229001805,
+        "model": "reupload_qnn",
+        "n": 1751,
+        "precision": 0.45629820051413883,
+        "recall": 0.41617819460726846,
+        "score_kind": "softmax(logits)[:,1]",
+        "test_evaluations": 1
+      },
+      "model": "reupload_qnn",
+      "seed": 1,
+      "status": "ok",
+      "train_cap": {
+        "cap_applied": true,
+        "class_counts_after": {
+          "0": 261,
+          "1": 239
+        },
+        "class_counts_before": {
+          "0": 6402,
+          "1": 5854
+        },
+        "note": "stratified TRAIN subsample to at most 500 rows (seed 1)",
+        "train_cap": 500,
+        "train_size_after": 500,
+        "train_size_before": 12256
+      }
+    },
+    {
+      "backbone": "plantnet",
+      "cache_path": "C:\\Users\\sugee\\.cache\\qc_datasets\\features\\deepweeds_plantnet_37a8eec1ce19.npz",
+      "dataset": "deepweeds",
+      "group_disjoint": true,
+      "history": {
+        "best_val_loss": 0.7084624836745771,
+        "circuit": {
+          "circuit_depth_proxy": 36,
+          "data_insertions": 3,
+          "distinct_variational_param_sets": 3,
+          "encoding_gate_count": 9,
+          "entangling_gate_count": 9,
+          "n_readouts": 3,
+          "n_variational_layers": 3,
+          "qubits": 3,
+          "shots": null,
+          "tape_counts_match_spec": false,
+          "tape_encoding_gate_count": 27,
+          "tape_entangling_gate_count": 9,
+          "tape_measurement_count": 3,
+          "tape_note": null,
+          "tape_verified": true,
+          "trainable_param_count": 35,
+          "uploads": 3
+        },
+        "class_weight_mode": "balanced",
+        "classical_preprocessing": {
+          "fitted_on": "train_only",
+          "input_dim": 512,
+          "method": "train_pca_standardize_tanh",
+          "note": "Mild TRAIN-only linear reduction to exactly n*L features, the minimum required by the angle encoding; no VAL/TEST information is used and no heavy classical preprocessing hides the quantum component.",
+          "projection_budget": "512 -> 9 (= 3 qubits x 3 uploads)",
+          "steps": [
+            {
+              "fitted_on": "train",
+              "statistic": "train_mean",
+              "step": "center"
+            },
+            {
+              "explained_variance_ratio_sum": 0.48481786251068115,
+              "fitted_on": "train",
+              "kind": "pca",
+              "n_components": 9,
+              "step": "linear_projection"
+            },
+            {
+              "fitted_on": "train",
+              "statistic": "train_component_mean_std",
+              "step": "standardize"
+            },
+            {
+              "fitted_on": null,
+              "range": [
+                -1.0,
+                1.0
+              ],
+              "step": "tanh_bound"
+            }
+          ],
+          "target_dim": 9,
+          "val_test_used_for_fit": false
+        },
+        "epoch_log": [
+          {
+            "epoch": 0,
+            "n_batches": 16,
+            "n_train_seen": 500,
+            "train_acc": 0.514,
+            "train_loss": 0.7100395703315735,
+            "val_loss": 0.7084624836745771
+          }
+        ],
+        "epochs_configured": 1,
+        "grad_norms_first_batch": {
+          "data_scales": 0.015135390684008598,
+          "head": 0.19201910868287086,
+          "omega": 0.04239708557724953
+        },
+        "max_batches_per_epoch": 32,
+        "max_total_steps": 512,
+        "model": "reupload_qnn",
+        "optimizer": "adam",
+        "param_delta": 0.07819874957203865,
+        "seed": 2,
+        "total_steps": 16
+      },
+      "metrics": {
+        "accuracy": 0.5002855511136494,
+        "auc": 0.47685768878378065,
+        "confusion_matrix": [
+          [
+            874,
+            19
+          ],
+          [
+            856,
+            2
+          ]
+        ],
+        "f1": 0.004550625711035267,
+        "iou_class0": 0.4997141223556318,
+        "iou_class1": 0.002280501710376283,
+        "macro_iou": 0.250997312033004,
+        "model": "reupload_qnn",
+        "n": 1751,
+        "precision": 0.09523809523809523,
+        "recall": 0.002331002331002331,
+        "score_kind": "softmax(logits)[:,1]",
+        "test_evaluations": 1
+      },
+      "model": "reupload_qnn",
+      "seed": 2,
+      "status": "ok",
+      "train_cap": {
+        "cap_applied": true,
+        "class_counts_after": {
+          "0": 260,
+          "1": 240
+        },
+        "class_counts_before": {
+          "0": 6362,
+          "1": 5894
+        },
+        "note": "stratified TRAIN subsample to at most 500 rows (seed 2)",
+        "train_cap": 500,
+        "train_size_after": 500,
+        "train_size_before": 12256
+      }
+    },
+    {
+      "backbone": "plantnet",
+      "cache_path": "C:\\Users\\sugee\\.cache\\qc_datasets\\features\\deepweeds_plantnet_37a8eec1ce19.npz",
+      "dataset": "deepweeds",
+      "group_disjoint": true,
+      "history": {
+        "best_val_loss": 0.718508902309555,
+        "circuit": {
+          "circuit_depth_proxy": 36,
+          "data_insertions": 3,
+          "distinct_variational_param_sets": 3,
+          "encoding_gate_count": 9,
+          "entangling_gate_count": 9,
+          "n_readouts": 3,
+          "n_variational_layers": 3,
+          "qubits": 3,
+          "shots": null,
+          "tape_counts_match_spec": false,
+          "tape_encoding_gate_count": 27,
+          "tape_entangling_gate_count": 9,
+          "tape_measurement_count": 3,
+          "tape_note": null,
+          "tape_verified": true,
+          "trainable_param_count": 35,
+          "uploads": 3
+        },
+        "class_weight_mode": "balanced",
+        "classical_preprocessing": {
+          "fitted_on": "train_only",
+          "input_dim": 512,
+          "method": "train_pca_standardize_tanh",
+          "note": "Mild TRAIN-only linear reduction to exactly n*L features, the minimum required by the angle encoding; no VAL/TEST information is used and no heavy classical preprocessing hides the quantum component.",
+          "projection_budget": "512 -> 9 (= 3 qubits x 3 uploads)",
+          "steps": [
+            {
+              "fitted_on": "train",
+              "statistic": "train_mean",
+              "step": "center"
+            },
+            {
+              "explained_variance_ratio_sum": 0.48371222615242004,
+              "fitted_on": "train",
+              "kind": "pca",
+              "n_components": 9,
+              "step": "linear_projection"
+            },
+            {
+              "fitted_on": "train",
+              "statistic": "train_component_mean_std",
+              "step": "standardize"
+            },
+            {
+              "fitted_on": null,
+              "range": [
+                -1.0,
+                1.0
+              ],
+              "step": "tanh_bound"
+            }
+          ],
+          "target_dim": 9,
+          "val_test_used_for_fit": false
+        },
+        "epoch_log": [
+          {
+            "epoch": 0,
+            "n_batches": 16,
+            "n_train_seen": 500,
+            "train_acc": 0.472,
+            "train_loss": 0.7181684885025025,
+            "val_loss": 0.718508902309555
+          }
+        ],
+        "epochs_configured": 1,
+        "grad_norms_first_batch": {
+          "data_scales": 0.03836255893111229,
+          "head": 0.1284714713692665,
+          "omega": 0.051233869045972824
+        },
+        "max_batches_per_epoch": 32,
+        "max_total_steps": 512,
+        "model": "reupload_qnn",
+        "optimizer": "adam",
+        "param_delta": 0.10786466021090746,
+        "seed": 3,
+        "total_steps": 16
+      },
+      "metrics": {
+        "accuracy": 0.48657909765848084,
+        "auc": 0.4726508674683703,
+        "confusion_matrix": [
+          [
+            151,
+            736
+          ],
+          [
+            163,
+            701
+          ]
+        ],
+        "f1": 0.6093003042155585,
+        "iou_class0": 0.1438095238095238,
+        "iou_class1": 0.438125,
+        "macro_iou": 0.2909672619047619,
+        "model": "reupload_qnn",
+        "n": 1751,
+        "precision": 0.48782185107863607,
+        "recall": 0.8113425925925926,
+        "score_kind": "softmax(logits)[:,1]",
+        "test_evaluations": 1
+      },
+      "model": "reupload_qnn",
+      "seed": 3,
+      "status": "ok",
+      "train_cap": {
+        "cap_applied": true,
+        "class_counts_after": {
+          "0": 258,
+          "1": 242
+        },
+        "class_counts_before": {
+          "0": 6327,
+          "1": 5929
+        },
+        "note": "stratified TRAIN subsample to at most 500 rows (seed 3)",
+        "train_cap": 500,
+        "train_size_after": 500,
+        "train_size_before": 12256
+      }
+    },
+    {
+      "backbone": "plantnet",
+      "cache_path": "C:\\Users\\sugee\\.cache\\qc_datasets\\features\\deepweeds_plantnet_37a8eec1ce19.npz",
+      "dataset": "deepweeds",
+      "group_disjoint": true,
+      "history": {
+        "best_val_loss": 0.7004512860937026,
+        "circuit": {
+          "circuit_depth_proxy": 36,
+          "data_insertions": 3,
+          "distinct_variational_param_sets": 3,
+          "encoding_gate_count": 9,
+          "entangling_gate_count": 9,
+          "n_readouts": 3,
+          "n_variational_layers": 3,
+          "qubits": 3,
+          "shots": null,
+          "tape_counts_match_spec": false,
+          "tape_encoding_gate_count": 27,
+          "tape_entangling_gate_count": 9,
+          "tape_measurement_count": 3,
+          "tape_note": null,
+          "tape_verified": true,
+          "trainable_param_count": 35,
+          "uploads": 3
+        },
+        "class_weight_mode": "balanced",
+        "classical_preprocessing": {
+          "fitted_on": "train_only",
+          "input_dim": 512,
+          "method": "train_pca_standardize_tanh",
+          "note": "Mild TRAIN-only linear reduction to exactly n*L features, the minimum required by the angle encoding; no VAL/TEST information is used and no heavy classical preprocessing hides the quantum component.",
+          "projection_budget": "512 -> 9 (= 3 qubits x 3 uploads)",
+          "steps": [
+            {
+              "fitted_on": "train",
+              "statistic": "train_mean",
+              "step": "center"
+            },
+            {
+              "explained_variance_ratio_sum": 0.4838868975639343,
+              "fitted_on": "train",
+              "kind": "pca",
+              "n_components": 9,
+              "step": "linear_projection"
+            },
+            {
+              "fitted_on": "train",
+              "statistic": "train_component_mean_std",
+              "step": "standardize"
+            },
+            {
+              "fitted_on": null,
+              "range": [
+                -1.0,
+                1.0
+              ],
+              "step": "tanh_bound"
+            }
+          ],
+          "target_dim": 9,
+          "val_test_used_for_fit": false
+        },
+        "epoch_log": [
+          {
+            "epoch": 0,
+            "n_batches": 16,
+            "n_train_seen": 500,
+            "train_acc": 0.478,
+            "train_loss": 0.7027333388328553,
+            "val_loss": 0.7004512860937026
+          }
+        ],
+        "epochs_configured": 1,
+        "grad_norms_first_batch": {
+          "data_scales": 0.010996886529028416,
+          "head": 0.11343549564480782,
+          "omega": 0.028224147856235504
+        },
+        "max_batches_per_epoch": 32,
+        "max_total_steps": 512,
+        "model": "reupload_qnn",
+        "optimizer": "adam",
+        "param_delta": 0.10685026599094272,
+        "seed": 4,
+        "total_steps": 16
+      },
+      "metrics": {
+        "accuracy": 0.48657909765848084,
+        "auc": 0.43239227728253093,
+        "confusion_matrix": [
+          [
+            0,
+            899
+          ],
+          [
+            0,
+            852
+          ]
+        ],
+        "f1": 0.6546292739147138,
+        "iou_class0": 0.0,
+        "iou_class1": 0.48657909765848084,
+        "macro_iou": 0.24328954882924042,
+        "model": "reupload_qnn",
+        "n": 1751,
+        "precision": 0.48657909765848084,
+        "recall": 1.0,
+        "score_kind": "softmax(logits)[:,1]",
+        "test_evaluations": 1
+      },
+      "model": "reupload_qnn",
+      "seed": 4,
+      "status": "ok",
+      "train_cap": {
+        "cap_applied": true,
+        "class_counts_after": {
+          "0": 261,
+          "1": 239
+        },
+        "class_counts_before": {
+          "0": 6397,
+          "1": 5859
+        },
+        "note": "stratified TRAIN subsample to at most 500 rows (seed 4)",
+        "train_cap": 500,
+        "train_size_after": 500,
+        "train_size_before": 12256
+      }
+    },
+    {
+      "backbone": "plantnet",
+      "cache_path": "C:\\Users\\sugee\\.cache\\qc_datasets\\features\\deepweeds_plantnet_37a8eec1ce19.npz",
+      "dataset": "deepweeds",
+      "group_disjoint": true,
+      "history": {
+        "best_val_loss": 0.7211417492834382,
+        "circuit": {
+          "circuit_depth_proxy": 36,
+          "data_insertions": 3,
+          "distinct_variational_param_sets": 3,
+          "encoding_gate_count": 9,
+          "entangling_gate_count": 9,
+          "n_readouts": 3,
+          "n_variational_layers": 3,
+          "qubits": 3,
+          "shots": null,
+          "tape_counts_match_spec": false,
+          "tape_encoding_gate_count": 27,
+          "tape_entangling_gate_count": 9,
+          "tape_measurement_count": 3,
+          "tape_note": null,
+          "tape_verified": true,
+          "trainable_param_count": 35,
+          "uploads": 3
+        },
+        "class_weight_mode": "balanced",
+        "classical_preprocessing": {
+          "fitted_on": "train_only",
+          "input_dim": 512,
+          "method": "train_pca_standardize_tanh",
+          "note": "Mild TRAIN-only linear reduction to exactly n*L features, the minimum required by the angle encoding; no VAL/TEST information is used and no heavy classical preprocessing hides the quantum component.",
+          "projection_budget": "512 -> 9 (= 3 qubits x 3 uploads)",
+          "steps": [
+            {
+              "fitted_on": "train",
+              "statistic": "train_mean",
+              "step": "center"
+            },
+            {
+              "explained_variance_ratio_sum": 0.4826681315898895,
+              "fitted_on": "train",
+              "kind": "pca",
+              "n_components": 9,
+              "step": "linear_projection"
+            },
+            {
+              "fitted_on": "train",
+              "statistic": "train_component_mean_std",
+              "step": "standardize"
+            },
+            {
+              "fitted_on": null,
+              "range": [
+                -1.0,
+                1.0
+              ],
+              "step": "tanh_bound"
+            }
+          ],
+          "target_dim": 9,
+          "val_test_used_for_fit": false
+        },
+        "epoch_log": [
+          {
+            "epoch": 0,
+            "n_batches": 16,
+            "n_train_seen": 500,
+            "train_acc": 0.476,
+            "train_loss": 0.7284895892143249,
+            "val_loss": 0.7211417492834382
+          }
+        ],
+        "epochs_configured": 1,
+        "grad_norms_first_batch": {
+          "data_scales": 0.017446229234337807,
+          "head": 0.1327010989189148,
+          "omega": 0.07333006709814072
+        },
+        "max_batches_per_epoch": 32,
+        "max_total_steps": 512,
+        "model": "reupload_qnn",
+        "optimizer": "adam",
+        "param_delta": 0.10945224389433861,
+        "seed": 5,
+        "total_steps": 16
+      },
+      "metrics": {
+        "accuracy": 0.47801256424900057,
+        "auc": 0.40733276875143765,
+        "confusion_matrix": [
+          [
+            0,
+            912
+          ],
+          [
+            2,
+            837
+          ]
+        ],
+        "f1": 0.6468315301391035,
+        "iou_class0": 0.0,
+        "iou_class1": 0.47801256424900057,
+        "macro_iou": 0.23900628212450029,
+        "model": "reupload_qnn",
+        "n": 1751,
+        "precision": 0.47855917667238423,
+        "recall": 0.9976162097735399,
+        "score_kind": "softmax(logits)[:,1]",
+        "test_evaluations": 1
+      },
+      "model": "reupload_qnn",
+      "seed": 5,
+      "status": "ok",
+      "train_cap": {
+        "cap_applied": true,
+        "class_counts_after": {
+          "0": 261,
+          "1": 239
+        },
+        "class_counts_before": {
+          "0": 6394,
+          "1": 5862
+        },
+        "note": "stratified TRAIN subsample to at most 500 rows (seed 5)",
+        "train_cap": 500,
+        "train_size_after": 500,
+        "train_size_before": 12256
+      }
+    },
+    {
+      "backbone": "plantnet",
+      "cache_path": "C:\\Users\\sugee\\.cache\\qc_datasets\\features\\deepweeds_plantnet_37a8eec1ce19.npz",
+      "dataset": "deepweeds",
+      "group_disjoint": true,
+      "history": {
+        "best_val_loss": 0.7434147399606057,
+        "circuit": {
+          "circuit_depth_proxy": 36,
+          "data_insertions": 3,
+          "distinct_variational_param_sets": 3,
+          "encoding_gate_count": 9,
+          "entangling_gate_count": 9,
+          "n_readouts": 3,
+          "n_variational_layers": 3,
+          "qubits": 3,
+          "shots": null,
+          "tape_counts_match_spec": false,
+          "tape_encoding_gate_count": 27,
+          "tape_entangling_gate_count": 9,
+          "tape_measurement_count": 3,
+          "tape_note": null,
+          "tape_verified": true,
+          "trainable_param_count": 35,
+          "uploads": 3
+        },
+        "class_weight_mode": "balanced",
+        "classical_preprocessing": {
+          "fitted_on": "train_only",
+          "input_dim": 512,
+          "method": "train_pca_standardize_tanh",
+          "note": "Mild TRAIN-only linear reduction to exactly n*L features, the minimum required by the angle encoding; no VAL/TEST information is used and no heavy classical preprocessing hides the quantum component.",
+          "projection_budget": "512 -> 9 (= 3 qubits x 3 uploads)",
+          "steps": [
+            {
+              "fitted_on": "train",
+              "statistic": "train_mean",
+              "step": "center"
+            },
+            {
+              "explained_variance_ratio_sum": 0.48922088742256165,
+              "fitted_on": "train",
+              "kind": "pca",
+              "n_components": 9,
+              "step": "linear_projection"
+            },
+            {
+              "fitted_on": "train",
+              "statistic": "train_component_mean_std",
+              "step": "standardize"
+            },
+            {
+              "fitted_on": null,
+              "range": [
+                -1.0,
+                1.0
+              ],
+              "step": "tanh_bound"
+            }
+          ],
+          "target_dim": 9,
+          "val_test_used_for_fit": false
+        },
+        "epoch_log": [
+          {
+            "epoch": 0,
+            "n_batches": 16,
+            "n_train_seen": 500,
+            "train_acc": 0.476,
+            "train_loss": 0.7587183017730713,
+            "val_loss": 0.7434147399606057
+          }
+        ],
+        "epochs_configured": 1,
+        "grad_norms_first_batch": {
+          "data_scales": 0.0387130081653595,
+          "head": 0.35443947836756706,
+          "omega": 0.08545005321502686
+        },
+        "max_batches_per_epoch": 32,
+        "max_total_steps": 512,
+        "model": "reupload_qnn",
+        "optimizer": "adam",
+        "param_delta": 0.12024825438857079,
+        "seed": 6,
+        "total_steps": 16
+      },
+      "metrics": {
+        "accuracy": 0.48600799543118217,
+        "auc": 0.5488249118683901,
+        "confusion_matrix": [
+          [
+            0,
+            900
+          ],
+          [
+            0,
+            851
+          ]
+        ],
+        "f1": 0.6541122213681784,
+        "iou_class0": 0.0,
+        "iou_class1": 0.48600799543118217,
+        "macro_iou": 0.24300399771559109,
+        "model": "reupload_qnn",
+        "n": 1751,
+        "precision": 0.48600799543118217,
+        "recall": 1.0,
+        "score_kind": "softmax(logits)[:,1]",
+        "test_evaluations": 1
+      },
+      "model": "reupload_qnn",
+      "seed": 6,
+      "status": "ok",
+      "train_cap": {
+        "cap_applied": true,
+        "class_counts_after": {
+          "0": 262,
+          "1": 238
+        },
+        "class_counts_before": {
+          "0": 6425,
+          "1": 5831
+        },
+        "note": "stratified TRAIN subsample to at most 500 rows (seed 6)",
+        "train_cap": 500,
+        "train_size_after": 500,
+        "train_size_before": 12256
+      }
+    },
+    {
+      "backbone": "plantnet",
+      "cache_path": "C:\\Users\\sugee\\.cache\\qc_datasets\\features\\deepweeds_plantnet_37a8eec1ce19.npz",
+      "dataset": "deepweeds",
+      "group_disjoint": true,
+      "history": {
+        "best_val_loss": 0.7151380516609963,
+        "circuit": {
+          "circuit_depth_proxy": 36,
+          "data_insertions": 3,
+          "distinct_variational_param_sets": 3,
+          "encoding_gate_count": 9,
+          "entangling_gate_count": 9,
+          "n_readouts": 3,
+          "n_variational_layers": 3,
+          "qubits": 3,
+          "shots": null,
+          "tape_counts_match_spec": false,
+          "tape_encoding_gate_count": 27,
+          "tape_entangling_gate_count": 9,
+          "tape_measurement_count": 3,
+          "tape_note": null,
+          "tape_verified": true,
+          "trainable_param_count": 35,
+          "uploads": 3
+        },
+        "class_weight_mode": "balanced",
+        "classical_preprocessing": {
+          "fitted_on": "train_only",
+          "input_dim": 512,
+          "method": "train_pca_standardize_tanh",
+          "note": "Mild TRAIN-only linear reduction to exactly n*L features, the minimum required by the angle encoding; no VAL/TEST information is used and no heavy classical preprocessing hides the quantum component.",
+          "projection_budget": "512 -> 9 (= 3 qubits x 3 uploads)",
+          "steps": [
+            {
+              "fitted_on": "train",
+              "statistic": "train_mean",
+              "step": "center"
+            },
+            {
+              "explained_variance_ratio_sum": 0.4778493046760559,
+              "fitted_on": "train",
+              "kind": "pca",
+              "n_components": 9,
+              "step": "linear_projection"
+            },
+            {
+              "fitted_on": "train",
+              "statistic": "train_component_mean_std",
+              "step": "standardize"
+            },
+            {
+              "fitted_on": null,
+              "range": [
+                -1.0,
+                1.0
+              ],
+              "step": "tanh_bound"
+            }
+          ],
+          "target_dim": 9,
+          "val_test_used_for_fit": false
+        },
+        "epoch_log": [
+          {
+            "epoch": 0,
+            "n_batches": 16,
+            "n_train_seen": 500,
+            "train_acc": 0.438,
+            "train_loss": 0.7179568991661072,
+            "val_loss": 0.7151380516609963
+          }
+        ],
+        "epochs_configured": 1,
+        "grad_norms_first_batch": {
+          "data_scales": 0.022488735616207123,
+          "head": 0.09679404553025961,
+          "omega": 0.05504737049341202
+        },
+        "max_batches_per_epoch": 32,
+        "max_total_steps": 512,
+        "model": "reupload_qnn",
+        "optimizer": "adam",
+        "param_delta": 0.10259819170460105,
+        "seed": 7,
+        "total_steps": 16
+      },
+      "metrics": {
+        "accuracy": 0.4249000571102227,
+        "auc": 0.38524061546173993,
+        "confusion_matrix": [
+          [
+            310,
+            588
+          ],
+          [
+            419,
+            434
+          ]
+        ],
+        "f1": 0.4629333333333333,
+        "iou_class0": 0.23538344722854973,
+        "iou_class1": 0.3011797362942401,
+        "macro_iou": 0.26828159176139493,
+        "model": "reupload_qnn",
+        "n": 1751,
+        "precision": 0.4246575342465753,
+        "recall": 0.5087924970691676,
+        "score_kind": "softmax(logits)[:,1]",
+        "test_evaluations": 1
+      },
+      "model": "reupload_qnn",
+      "seed": 7,
+      "status": "ok",
+      "train_cap": {
+        "cap_applied": true,
+        "class_counts_after": {
+          "0": 260,
+          "1": 240
+        },
+        "class_counts_before": {
+          "0": 6364,
+          "1": 5892
+        },
+        "note": "stratified TRAIN subsample to at most 500 rows (seed 7)",
+        "train_cap": 500,
+        "train_size_after": 500,
+        "train_size_before": 12256
+      }
+    },
+    {
+      "backbone": "plantnet",
+      "cache_path": "C:\\Users\\sugee\\.cache\\qc_datasets\\features\\deepweeds_plantnet_37a8eec1ce19.npz",
+      "dataset": "deepweeds",
+      "group_disjoint": true,
+      "history": {
+        "best_val_loss": 0.7025281591867462,
+        "circuit": {
+          "circuit_depth_proxy": 36,
+          "data_insertions": 3,
+          "distinct_variational_param_sets": 3,
+          "encoding_gate_count": 9,
+          "entangling_gate_count": 9,
+          "n_readouts": 3,
+          "n_variational_layers": 3,
+          "qubits": 3,
+          "shots": null,
+          "tape_counts_match_spec": false,
+          "tape_encoding_gate_count": 27,
+          "tape_entangling_gate_count": 9,
+          "tape_measurement_count": 3,
+          "tape_note": null,
+          "tape_verified": true,
+          "trainable_param_count": 35,
+          "uploads": 3
+        },
+        "class_weight_mode": "balanced",
+        "classical_preprocessing": {
+          "fitted_on": "train_only",
+          "input_dim": 512,
+          "method": "train_pca_standardize_tanh",
+          "note": "Mild TRAIN-only linear reduction to exactly n*L features, the minimum required by the angle encoding; no VAL/TEST information is used and no heavy classical preprocessing hides the quantum component.",
+          "projection_budget": "512 -> 9 (= 3 qubits x 3 uploads)",
+          "steps": [
+            {
+              "fitted_on": "train",
+              "statistic": "train_mean",
+              "step": "center"
+            },
+            {
+              "explained_variance_ratio_sum": 0.47470971941947937,
+              "fitted_on": "train",
+              "kind": "pca",
+              "n_components": 9,
+              "step": "linear_projection"
+            },
+            {
+              "fitted_on": "train",
+              "statistic": "train_component_mean_std",
+              "step": "standardize"
+            },
+            {
+              "fitted_on": null,
+              "range": [
+                -1.0,
+                1.0
+              ],
+              "step": "tanh_bound"
+            }
+          ],
+          "target_dim": 9,
+          "val_test_used_for_fit": false
+        },
+        "epoch_log": [
+          {
+            "epoch": 0,
+            "n_batches": 16,
+            "n_train_seen": 500,
+            "train_acc": 0.506,
+            "train_loss": 0.7093124251365661,
+            "val_loss": 0.7025281591867462
+          }
+        ],
+        "epochs_configured": 1,
+        "grad_norms_first_batch": {
+          "data_scales": 0.037060268223285675,
+          "head": 0.4120406061410904,
+          "omega": 0.08545411378145218
+        },
+        "max_batches_per_epoch": 32,
+        "max_total_steps": 512,
+        "model": "reupload_qnn",
+        "optimizer": "adam",
+        "param_delta": 0.10482437908649445,
+        "seed": 8,
+        "total_steps": 16
+      },
+      "metrics": {
+        "accuracy": 0.500856653340948,
+        "auc": 0.4918029346805374,
+        "confusion_matrix": [
+          [
+            348,
+            591
+          ],
+          [
+            283,
+            529
+          ]
+        ],
+        "f1": 0.5476190476190477,
+        "iou_class0": 0.28477905073649756,
+        "iou_class1": 0.3770491803278688,
+        "macro_iou": 0.3309141155321832,
+        "model": "reupload_qnn",
+        "n": 1751,
+        "precision": 0.47232142857142856,
+        "recall": 0.6514778325123153,
+        "score_kind": "softmax(logits)[:,1]",
+        "test_evaluations": 1
+      },
+      "model": "reupload_qnn",
+      "seed": 8,
+      "status": "ok",
+      "train_cap": {
+        "cap_applied": true,
+        "class_counts_after": {
+          "0": 260,
+          "1": 240
+        },
+        "class_counts_before": {
+          "0": 6362,
+          "1": 5894
+        },
+        "note": "stratified TRAIN subsample to at most 500 rows (seed 8)",
+        "train_cap": 500,
+        "train_size_after": 500,
+        "train_size_before": 12256
+      }
+    },
+    {
+      "backbone": "plantnet",
+      "cache_path": "C:\\Users\\sugee\\.cache\\qc_datasets\\features\\deepweeds_plantnet_37a8eec1ce19.npz",
+      "dataset": "deepweeds",
+      "group_disjoint": true,
+      "history": {
+        "best_val_loss": 0.683543257547201,
+        "circuit": {
+          "circuit_depth_proxy": 36,
+          "data_insertions": 3,
+          "distinct_variational_param_sets": 3,
+          "encoding_gate_count": 9,
+          "entangling_gate_count": 9,
+          "n_readouts": 3,
+          "n_variational_layers": 3,
+          "qubits": 3,
+          "shots": null,
+          "tape_counts_match_spec": false,
+          "tape_encoding_gate_count": 27,
+          "tape_entangling_gate_count": 9,
+          "tape_measurement_count": 3,
+          "tape_note": null,
+          "tape_verified": true,
+          "trainable_param_count": 35,
+          "uploads": 3
+        },
+        "class_weight_mode": "balanced",
+        "classical_preprocessing": {
+          "fitted_on": "train_only",
+          "input_dim": 512,
+          "method": "train_pca_standardize_tanh",
+          "note": "Mild TRAIN-only linear reduction to exactly n*L features, the minimum required by the angle encoding; no VAL/TEST information is used and no heavy classical preprocessing hides the quantum component.",
+          "projection_budget": "512 -> 9 (= 3 qubits x 3 uploads)",
+          "steps": [
+            {
+              "fitted_on": "train",
+              "statistic": "train_mean",
+              "step": "center"
+            },
+            {
+              "explained_variance_ratio_sum": 0.48729273676872253,
+              "fitted_on": "train",
+              "kind": "pca",
+              "n_components": 9,
+              "step": "linear_projection"
+            },
+            {
+              "fitted_on": "train",
+              "statistic": "train_component_mean_std",
+              "step": "standardize"
+            },
+            {
+              "fitted_on": null,
+              "range": [
+                -1.0,
+                1.0
+              ],
+              "step": "tanh_bound"
+            }
+          ],
+          "target_dim": 9,
+          "val_test_used_for_fit": false
+        },
+        "epoch_log": [
+          {
+            "epoch": 0,
+            "n_batches": 16,
+            "n_train_seen": 500,
+            "train_acc": 0.53,
+            "train_loss": 0.6855565862655639,
+            "val_loss": 0.683543257547201
+          }
+        ],
+        "epochs_configured": 1,
+        "grad_norms_first_batch": {
+          "data_scales": 0.018509652465581894,
+          "head": 0.1384396031498909,
+          "omega": 0.0338498018682003
+        },
+        "max_batches_per_epoch": 32,
+        "max_total_steps": 512,
+        "model": "reupload_qnn",
+        "optimizer": "adam",
+        "param_delta": 0.08667098393198103,
+        "seed": 9,
+        "total_steps": 16
+      },
+      "metrics": {
+        "accuracy": 0.5705311250713878,
+        "auc": 0.6013117665366801,
+        "confusion_matrix": [
+          [
+            704,
+            214
+          ],
+          [
+            538,
+            295
+          ]
+        ],
+        "f1": 0.4396423248882265,
+        "iou_class0": 0.4835164835164835,
+        "iou_class1": 0.2817574021012416,
+        "macro_iou": 0.38263694280886257,
+        "model": "reupload_qnn",
+        "n": 1751,
+        "precision": 0.5795677799607073,
+        "recall": 0.35414165666266506,
+        "score_kind": "softmax(logits)[:,1]",
+        "test_evaluations": 1
+      },
+      "model": "reupload_qnn",
+      "seed": 9,
+      "status": "ok",
+      "train_cap": {
+        "cap_applied": true,
+        "class_counts_after": {
+          "0": 259,
+          "1": 241
+        },
+        "class_counts_before": {
+          "0": 6352,
+          "1": 5904
+        },
+        "note": "stratified TRAIN subsample to at most 500 rows (seed 9)",
+        "train_cap": 500,
+        "train_size_after": 500,
+        "train_size_before": 12256
+      }
+    }
+  ],
+  "schema": "reupload_qnn.metrics.v1",
+  "warnings": []
+}

@@ -300,6 +300,214 @@ def test_load_baseline_values_from_fake_artifacts(tmp_path: Path) -> None:
     assert ru.load_baseline_values("missing.json", ("qnn",), results_root=tmp_path) == {}
 
 
+def test_load_baseline_values_from_directory(tmp_path: Path) -> None:
+    """A DIRECTORY passed as --qnn-results resolves to <dir>/metrics.json."""
+    qnn_dir = tmp_path / "qnn_matched_deepweeds"
+    qnn_dir.mkdir()
+    (qnn_dir / "metrics.json").write_text(
+        json.dumps(
+            {
+                "runs": [
+                    {"backbone": "plantnet", "model": "qnn", "seed": 0,
+                     "status": "ok", "metrics": {"accuracy": 0.51}},
+                    {"backbone": "plantnet", "model": "qnn", "seed": 1,
+                     "status": "ok", "metrics": {"accuracy": 0.52}},
+                    {"backbone": "imagenet", "model": "qnn", "seed": 0,
+                     "status": "ok", "metrics": {"accuracy": 0.49}},
+                ]
+            }
+        ),
+        encoding="utf-8",
+    )
+    assert ru._resolve_artifact(qnn_dir) == qnn_dir / "metrics.json"
+    assert ru._resolve_artifact(qnn_dir / "metrics.json") == qnn_dir / "metrics.json"
+
+    values = ru.load_baseline_values(qnn_dir, ("qnn",), "plantnet", results_root=tmp_path)
+    assert values == {0: pytest.approx(0.51), 1: pytest.approx(0.52)}  # per-seed, backbone-filtered
+    report = ru.load_baseline_report(qnn_dir, ("qnn",), "plantnet", results_root=tmp_path)
+    assert report["status"] == "ok"
+    assert report["reason"] is None
+    assert report["n_values"] == 2
+    assert str(report["path"]) == str(qnn_dir / "metrics.json")
+
+    # Directory without metrics.json resolves to a non-existent file -> "missing".
+    empty_dir = tmp_path / "empty_dir"
+    empty_dir.mkdir()
+    missing = ru.load_baseline_report(empty_dir, ("qnn",), results_root=tmp_path)
+    assert missing["status"] == "missing" and missing["reason"] == "missing"
+    assert str(missing["path"]) == str(empty_dir / "metrics.json")
+
+
+def test_baseline_report_reasons(tmp_path: Path) -> None:
+    """Unreadable JSON and no-matching-runs are distinct, explicit statuses."""
+    bad = tmp_path / "bad.json"
+    bad.write_text("{not-json", encoding="utf-8")
+    unreadable = ru.load_baseline_report(bad, ("qnn",), results_root=tmp_path)
+    assert unreadable["status"] == "unreadable" and unreadable["reason"] == "unreadable"
+
+    no_runs = tmp_path / "no_runs.json"
+    no_runs.write_text(json.dumps({"runs": []}), encoding="utf-8")
+    empty = ru.load_baseline_report(no_runs, ("qnn",), results_root=tmp_path)
+    assert empty["status"] == "no_matching_runs" and empty["reason"] == "no matching runs"
+    assert empty["values"] == {}
+
+
+def _stage_fake_protocol(monkeypatch, tmp_path: Path) -> None:
+    """Stub cache + train/eval so the protocol can run without torch/PennyLane."""
+    cache_dir = tmp_path / "cache"
+    cache_dir.mkdir(exist_ok=True)
+    cache_path = ru._cache_npz_path("deepweeds", "plantnet", cache_dir)
+    cache_path.parent.mkdir(parents=True, exist_ok=True)
+    cache_path.write_bytes(b"")
+
+    rng = np.random.default_rng(1)
+
+    def _cached(*args, **kwargs):
+        X = rng.normal(size=(8, 6)).astype(np.float32)
+        y = np.asarray([0, 1] * 4)
+        return {
+            "X": {"train": X, "val": X, "test": X},
+            "y": {"train": y, "val": y, "test": y},
+            "cache_path": str(cache_path),
+            "cache_hit": True,
+            "provenance": {"group_disjoint": True},
+        }
+
+    class _FakeModel:
+        def __init__(self, seed: int) -> None:
+            self.seed = seed
+
+    def _train(Xtr, ytr, Xv, yv, cfg, seed):
+        history = {
+            "classical_preprocessing": {"val_test_used_for_fit": False},
+            "grad_norms_first_batch": {"data_scales": 1.0, "omega": 1.0, "head": 0.0},
+            "param_delta": 0.1,
+            "circuit": {},
+        }
+        return _FakeModel(int(seed)), history
+
+    def _evaluate(model, X, y):
+        return {
+            "model": "reupload_qnn",
+            "accuracy": 0.50 + 0.01 * model.seed,
+            "auc": 0.55, "f1": 0.5, "precision": 0.5, "recall": 0.5,
+            "confusion_matrix": [[2, 1], [1, 2]], "n": 6,
+            "iou_class0": 0.5, "iou_class1": 0.5, "macro_iou": 0.5,
+            "test_evaluations": 1,
+        }
+
+    monkeypatch.setattr(ru._fp, "cache_features", _cached)
+    monkeypatch.setattr(ru, "train_reupload_from_features", _train)
+    monkeypatch.setattr(ru, "evaluate_once", _evaluate)
+
+
+def _write_fake_classical(tmp_path: Path) -> None:
+    artifact = tmp_path / "results" / "fresh_deepweeds" / "metrics.json"
+    artifact.parent.mkdir(parents=True, exist_ok=True)
+    artifact.write_text(
+        json.dumps(
+            {
+                "runs": [
+                    {"backbone": "plantnet", "model": "poly2", "seed": 0,
+                     "status": "ok", "metrics": {"accuracy": 0.61}},
+                    {"backbone": "plantnet", "model": "poly2", "seed": 1,
+                     "status": "ok", "metrics": {"accuracy": 0.62}},
+                ]
+            }
+        ),
+        encoding="utf-8",
+    )
+
+
+def test_missing_qnn_baseline_warns_and_has_no_comparison(tmp_path: Path, monkeypatch) -> None:
+    """A configured-but-missing old-QNN baseline is warned, never silently dropped."""
+    pytest.importorskip("scipy", reason="paired_comparison requires scipy")
+    _stage_fake_protocol(monkeypatch, tmp_path)
+    _write_fake_classical(tmp_path)
+    missing_dir = tmp_path / "qnn_matched_deepweeds"  # exists, but no metrics.json
+    missing_dir.mkdir()
+
+    result = ru.run_reupload_protocol(
+        "deepweeds", "plantnet", [0, 1], tmp_path / "out",
+        cache_dir=tmp_path / "cache", train_cap=0, epochs=1, qubits=2, uploads=2,
+        qnn_results=missing_dir, results_root=tmp_path,
+    )
+    baseline_warnings = [w for w in result["warnings"] if w.get("stage") == "baseline_load"]
+    assert len(baseline_warnings) == 1
+    warning = baseline_warnings[0]
+    assert warning["baseline"] == "fresh_qnn_amplitude"
+    assert warning["reason"] == "missing"
+    assert str(warning["path"]) == str(missing_dir / "metrics.json")
+    assert str(missing_dir) in warning["requested"]
+    assert "no comparison fabricated" in warning["error"]
+
+    comparisons = result["metrics"]["comparisons"]
+    assert [c["pair"] for c in comparisons] == [["reupload_qnn", "classical_poly2"]]
+    assert all("fresh_qnn_amplitude" not in c["pair"] for c in comparisons)
+    assert result["metrics"]["baselines_loaded"] == ["classical_poly2"]
+    notes = result["provenance"]["comparison_notes"]
+    assert notes["baselines_loaded"] == ["classical_poly2"]
+    assert [s["name"] for s in notes["baseline_sources"] if not s["loaded"]] == [
+        "fresh_qnn_amplitude"
+    ]
+    assert result["metrics"]["accounting_invariant"] is True
+    assert result["metrics"]["n_runs_skipped"] == 0  # baseline warning is not a run skip
+
+
+def test_unreadable_baseline_warns_and_is_excluded(tmp_path: Path, monkeypatch) -> None:
+    """An unreadable, configured baseline produces a warning and no fabricated data."""
+    pytest.importorskip("scipy", reason="paired_comparison requires scipy")
+    _stage_fake_protocol(monkeypatch, tmp_path)
+    _write_fake_classical(tmp_path)
+    broken = tmp_path / "broken_qnn"
+    broken.mkdir()
+    (broken / "metrics.json").write_text("{not-json", encoding="utf-8")
+
+    result = ru.run_reupload_protocol(
+        "deepweeds", "plantnet", [0, 1], tmp_path / "out2",
+        cache_dir=tmp_path / "cache", train_cap=0, epochs=1, qubits=2, uploads=2,
+        qnn_results=broken, results_root=tmp_path,
+    )
+    warning = next(w for w in result["warnings"] if w.get("stage") == "baseline_load")
+    assert warning["reason"] == "unreadable"
+    assert warning["status"] == "unreadable"
+    assert result["metrics"]["baselines_loaded"] == ["classical_poly2"]
+    assert all("fresh_qnn_amplitude" not in c["pair"] for c in result["metrics"]["comparisons"])
+
+
+def test_baselines_loaded_reflects_actual_loads(tmp_path: Path, monkeypatch) -> None:
+    """When both baselines load, baselines_loaded names exactly those two."""
+    pytest.importorskip("scipy", reason="paired_comparison requires scipy")
+    _stage_fake_protocol(monkeypatch, tmp_path)
+    _write_fake_classical(tmp_path)
+    qnn_dir = tmp_path / "qnn_matched_deepweeds"
+    qnn_dir.mkdir()
+    (qnn_dir / "metrics.json").write_text(
+        json.dumps(
+            {
+                "runs": [
+                    {"backbone": "plantnet", "model": "qnn", "seed": 0,
+                     "status": "ok", "metrics": {"accuracy": 0.50}},
+                    {"backbone": "plantnet", "model": "qnn", "seed": 1,
+                     "status": "ok", "metrics": {"accuracy": 0.51}},
+                ]
+            }
+        ),
+        encoding="utf-8",
+    )
+    result = ru.run_reupload_protocol(
+        "deepweeds", "plantnet", [0, 1], tmp_path / "out3",
+        cache_dir=tmp_path / "cache", train_cap=0, epochs=1, qubits=2, uploads=2,
+        qnn_results=qnn_dir, results_root=tmp_path,
+    )
+    expected = ["classical_poly2", "fresh_qnn_amplitude"]
+    assert result["metrics"]["baselines_loaded"] == expected
+    assert result["provenance"]["comparison_notes"]["baselines_loaded"] == expected
+    assert sorted(c["pair"][1] for c in result["metrics"]["comparisons"]) == expected
+    assert not [w for w in result["warnings"] if w.get("stage") == "baseline_load"]
+    assert all(s["loaded"] for s in result["provenance"]["comparison_notes"]["baseline_sources"])
+
+
 # --------------------------------------------------------------------------- #
 # 7. CLI dry-run is write-free + defaults                                      #
 # --------------------------------------------------------------------------- #
@@ -327,6 +535,7 @@ def test_cli_dry_run_is_write_free(tmp_path: Path, capsys) -> None:
     assert "CPU feasibility" in printed
     assert '"uploads": 4' in printed
     assert '"shots": null' in printed
+    assert "--qnn-results" in printed and "DIRECTORY" in printed  # accepted path forms documented
 
 
 def test_missing_cache_graceful_error(tmp_path: Path) -> None:

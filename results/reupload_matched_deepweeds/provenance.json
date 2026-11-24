@@ -1,0 +1,974 @@
+{
+  "additive": true,
+  "backbone": "plantnet",
+  "circuit": {
+    "circuit_depth_proxy": 36,
+    "data_insertions": 3,
+    "device": "default.qubit",
+    "diff_method": "backprop",
+    "distinct_variational_param_sets": 3,
+    "encoding_gate_count": 9,
+    "entanglement": "CNOT ring + per-wire RY/RZ per upload",
+    "entangling_gate_count": 9,
+    "interface": "torch",
+    "n_qubits": 3,
+    "n_readouts": 3,
+    "shots": null,
+    "shots_note": "CPU analytic simulation; no shot-noise or device-speedup claim",
+    "upload_formula": "prod_{i=1..L} [ V(omega_i) U_phi(x) ] |0>^n",
+    "uploads": 3
+  },
+  "claim_boundary": "Genuine data-re-uploading QNN (Perez-Salinas et al., Quantum 4:226, 2020) on the fresh grouped-split protocol. No quantum advantage is asserted. The default 6 qubits and 4 uploads are CPU-feasibility choices, not a hardware, scaling or quantum-advantage claim. The circuit is simulated analytically with shots=None (default.qubit, interface=torch, backprop) on CPU; no device speedup is claimed. A win is admissible only if the per-seed PAIRED comparison against the committed classical poly-2 arm (and the old amplitude QNN when present) is 'significant' after Holm correction with achieved power >= 0.8, n >= 10, a bootstrap CI of the paired difference excluding zero, and a matched data/input-information budget. The only classical reduction is a TRAIN-only linear projection to n*L features (plus TRAIN-only standardisation and a tanh bound), recorded explicitly as classical_preprocessing; VAL/TEST never fit it. The sealed TEST is scored exactly once per seed. Failures are recorded as warnings, never fabricated, and no performance difference is attributed to quantum effects without matched-budget paired evidence.",
+  "comparison_notes": {
+    "amplitude_qnn_arm": "results\\qnn_matched_deepweeds",
+    "baselines_loaded": [
+      "classical_poly2"
+    ],
+    "classical_arm": "results/fresh_deepweeds/metrics.json",
+    "cpu_note": "3 qubits / 3 uploads are chosen for CPU feasibility only; not a hardware, scaling or quantum-advantage claim; shots=None analytic CPU simulation.",
+    "n_budget_matched": false,
+    "note": "The committed controls used their own TRAIN budgets while this arm caps TRAIN at the configured value; a paired win is only admissible after budget matching in addition to the statistical gates.",
+    "test_scoring": "exactly one forward pass per seed via evaluate_once"
+  },
+  "config": {
+    "amplitude_qnn_control": "results\\qnn_matched_deepweeds",
+    "backbone": "plantnet",
+    "cache_dir": "C:\\Users\\sugee\\.cache\\qc_datasets\\features",
+    "circuit": {
+      "circuit_depth_proxy": 36,
+      "data_insertions": 3,
+      "distinct_variational_param_sets": 3,
+      "encoding_gate_count": 9,
+      "entangling_gate_count": 9,
+      "n_qubits": 3,
+      "n_readouts": 3,
+      "shots": null,
+      "uploads": 3
+    },
+    "claim_boundary": "Genuine data-re-uploading QNN (Perez-Salinas et al., Quantum 4:226, 2020) on the fresh grouped-split protocol. No quantum advantage is asserted. The default 6 qubits and 4 uploads are CPU-feasibility choices, not a hardware, scaling or quantum-advantage claim. The circuit is simulated analytically with shots=None (default.qubit, interface=torch, backprop) on CPU; no device speedup is claimed. A win is admissible only if the per-seed PAIRED comparison against the committed classical poly-2 arm (and the old amplitude QNN when present) is 'significant' after Holm correction with achieved power >= 0.8, n >= 10, a bootstrap CI of the paired difference excluding zero, and a matched data/input-information budget. The only classical reduction is a TRAIN-only linear projection to n*L features (plus TRAIN-only standardisation and a tanh bound), recorded explicitly as classical_preprocessing; VAL/TEST never fit it. The sealed TEST is scored exactly once per seed. Failures are recorded as warnings, never fabricated, and no performance difference is attributed to quantum effects without matched-budget paired evidence.",
+    "classical_control": "results/fresh_deepweeds/metrics.json",
+    "classical_preprocessing": "TRAIN-only PCA to n*L = 9 features, TRAIN-only standardisation and a tanh bound; fitted on TRAIN only",
+    "cpu_note": "3 qubits / 3 uploads are chosen for CPU feasibility only; not a hardware, scaling or quantum-advantage claim; shots=None analytic CPU simulation.",
+    "dataset": "deepweeds",
+    "entangler": "cnot",
+    "epochs": 1,
+    "feature_dim": 9,
+    "max_batches_per_epoch": 32,
+    "max_total_steps": 512,
+    "output_dir": "results\\reupload_matched_deepweeds",
+    "projection_target_dim": 9,
+    "protocol": "reupload_qnn.v1",
+    "qubits": 3,
+    "runs_planned": 10,
+    "seeds": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9
+    ],
+    "train_cap": 500,
+    "uploads": 3
+  },
+  "dataset": "deepweeds",
+  "environment": {
+    "commit_hash": null,
+    "note": "versions importable in the executing interpreter; no installs performed",
+    "packages": {
+      "PennyLane": "0.40.0",
+      "numpy": "2.0.2",
+      "scikit-learn": "1.9.1",
+      "scipy": "1.17.1",
+      "statsmodels": "0.15.0",
+      "torch": "2.15.0+xpu"
+    },
+    "platform": "Windows_NT",
+    "python": "3.11.9",
+    "python_executable": "C:\\Users\\sugee\\AppData\\Local\\Programs\\Python\\Python311\\python.exe"
+  },
+  "feature_cache": {
+    "cache_hit": true,
+    "cache_path": "C:\\Users\\sugee\\.cache\\qc_datasets\\features\\deepweeds_plantnet_37a8eec1ce19.npz",
+    "feature_dim": 512,
+    "frozen": true
+  },
+  "projection_budget": {
+    "classical_preprocessing": {
+      "fitted_on": "train_only",
+      "input_dim": 512,
+      "method": "train_pca_standardize_tanh",
+      "note": "Mild TRAIN-only linear reduction to exactly n*L features, the minimum required by the angle encoding; no VAL/TEST information is used and no heavy classical preprocessing hides the quantum component.",
+      "projection_budget": "512 -> 9 (= 3 qubits x 3 uploads)",
+      "steps": [
+        {
+          "fitted_on": "train",
+          "statistic": "train_mean",
+          "step": "center"
+        },
+        {
+          "explained_variance_ratio_sum": 0.4860621690750122,
+          "fitted_on": "train",
+          "kind": "pca",
+          "n_components": 9,
+          "step": "linear_projection"
+        },
+        {
+          "fitted_on": "train",
+          "statistic": "train_component_mean_std",
+          "step": "standardize"
+        },
+        {
+          "fitted_on": null,
+          "range": [
+            -1.0,
+            1.0
+          ],
+          "step": "tanh_bound"
+        }
+      ],
+      "target_dim": 9,
+      "val_test_used_for_fit": false
+    },
+    "formula": "n * L",
+    "target_dim": 9
+  },
+  "run_manifest": [
+    {
+      "backbone": "plantnet",
+      "circuit": {
+        "circuit_depth_proxy": 36,
+        "data_insertions": 3,
+        "distinct_variational_param_sets": 3,
+        "encoding_gate_count": 9,
+        "entangling_gate_count": 9,
+        "n_readouts": 3,
+        "n_variational_layers": 3,
+        "qubits": 3,
+        "shots": null,
+        "tape_counts_match_spec": false,
+        "tape_encoding_gate_count": 27,
+        "tape_entangling_gate_count": 9,
+        "tape_measurement_count": 3,
+        "tape_note": null,
+        "tape_verified": true,
+        "trainable_param_count": 35,
+        "uploads": 3
+      },
+      "classical_preprocessing": {
+        "fitted_on": "train_only",
+        "input_dim": 512,
+        "method": "train_pca_standardize_tanh",
+        "note": "Mild TRAIN-only linear reduction to exactly n*L features, the minimum required by the angle encoding; no VAL/TEST information is used and no heavy classical preprocessing hides the quantum component.",
+        "projection_budget": "512 -> 9 (= 3 qubits x 3 uploads)",
+        "steps": [
+          {
+            "fitted_on": "train",
+            "statistic": "train_mean",
+            "step": "center"
+          },
+          {
+            "explained_variance_ratio_sum": 0.4860621690750122,
+            "fitted_on": "train",
+            "kind": "pca",
+            "n_components": 9,
+            "step": "linear_projection"
+          },
+          {
+            "fitted_on": "train",
+            "statistic": "train_component_mean_std",
+            "step": "standardize"
+          },
+          {
+            "fitted_on": null,
+            "range": [
+              -1.0,
+              1.0
+            ],
+            "step": "tanh_bound"
+          }
+        ],
+        "target_dim": 9,
+        "val_test_used_for_fit": false
+      },
+      "dataset": "deepweeds",
+      "grad_norms_first_batch": {
+        "data_scales": 0.03515591099858284,
+        "head": 0.5753643214702606,
+        "omega": 0.1414848268032074
+      },
+      "model": "reupload_qnn",
+      "param_delta": 0.08189851278439164,
+      "seed": 0,
+      "status": "ok",
+      "train_cap": {
+        "cap_applied": true,
+        "class_counts_after": {
+          "0": 261,
+          "1": 239
+        },
+        "class_counts_before": {
+          "0": 6403,
+          "1": 5853
+        },
+        "note": "stratified TRAIN subsample to at most 500 rows (seed 0)",
+        "train_cap": 500,
+        "train_size_after": 500,
+        "train_size_before": 12256
+      }
+    },
+    {
+      "backbone": "plantnet",
+      "circuit": {
+        "circuit_depth_proxy": 36,
+        "data_insertions": 3,
+        "distinct_variational_param_sets": 3,
+        "encoding_gate_count": 9,
+        "entangling_gate_count": 9,
+        "n_readouts": 3,
+        "n_variational_layers": 3,
+        "qubits": 3,
+        "shots": null,
+        "tape_counts_match_spec": false,
+        "tape_encoding_gate_count": 27,
+        "tape_entangling_gate_count": 9,
+        "tape_measurement_count": 3,
+        "tape_note": null,
+        "tape_verified": true,
+        "trainable_param_count": 35,
+        "uploads": 3
+      },
+      "classical_preprocessing": {
+        "fitted_on": "train_only",
+        "input_dim": 512,
+        "method": "train_pca_standardize_tanh",
+        "note": "Mild TRAIN-only linear reduction to exactly n*L features, the minimum required by the angle encoding; no VAL/TEST information is used and no heavy classical preprocessing hides the quantum component.",
+        "projection_budget": "512 -> 9 (= 3 qubits x 3 uploads)",
+        "steps": [
+          {
+            "fitted_on": "train",
+            "statistic": "train_mean",
+            "step": "center"
+          },
+          {
+            "explained_variance_ratio_sum": 0.4884868264198303,
+            "fitted_on": "train",
+            "kind": "pca",
+            "n_components": 9,
+            "step": "linear_projection"
+          },
+          {
+            "fitted_on": "train",
+            "statistic": "train_component_mean_std",
+            "step": "standardize"
+          },
+          {
+            "fitted_on": null,
+            "range": [
+              -1.0,
+              1.0
+            ],
+            "step": "tanh_bound"
+          }
+        ],
+        "target_dim": 9,
+        "val_test_used_for_fit": false
+      },
+      "dataset": "deepweeds",
+      "grad_norms_first_batch": {
+        "data_scales": 0.044681861996650696,
+        "head": 0.09006705973297358,
+        "omega": 0.08750037103891373
+      },
+      "model": "reupload_qnn",
+      "param_delta": 0.10622868221253157,
+      "seed": 1,
+      "status": "ok",
+      "train_cap": {
+        "cap_applied": true,
+        "class_counts_after": {
+          "0": 261,
+          "1": 239
+        },
+        "class_counts_before": {
+          "0": 6402,
+          "1": 5854
+        },
+        "note": "stratified TRAIN subsample to at most 500 rows (seed 1)",
+        "train_cap": 500,
+        "train_size_after": 500,
+        "train_size_before": 12256
+      }
+    },
+    {
+      "backbone": "plantnet",
+      "circuit": {
+        "circuit_depth_proxy": 36,
+        "data_insertions": 3,
+        "distinct_variational_param_sets": 3,
+        "encoding_gate_count": 9,
+        "entangling_gate_count": 9,
+        "n_readouts": 3,
+        "n_variational_layers": 3,
+        "qubits": 3,
+        "shots": null,
+        "tape_counts_match_spec": false,
+        "tape_encoding_gate_count": 27,
+        "tape_entangling_gate_count": 9,
+        "tape_measurement_count": 3,
+        "tape_note": null,
+        "tape_verified": true,
+        "trainable_param_count": 35,
+        "uploads": 3
+      },
+      "classical_preprocessing": {
+        "fitted_on": "train_only",
+        "input_dim": 512,
+        "method": "train_pca_standardize_tanh",
+        "note": "Mild TRAIN-only linear reduction to exactly n*L features, the minimum required by the angle encoding; no VAL/TEST information is used and no heavy classical preprocessing hides the quantum component.",
+        "projection_budget": "512 -> 9 (= 3 qubits x 3 uploads)",
+        "steps": [
+          {
+            "fitted_on": "train",
+            "statistic": "train_mean",
+            "step": "center"
+          },
+          {
+            "explained_variance_ratio_sum": 0.48481786251068115,
+            "fitted_on": "train",
+            "kind": "pca",
+            "n_components": 9,
+            "step": "linear_projection"
+          },
+          {
+            "fitted_on": "train",
+            "statistic": "train_component_mean_std",
+            "step": "standardize"
+          },
+          {
+            "fitted_on": null,
+            "range": [
+              -1.0,
+              1.0
+            ],
+            "step": "tanh_bound"
+          }
+        ],
+        "target_dim": 9,
+        "val_test_used_for_fit": false
+      },
+      "dataset": "deepweeds",
+      "grad_norms_first_batch": {
+        "data_scales": 0.015135390684008598,
+        "head": 0.19201910868287086,
+        "omega": 0.04239708557724953
+      },
+      "model": "reupload_qnn",
+      "param_delta": 0.07819874957203865,
+      "seed": 2,
+      "status": "ok",
+      "train_cap": {
+        "cap_applied": true,
+        "class_counts_after": {
+          "0": 260,
+          "1": 240
+        },
+        "class_counts_before": {
+          "0": 6362,
+          "1": 5894
+        },
+        "note": "stratified TRAIN subsample to at most 500 rows (seed 2)",
+        "train_cap": 500,
+        "train_size_after": 500,
+        "train_size_before": 12256
+      }
+    },
+    {
+      "backbone": "plantnet",
+      "circuit": {
+        "circuit_depth_proxy": 36,
+        "data_insertions": 3,
+        "distinct_variational_param_sets": 3,
+        "encoding_gate_count": 9,
+        "entangling_gate_count": 9,
+        "n_readouts": 3,
+        "n_variational_layers": 3,
+        "qubits": 3,
+        "shots": null,
+        "tape_counts_match_spec": false,
+        "tape_encoding_gate_count": 27,
+        "tape_entangling_gate_count": 9,
+        "tape_measurement_count": 3,
+        "tape_note": null,
+        "tape_verified": true,
+        "trainable_param_count": 35,
+        "uploads": 3
+      },
+      "classical_preprocessing": {
+        "fitted_on": "train_only",
+        "input_dim": 512,
+        "method": "train_pca_standardize_tanh",
+        "note": "Mild TRAIN-only linear reduction to exactly n*L features, the minimum required by the angle encoding; no VAL/TEST information is used and no heavy classical preprocessing hides the quantum component.",
+        "projection_budget": "512 -> 9 (= 3 qubits x 3 uploads)",
+        "steps": [
+          {
+            "fitted_on": "train",
+            "statistic": "train_mean",
+            "step": "center"
+          },
+          {
+            "explained_variance_ratio_sum": 0.48371222615242004,
+            "fitted_on": "train",
+            "kind": "pca",
+            "n_components": 9,
+            "step": "linear_projection"
+          },
+          {
+            "fitted_on": "train",
+            "statistic": "train_component_mean_std",
+            "step": "standardize"
+          },
+          {
+            "fitted_on": null,
+            "range": [
+              -1.0,
+              1.0
+            ],
+            "step": "tanh_bound"
+          }
+        ],
+        "target_dim": 9,
+        "val_test_used_for_fit": false
+      },
+      "dataset": "deepweeds",
+      "grad_norms_first_batch": {
+        "data_scales": 0.03836255893111229,
+        "head": 0.1284714713692665,
+        "omega": 0.051233869045972824
+      },
+      "model": "reupload_qnn",
+      "param_delta": 0.10786466021090746,
+      "seed": 3,
+      "status": "ok",
+      "train_cap": {
+        "cap_applied": true,
+        "class_counts_after": {
+          "0": 258,
+          "1": 242
+        },
+        "class_counts_before": {
+          "0": 6327,
+          "1": 5929
+        },
+        "note": "stratified TRAIN subsample to at most 500 rows (seed 3)",
+        "train_cap": 500,
+        "train_size_after": 500,
+        "train_size_before": 12256
+      }
+    },
+    {
+      "backbone": "plantnet",
+      "circuit": {
+        "circuit_depth_proxy": 36,
+        "data_insertions": 3,
+        "distinct_variational_param_sets": 3,
+        "encoding_gate_count": 9,
+        "entangling_gate_count": 9,
+        "n_readouts": 3,
+        "n_variational_layers": 3,
+        "qubits": 3,
+        "shots": null,
+        "tape_counts_match_spec": false,
+        "tape_encoding_gate_count": 27,
+        "tape_entangling_gate_count": 9,
+        "tape_measurement_count": 3,
+        "tape_note": null,
+        "tape_verified": true,
+        "trainable_param_count": 35,
+        "uploads": 3
+      },
+      "classical_preprocessing": {
+        "fitted_on": "train_only",
+        "input_dim": 512,
+        "method": "train_pca_standardize_tanh",
+        "note": "Mild TRAIN-only linear reduction to exactly n*L features, the minimum required by the angle encoding; no VAL/TEST information is used and no heavy classical preprocessing hides the quantum component.",
+        "projection_budget": "512 -> 9 (= 3 qubits x 3 uploads)",
+        "steps": [
+          {
+            "fitted_on": "train",
+            "statistic": "train_mean",
+            "step": "center"
+          },
+          {
+            "explained_variance_ratio_sum": 0.4838868975639343,
+            "fitted_on": "train",
+            "kind": "pca",
+            "n_components": 9,
+            "step": "linear_projection"
+          },
+          {
+            "fitted_on": "train",
+            "statistic": "train_component_mean_std",
+            "step": "standardize"
+          },
+          {
+            "fitted_on": null,
+            "range": [
+              -1.0,
+              1.0
+            ],
+            "step": "tanh_bound"
+          }
+        ],
+        "target_dim": 9,
+        "val_test_used_for_fit": false
+      },
+      "dataset": "deepweeds",
+      "grad_norms_first_batch": {
+        "data_scales": 0.010996886529028416,
+        "head": 0.11343549564480782,
+        "omega": 0.028224147856235504
+      },
+      "model": "reupload_qnn",
+      "param_delta": 0.10685026599094272,
+      "seed": 4,
+      "status": "ok",
+      "train_cap": {
+        "cap_applied": true,
+        "class_counts_after": {
+          "0": 261,
+          "1": 239
+        },
+        "class_counts_before": {
+          "0": 6397,
+          "1": 5859
+        },
+        "note": "stratified TRAIN subsample to at most 500 rows (seed 4)",
+        "train_cap": 500,
+        "train_size_after": 500,
+        "train_size_before": 12256
+      }
+    },
+    {
+      "backbone": "plantnet",
+      "circuit": {
+        "circuit_depth_proxy": 36,
+        "data_insertions": 3,
+        "distinct_variational_param_sets": 3,
+        "encoding_gate_count": 9,
+        "entangling_gate_count": 9,
+        "n_readouts": 3,
+        "n_variational_layers": 3,
+        "qubits": 3,
+        "shots": null,
+        "tape_counts_match_spec": false,
+        "tape_encoding_gate_count": 27,
+        "tape_entangling_gate_count": 9,
+        "tape_measurement_count": 3,
+        "tape_note": null,
+        "tape_verified": true,
+        "trainable_param_count": 35,
+        "uploads": 3
+      },
+      "classical_preprocessing": {
+        "fitted_on": "train_only",
+        "input_dim": 512,
+        "method": "train_pca_standardize_tanh",
+        "note": "Mild TRAIN-only linear reduction to exactly n*L features, the minimum required by the angle encoding; no VAL/TEST information is used and no heavy classical preprocessing hides the quantum component.",
+        "projection_budget": "512 -> 9 (= 3 qubits x 3 uploads)",
+        "steps": [
+          {
+            "fitted_on": "train",
+            "statistic": "train_mean",
+            "step": "center"
+          },
+          {
+            "explained_variance_ratio_sum": 0.4826681315898895,
+            "fitted_on": "train",
+            "kind": "pca",
+            "n_components": 9,
+            "step": "linear_projection"
+          },
+          {
+            "fitted_on": "train",
+            "statistic": "train_component_mean_std",
+            "step": "standardize"
+          },
+          {
+            "fitted_on": null,
+            "range": [
+              -1.0,
+              1.0
+            ],
+            "step": "tanh_bound"
+          }
+        ],
+        "target_dim": 9,
+        "val_test_used_for_fit": false
+      },
+      "dataset": "deepweeds",
+      "grad_norms_first_batch": {
+        "data_scales": 0.017446229234337807,
+        "head": 0.1327010989189148,
+        "omega": 0.07333006709814072
+      },
+      "model": "reupload_qnn",
+      "param_delta": 0.10945224389433861,
+      "seed": 5,
+      "status": "ok",
+      "train_cap": {
+        "cap_applied": true,
+        "class_counts_after": {
+          "0": 261,
+          "1": 239
+        },
+        "class_counts_before": {
+          "0": 6394,
+          "1": 5862
+        },
+        "note": "stratified TRAIN subsample to at most 500 rows (seed 5)",
+        "train_cap": 500,
+        "train_size_after": 500,
+        "train_size_before": 12256
+      }
+    },
+    {
+      "backbone": "plantnet",
+      "circuit": {
+        "circuit_depth_proxy": 36,
+        "data_insertions": 3,
+        "distinct_variational_param_sets": 3,
+        "encoding_gate_count": 9,
+        "entangling_gate_count": 9,
+        "n_readouts": 3,
+        "n_variational_layers": 3,
+        "qubits": 3,
+        "shots": null,
+        "tape_counts_match_spec": false,
+        "tape_encoding_gate_count": 27,
+        "tape_entangling_gate_count": 9,
+        "tape_measurement_count": 3,
+        "tape_note": null,
+        "tape_verified": true,
+        "trainable_param_count": 35,
+        "uploads": 3
+      },
+      "classical_preprocessing": {
+        "fitted_on": "train_only",
+        "input_dim": 512,
+        "method": "train_pca_standardize_tanh",
+        "note": "Mild TRAIN-only linear reduction to exactly n*L features, the minimum required by the angle encoding; no VAL/TEST information is used and no heavy classical preprocessing hides the quantum component.",
+        "projection_budget": "512 -> 9 (= 3 qubits x 3 uploads)",
+        "steps": [
+          {
+            "fitted_on": "train",
+            "statistic": "train_mean",
+            "step": "center"
+          },
+          {
+            "explained_variance_ratio_sum": 0.48922088742256165,
+            "fitted_on": "train",
+            "kind": "pca",
+            "n_components": 9,
+            "step": "linear_projection"
+          },
+          {
+            "fitted_on": "train",
+            "statistic": "train_component_mean_std",
+            "step": "standardize"
+          },
+          {
+            "fitted_on": null,
+            "range": [
+              -1.0,
+              1.0
+            ],
+            "step": "tanh_bound"
+          }
+        ],
+        "target_dim": 9,
+        "val_test_used_for_fit": false
+      },
+      "dataset": "deepweeds",
+      "grad_norms_first_batch": {
+        "data_scales": 0.0387130081653595,
+        "head": 0.35443947836756706,
+        "omega": 0.08545005321502686
+      },
+      "model": "reupload_qnn",
+      "param_delta": 0.12024825438857079,
+      "seed": 6,
+      "status": "ok",
+      "train_cap": {
+        "cap_applied": true,
+        "class_counts_after": {
+          "0": 262,
+          "1": 238
+        },
+        "class_counts_before": {
+          "0": 6425,
+          "1": 5831
+        },
+        "note": "stratified TRAIN subsample to at most 500 rows (seed 6)",
+        "train_cap": 500,
+        "train_size_after": 500,
+        "train_size_before": 12256
+      }
+    },
+    {
+      "backbone": "plantnet",
+      "circuit": {
+        "circuit_depth_proxy": 36,
+        "data_insertions": 3,
+        "distinct_variational_param_sets": 3,
+        "encoding_gate_count": 9,
+        "entangling_gate_count": 9,
+        "n_readouts": 3,
+        "n_variational_layers": 3,
+        "qubits": 3,
+        "shots": null,
+        "tape_counts_match_spec": false,
+        "tape_encoding_gate_count": 27,
+        "tape_entangling_gate_count": 9,
+        "tape_measurement_count": 3,
+        "tape_note": null,
+        "tape_verified": true,
+        "trainable_param_count": 35,
+        "uploads": 3
+      },
+      "classical_preprocessing": {
+        "fitted_on": "train_only",
+        "input_dim": 512,
+        "method": "train_pca_standardize_tanh",
+        "note": "Mild TRAIN-only linear reduction to exactly n*L features, the minimum required by the angle encoding; no VAL/TEST information is used and no heavy classical preprocessing hides the quantum component.",
+        "projection_budget": "512 -> 9 (= 3 qubits x 3 uploads)",
+        "steps": [
+          {
+            "fitted_on": "train",
+            "statistic": "train_mean",
+            "step": "center"
+          },
+          {
+            "explained_variance_ratio_sum": 0.4778493046760559,
+            "fitted_on": "train",
+            "kind": "pca",
+            "n_components": 9,
+            "step": "linear_projection"
+          },
+          {
+            "fitted_on": "train",
+            "statistic": "train_component_mean_std",
+            "step": "standardize"
+          },
+          {
+            "fitted_on": null,
+            "range": [
+              -1.0,
+              1.0
+            ],
+            "step": "tanh_bound"
+          }
+        ],
+        "target_dim": 9,
+        "val_test_used_for_fit": false
+      },
+      "dataset": "deepweeds",
+      "grad_norms_first_batch": {
+        "data_scales": 0.022488735616207123,
+        "head": 0.09679404553025961,
+        "omega": 0.05504737049341202
+      },
+      "model": "reupload_qnn",
+      "param_delta": 0.10259819170460105,
+      "seed": 7,
+      "status": "ok",
+      "train_cap": {
+        "cap_applied": true,
+        "class_counts_after": {
+          "0": 260,
+          "1": 240
+        },
+        "class_counts_before": {
+          "0": 6364,
+          "1": 5892
+        },
+        "note": "stratified TRAIN subsample to at most 500 rows (seed 7)",
+        "train_cap": 500,
+        "train_size_after": 500,
+        "train_size_before": 12256
+      }
+    },
+    {
+      "backbone": "plantnet",
+      "circuit": {
+        "circuit_depth_proxy": 36,
+        "data_insertions": 3,
+        "distinct_variational_param_sets": 3,
+        "encoding_gate_count": 9,
+        "entangling_gate_count": 9,
+        "n_readouts": 3,
+        "n_variational_layers": 3,
+        "qubits": 3,
+        "shots": null,
+        "tape_counts_match_spec": false,
+        "tape_encoding_gate_count": 27,
+        "tape_entangling_gate_count": 9,
+        "tape_measurement_count": 3,
+        "tape_note": null,
+        "tape_verified": true,
+        "trainable_param_count": 35,
+        "uploads": 3
+      },
+      "classical_preprocessing": {
+        "fitted_on": "train_only",
+        "input_dim": 512,
+        "method": "train_pca_standardize_tanh",
+        "note": "Mild TRAIN-only linear reduction to exactly n*L features, the minimum required by the angle encoding; no VAL/TEST information is used and no heavy classical preprocessing hides the quantum component.",
+        "projection_budget": "512 -> 9 (= 3 qubits x 3 uploads)",
+        "steps": [
+          {
+            "fitted_on": "train",
+            "statistic": "train_mean",
+            "step": "center"
+          },
+          {
+            "explained_variance_ratio_sum": 0.47470971941947937,
+            "fitted_on": "train",
+            "kind": "pca",
+            "n_components": 9,
+            "step": "linear_projection"
+          },
+          {
+            "fitted_on": "train",
+            "statistic": "train_component_mean_std",
+            "step": "standardize"
+          },
+          {
+            "fitted_on": null,
+            "range": [
+              -1.0,
+              1.0
+            ],
+            "step": "tanh_bound"
+          }
+        ],
+        "target_dim": 9,
+        "val_test_used_for_fit": false
+      },
+      "dataset": "deepweeds",
+      "grad_norms_first_batch": {
+        "data_scales": 0.037060268223285675,
+        "head": 0.4120406061410904,
+        "omega": 0.08545411378145218
+      },
+      "model": "reupload_qnn",
+      "param_delta": 0.10482437908649445,
+      "seed": 8,
+      "status": "ok",
+      "train_cap": {
+        "cap_applied": true,
+        "class_counts_after": {
+          "0": 260,
+          "1": 240
+        },
+        "class_counts_before": {
+          "0": 6362,
+          "1": 5894
+        },
+        "note": "stratified TRAIN subsample to at most 500 rows (seed 8)",
+        "train_cap": 500,
+        "train_size_after": 500,
+        "train_size_before": 12256
+      }
+    },
+    {
+      "backbone": "plantnet",
+      "circuit": {
+        "circuit_depth_proxy": 36,
+        "data_insertions": 3,
+        "distinct_variational_param_sets": 3,
+        "encoding_gate_count": 9,
+        "entangling_gate_count": 9,
+        "n_readouts": 3,
+        "n_variational_layers": 3,
+        "qubits": 3,
+        "shots": null,
+        "tape_counts_match_spec": false,
+        "tape_encoding_gate_count": 27,
+        "tape_entangling_gate_count": 9,
+        "tape_measurement_count": 3,
+        "tape_note": null,
+        "tape_verified": true,
+        "trainable_param_count": 35,
+        "uploads": 3
+      },
+      "classical_preprocessing": {
+        "fitted_on": "train_only",
+        "input_dim": 512,
+        "method": "train_pca_standardize_tanh",
+        "note": "Mild TRAIN-only linear reduction to exactly n*L features, the minimum required by the angle encoding; no VAL/TEST information is used and no heavy classical preprocessing hides the quantum component.",
+        "projection_budget": "512 -> 9 (= 3 qubits x 3 uploads)",
+        "steps": [
+          {
+            "fitted_on": "train",
+            "statistic": "train_mean",
+            "step": "center"
+          },
+          {
+            "explained_variance_ratio_sum": 0.48729273676872253,
+            "fitted_on": "train",
+            "kind": "pca",
+            "n_components": 9,
+            "step": "linear_projection"
+          },
+          {
+            "fitted_on": "train",
+            "statistic": "train_component_mean_std",
+            "step": "standardize"
+          },
+          {
+            "fitted_on": null,
+            "range": [
+              -1.0,
+              1.0
+            ],
+            "step": "tanh_bound"
+          }
+        ],
+        "target_dim": 9,
+        "val_test_used_for_fit": false
+      },
+      "dataset": "deepweeds",
+      "grad_norms_first_batch": {
+        "data_scales": 0.018509652465581894,
+        "head": 0.1384396031498909,
+        "omega": 0.0338498018682003
+      },
+      "model": "reupload_qnn",
+      "param_delta": 0.08667098393198103,
+      "seed": 9,
+      "status": "ok",
+      "train_cap": {
+        "cap_applied": true,
+        "class_counts_after": {
+          "0": 259,
+          "1": 241
+        },
+        "class_counts_before": {
+          "0": 6352,
+          "1": 5904
+        },
+        "note": "stratified TRAIN subsample to at most 500 rows (seed 9)",
+        "train_cap": 500,
+        "train_size_after": 500,
+        "train_size_before": 12256
+      }
+    }
+  ],
+  "schema": "reupload_qnn.provenance.v1",
+  "warnings": []
+}

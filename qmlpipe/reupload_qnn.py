@@ -34,6 +34,12 @@ Design rules
   against (a) the committed classical poly-2 arms and (b) the old amplitude QNN
   when its artifact is present.  No quantum advantage is asserted; a win would
   require matched budgets and Holm-corrected paired power >= 0.8 evidence.
+* Baseline inputs are robust: the ``qnn_results`` argument (CLI ``--qnn-results``)
+  accepts either a ``metrics.json`` FILE or a DIRECTORY containing one
+  (:func:`_resolve_artifact` maps the latter to ``<dir>/metrics.json``).  A
+  configured baseline that is missing, unreadable or has no matching runs is
+  surfaced as an explicit warning with a reason; it is never silently dropped
+  and no value is fabricated.
 
 Import safety: numpy + the config/statistics modules are imported at module
 scope; torch, PennyLane, scipy and sklearn are imported lazily so a light
@@ -77,6 +83,7 @@ __all__ = [
     "train_reupload_from_features",
     "evaluate_once",
     "load_baseline_values",
+    "load_baseline_report",
     "paired_comparisons",
     "build_plan",
     "run_reupload_protocol",
@@ -926,12 +933,95 @@ def evaluate_once(model, X_test, y_test) -> dict:
 # Committed baselines + paired statistics                                      #
 # --------------------------------------------------------------------------- #
 def _resolve_artifact(path, results_root=None) -> Path:
+    """Resolve a baseline path to its ``metrics.json`` file.
+
+    Accepts either a ``metrics.json`` FILE path or a DIRECTORY containing one:
+    an existing directory is mapped to ``<dir>/metrics.json``.  If that file is
+    absent the returned path simply does not exist, so callers can report it as
+    ``missing`` instead of silently dropping the baseline.  Absolute paths and
+    ``results_root``-relative paths keep their previous precedence.
+    """
     candidate = Path(path)
     if candidate.is_absolute():
-        return candidate
-    base = Path(results_root) if results_root is not None else _REPO_ROOT
-    rooted = base / candidate
-    return rooted if rooted.exists() else candidate
+        resolved = candidate
+    else:
+        base = Path(results_root) if results_root is not None else _REPO_ROOT
+        rooted = base / candidate
+        resolved = rooted if rooted.exists() else candidate
+    if resolved.is_dir():
+        resolved = resolved / "metrics.json"
+    return resolved
+
+
+def load_baseline_report(
+    path,
+    model_names: Sequence[str],
+    backbone: str | None = None,
+    results_root=None,
+) -> dict:
+    """Load baseline accuracies WITH an explicit status; no silent baseline drops.
+
+    Returns a JSON-native dict: ``path`` (resolved metrics.json), ``requested``
+    (original argument), ``status`` in {``"ok"``, ``"missing"``,
+    ``"unreadable"``, ``"no_matching_runs"``}, ``reason`` (one of ``"missing"``,
+    ``"unreadable"``, ``"no matching runs"`` or ``None``), ``n_values`` and
+    ``values``.  Never fabricates a value when the artifact cannot be used.
+    """
+    artifact = _resolve_artifact(path, results_root)
+    report: dict[str, Any] = {
+        "requested": str(path),
+        "path": str(artifact),
+        "status": "ok",
+        "reason": None,
+        "n_values": 0,
+        "values": {},
+        "detail": None,
+    }
+    if not artifact.exists():
+        report.update({"status": "missing", "reason": "missing"})
+        return report
+    if not artifact.is_file():
+        report.update({"status": "unreadable", "reason": "unreadable"})
+        return report
+    try:
+        payload = json.loads(artifact.read_text(encoding="utf-8"))
+        if not isinstance(payload, dict):
+            raise ValueError("artifact is not a JSON object")
+    except Exception as exc:  # pragma: no cover - depends on artifact contents
+        report.update(
+            {
+                "status": "unreadable",
+                "reason": "unreadable",
+                "detail": f"{type(exc).__name__}: {exc}",
+            }
+        )
+        return report
+
+    wanted = {str(name).lower() for name in model_names}
+    values: dict[int, float] = {}
+    for run in payload.get("runs", []):
+        if not isinstance(run, dict):
+            continue
+        if str(run.get("model", "")).lower() not in wanted:
+            continue
+        if backbone is not None and str(run.get("backbone", "")).lower() != str(backbone).lower():
+            continue
+        if str(run.get("status", "ok")) != "ok":
+            continue
+        block = run.get("metrics", {})
+        accuracy = block.get("accuracy", run.get("accuracy")) if isinstance(block, dict) else None
+        if accuracy is None:
+            continue
+        try:
+            values[int(run["seed"])] = float(accuracy)
+        except (KeyError, TypeError, ValueError):  # pragma: no cover - malformed run
+            continue
+    if not values:
+        report.update({"status": "no_matching_runs", "reason": "no matching runs"})
+        return report
+    report["values"] = values
+    report["n_values"] = int(len(values))
+    return report
 
 
 def load_baseline_values(
@@ -940,32 +1030,12 @@ def load_baseline_values(
     backbone: str | None = None,
     results_root=None,
 ) -> dict[int, float]:
-    """Read per-seed accuracies from a result artifact (no numbers hardcoded)."""
-    artifact = _resolve_artifact(path, results_root)
-    if not artifact.exists():
-        return {}
-    try:
-        payload = json.loads(artifact.read_text(encoding="utf-8"))
-    except Exception:  # pragma: no cover - malformed artifact
-        return {}
-    wanted = {str(name).lower() for name in model_names}
-    out: dict[int, float] = {}
-    for run in payload.get("runs", []):
-        if str(run.get("model", "")).lower() not in wanted:
-            continue
-        if backbone is not None and str(run.get("backbone", "")).lower() != str(backbone).lower():
-            continue
-        if str(run.get("status", "ok")) != "ok":
-            continue
-        block = run.get("metrics", {})
-        accuracy = block.get("accuracy", run.get("accuracy"))
-        if accuracy is None:
-            continue
-        try:
-            out[int(run["seed"])] = float(accuracy)
-        except (KeyError, TypeError, ValueError):  # pragma: no cover - malformed run
-            continue
-    return out
+    """Read per-seed accuracies from a file or directory (no numbers hardcoded).
+
+    Thin compatibility wrapper over :func:`load_baseline_report`: returns only
+    the values dict, so callers needing the failure reason use the report API.
+    """
+    return load_baseline_report(path, model_names, backbone, results_root)["values"]
 
 
 def paired_comparisons(
@@ -1082,6 +1152,12 @@ def build_plan(
         "max_total_steps": _MAX_TOTAL_STEPS,
         "classical_control": classical_rel,
         "amplitude_qnn_control": qnn_rel,
+        "qnn_results_note": (
+            "--qnn-results accepts EITHER a metrics.json FILE path OR a DIRECTORY "
+            "containing metrics.json; a configured baseline with no usable values "
+            "is reported in warnings (missing/unreadable/no matching runs) and never "
+            "silently dropped"
+        ),
         "claim_boundary": CLAIM_BOUNDARY,
         "cpu_note": (
             f"{qubits} qubits / {uploads} uploads are chosen for CPU feasibility only; "
@@ -1198,24 +1274,62 @@ def run_reupload_protocol(
         if r["metrics"].get("accuracy") is not None
     }
     baselines: dict[str, dict[int, float]] = {}
+    baseline_sources: list[dict] = []
+    baseline_warnings: list[dict] = []
+
+    def _load_baseline(name: str, path, model_names: Sequence[str]) -> None:
+        """Load one configured baseline; record an explicit warning on any failure."""
+        report = load_baseline_report(path, model_names, backbone, results_root)
+        baseline_sources.append(
+            {
+                "name": name,
+                "configured": True,
+                "loaded": bool(report["values"]),
+                "requested": report["requested"],
+                "path": report["path"],
+                "status": report["status"],
+                "reason": report["reason"],
+                "n_values": report["n_values"],
+            }
+        )
+        if report["values"]:
+            baselines[name] = report["values"]
+            return
+        baseline_warnings.append(
+            {
+                "stage": "baseline_load",
+                "baseline": name,
+                "dataset": str(dataset),
+                "backbone": str(backbone),
+                "requested": report["requested"],
+                "path": report["path"],
+                "status": report["status"],
+                "reason": report["reason"],
+                "error_type": "BaselineUnavailable",
+                "error": (
+                    f"configured {name} baseline yielded no values ({report['reason']}); "
+                    "no comparison fabricated"
+                ),
+            }
+        )
+
     classical_rel = DEFAULT_CLASSICAL_PATHS.get(str(dataset).lower())
     if classical_rel:
-        poly = load_baseline_values(classical_rel, ("poly2", "poly"), backbone, results_root)
-        if poly:
-            baselines["classical_poly2"] = poly
+        _load_baseline("classical_poly2", classical_rel, ("poly2", "poly"))
     qnn_rel = (
         qnn_results
         if qnn_results is not None
         else DEFAULT_AMPLITUDE_QNN_PATHS.get(str(dataset).lower())
     )
     if qnn_rel:
-        old_qnn = load_baseline_values(qnn_rel, ("qnn",), backbone, results_root)
-        if old_qnn:
-            baselines["fresh_qnn_amplitude"] = old_qnn
+        _load_baseline("fresh_qnn_amplitude", qnn_rel, ("qnn",))
     comparisons = paired_comparisons(
         reupload_by_seed, baselines, alpha=alpha, seed=boot_seed, n_boot=n_boot
     )
+    all_warnings = warnings + baseline_warnings
 
+    # Run accounting counts seed-level failures only; baseline warnings are
+    # infrastructure diagnostics and must not inflate n_runs_skipped.
     n_succeeded, n_skipped = len(runs), len(warnings)
     metrics_payload: dict[str, Any] = {
         "schema": "reupload_qnn.metrics.v1",
@@ -1226,7 +1340,8 @@ def run_reupload_protocol(
         "runs": runs,
         "aggregates": aggregates,
         "comparisons": comparisons,
-        "warnings": warnings,
+        "baselines_loaded": sorted(baselines),
+        "warnings": all_warnings,
         "n_runs_expected": int(len(seed_list)),
         "n_runs_succeeded": int(n_succeeded),
         "n_runs_skipped": int(n_skipped),
@@ -1289,6 +1404,12 @@ def run_reupload_protocol(
             "classical_arm": classical_rel,
             "amplitude_qnn_arm": str(qnn_rel) if qnn_rel else None,
             "baselines_loaded": sorted(baselines),
+            "baseline_sources": baseline_sources,
+            "baseline_drop_policy": (
+                "A configured baseline with no usable values never silently disappears: "
+                "it is reported in warnings with reason missing/unreadable/no matching runs "
+                "and is excluded from comparisons. baselines_loaded lists only real loads."
+            ),
             "n_budget_matched": False,
             "note": (
                 "The committed controls used their own TRAIN budgets while this arm "
@@ -1298,7 +1419,7 @@ def run_reupload_protocol(
             "test_scoring": "exactly one forward pass per seed via evaluate_once",
             "cpu_note": plan["cpu_note"],
         },
-        "warnings": warnings,
+        "warnings": all_warnings,
         "additive": True,
     }
 
@@ -1310,6 +1431,6 @@ def run_reupload_protocol(
         "provenance": provenance_payload,
         "metrics_path": str(metrics_path),
         "provenance_path": str(provenance_path),
-        "warnings": warnings,
+        "warnings": all_warnings,
         "claim_boundary": CLAIM_BOUNDARY,
     }

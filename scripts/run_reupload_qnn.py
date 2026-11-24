@@ -89,8 +89,8 @@ def build_parser() -> argparse.ArgumentParser:
         "--qnn-results",
         default=None,
         help=(
-            "optional path to the old amplitude-QNN metrics.json for the paired "
-            "baseline (default: per-dataset committed artifact when present)"
+            "optional path to the old amplitude-QNN baseline: a metrics.json FILE or "
+            "a DIRECTORY containing metrics.json (default: per-dataset committed artifact when present)"
         ),
     )
     parser.add_argument(
