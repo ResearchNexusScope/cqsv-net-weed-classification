@@ -441,5 +441,11 @@ Worker owns qmlpipe/reupload_qnn.py, scripts/run_reupload_qnn.py, tests/test_reu
 **[144 | 2026-11-24] REQUEST → QCNN-D01 — mother (QCNN arbitrary-dim)**
 Worker owns qmlpipe/fresh_qcnn.py, scripts/run_fresh_qcnn.py, tests/test_fresh_qcnn.py only: convolutional+pooling QNN with single-ancilla padding / skip pooling for arbitrary feature width, same fresh splits/controls.
 
+**[145 | 2026-11-24] GATE → REUPLOAD-D01 + QCNN-D01 — mother (ALL GREEN)**
+Central verifier 275 passed / 20 skipped, exit 0; both Critics PASS (advisories only). Smokes succeeded: old amplitude QNN acc 0.480/AUC 0.478; re-uploading (3q/2L) 0.496/0.513; QCNN (4q) 0.496/0.523. Proper architectures improve ranking vs the weak baseline at CPU-small settings.
+
+**[146 | 2026-11-24] RUN → matched architecture comparison — mother (started)**
+Budget-matched n=10 comparison at 3 qubits / 1 epoch / 500-train cap: old amplitude QNN (results/qnn_matched_deepweeds) then re-uploading QNN with the same budget, followed by QCNN. This isolates architecture effect; classical poly-2 remains an unmatched-budget comparator.
+
 **Gate rule:** a D is not accepted until the central verifier passes and a Critic audit
 returns PASS. Mother commits D-by-D after the gate.
