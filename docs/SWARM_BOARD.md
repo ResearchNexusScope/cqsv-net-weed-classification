@@ -456,5 +456,8 @@ Final tree `507c962` verified: central verifier ALL CHECKS PASSED (280 passed, 2
 **[149 | 2026-11-24] RECORD → failure register — mother (user request)**
 User asked whether failures were recorded. Created private `.paper/journal/07_failures.md` consolidating 37 entries: 26 resolved code/verifier defects (with root cause, fix, board/commit evidence), 6 data/resource blockers (mostly open), 5 scientific negative results, gate discipline and explicit open-items list. Journal README + timeline S37 updated.
 
+**[150 | 2026-11-24] RESEARCH → hardware options — mother (user question)**
+User asked what hardware can run multi-qubit QNNs. Measured local machine: 7.8 GB RAM, Intel Iris Xe 2 GB, no NVIDIA CUDA → ~24–26 qubit statevector ceiling. Researched tiers: AWS Braket SV1 (34 qubits, $0.075/min, 1 free h/month), TN1 (50 qubits), IBM Open Plan free real QPU (~10 min/28 days), NVIDIA lightning.gpu (H100 80 GB measured 29 qubits, 30 OOM), multi-GPU MPI (16×A100 → 32, 500 GPUs → 41). Report + PennyLane device-switch snippets in docs/research/QC_HARDWARE_OPTIONS.md.
+
 **Gate rule:** a D is not accepted until the central verifier passes and a Critic audit
 returns PASS. Mother commits D-by-D after the gate.
