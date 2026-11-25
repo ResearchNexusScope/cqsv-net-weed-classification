@@ -462,5 +462,8 @@ User asked what hardware can run multi-qubit QNNs. Measured local machine: 7.8 G
 **[151 | 2026-11-24] SYNC → Drive research paper folder — mother (user request, @amazeswarm)**
 User asked to push gitignored `.paper` and legacy `runs` to Drive under the associated paper folder, and to combine the same paper's two journal variants. Used declared `research` shared folder (local `~/Research` junction → `gdrive/My Drive/Research`; no second copy). Target: `02 Applied - Journals/Pavithra/AIA/CQSV-Net Weed`. Copied `.paper/` (55 files/11.64 MB), `runs/` (32 files/13.22 MB), and `Journal variants/Weed Detection/` (11 files/22.16 MB from `Front. Plant Sci/Weed Detection`). SHA-256 spot checks MATCH. Ledger `act_20261124T135743607_6bb682`; board `msg_20261124T135802140_74a7d6`. No private material entered git.
 
+**[152 | 2026-11-25] REPO → rename + org transfer — mother (user request)**
+Renamed `SugeethJSA/Quantum_Classification` → `SugeethJSA/cqsv-net-weed-classification` (user chose the name matching the CQSV-Net Weed paper), then transferred to the `ResearchNexusScope` org via REST API (`gh repo transfer` unavailable in gh 2.105.0). Final URL: https://github.com/ResearchNexusScope/cqsv-net-weed-classification . Local `origin` updated; remote HEAD `421e0ae` matches local; push up-to-date; old URL redirects to the org repo. No tracked file referenced the old URL. Private `.paper/` remains gitignored.
+
 **Gate rule:** a D is not accepted until the central verifier passes and a Critic audit
 returns PASS. Mother commits D-by-D after the gate.
