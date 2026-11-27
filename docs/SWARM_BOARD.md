@@ -465,5 +465,8 @@ User asked to push gitignored `.paper` and legacy `runs` to Drive under the asso
 **[152 | 2026-11-25] REPO → rename + org transfer — mother (user request)**
 Renamed `SugeethJSA/Quantum_Classification` → `SugeethJSA/cqsv-net-weed-classification` (user chose the name matching the CQSV-Net Weed paper), then transferred to the `ResearchNexusScope` org via REST API (`gh repo transfer` unavailable in gh 2.105.0). Final URL: https://github.com/ResearchNexusScope/cqsv-net-weed-classification . Local `origin` updated; remote HEAD `421e0ae` matches local; push up-to-date; old URL redirects to the org repo. No tracked file referenced the old URL. Private `.paper/` remains gitignored.
 
+**[153 | 2026-11-27] REVIEW → feature/deepweeds-dense-angle — mother (colleague branch, read-only)**
+Reviewed colleague's single commit a034187 in an isolated worktree; branch NOT merged. Verified 3/3 branch tests + 26 targeted existing tests pass, demo gradients positive, real DeepWeeds pilots at 200 and 1000 training rows. Matched controls at 1000 rows: hybrid 0.81725, matched classical replacement 0.81725, classical-only 0.81896, paired RBF 0.82096 — quantum branch gives no gain at this budget. Full review in docs/research/QC_DENSE_BRANCH_REVIEW.md. Recommend n=10 multi-seed runs and higher-qubit GPU pilots before any merge/claim.
+
 **Gate rule:** a D is not accepted until the central verifier passes and a Critic audit
 returns PASS. Mother commits D-by-D after the gate.
