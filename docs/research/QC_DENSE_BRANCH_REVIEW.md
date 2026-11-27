@@ -116,7 +116,24 @@ a coincidence between a single validation split here and a different multi-split
 benchmark — it is **not** a reproduction of that benchmark and no equivalence is
 claimed. The split here uses split-seed 0 and has its own `split_digest`.
 
-## 7. Review evidence
+## 7. Four-seed reproduction (2026-11-28, user-requested, no code edits)
+
+Seeds 21/43/100/123, full TRAIN, existing 70/20/10 split, 5 qubits, 10 epochs,
+batch 128, CPU — on **DeepWeeds and ACRE**. Eight runs, all successful, each with
+`report.md`, `metrics.json`, `best.pt` and `paired_predictions.npz` in
+`results/dense_seeds/`. Consolidated table in `results/dense_seeds/SUMMARY.md`.
+
+| Dataset | Hybrid (n=4) | Paired RBF (n=4) | Paired diff | Decision |
+|---|---:|---:|---:|---|
+| DeepWeeds | 0.90298 ± 0.00411 | 0.90270 ± 0.00419 | +0.0003 | inconclusive (p_holm 0.904, power 0.05) |
+| ACRE | 0.97171 ± 0.00160 | 0.97842 ± 0.00174 | −0.00671 (−0.671 pts) | inconclusive (p_holm 0.0045, power 0.997, but n=4 < 10) |
+
+DeepWeeds is a tie. ACRE trails RBF on **all four seeds**; the paired CI excludes
+zero and power is high, but the pre-declared minimum n=10 rule prevents even a
+significance claim at n=4 — equally, it prevents an advantage claim. No quantum
+advantage is asserted; branch remains unmerged.
+
+## 8. Review evidence
 
 Worktree `C:\Users\sugee\AppData\Local\Temp\opencode\qc-dense-branch` at `a034187`;
 pilot outputs `pilot-q5/`, `pilot-q5-1000/`, `pilot-q5-1000-replacement/`,

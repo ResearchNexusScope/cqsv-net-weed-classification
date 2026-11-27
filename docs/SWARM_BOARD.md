@@ -471,5 +471,8 @@ Reviewed colleague's single commit a034187 in an isolated worktree; branch NOT m
 **[154 | 2026-11-27] RESULTS → full dense-angle reproduction — mother (user-requested)**
 Exact params on colleague branch a034187: CPU, 5q, 10 epochs, batch 128, train-cap 0 (12,256 TRAIN rows), seed 0, split-seed 0. Val acc 0.90463 at loss-selected epoch 5 (n=3502); paired RBF 0.90605, diff −0.143 pts, fixed 120/broken 125; circuit grad 0.0037 vs adapter 0.547. Essentially ties classical RBF — no advantage. 0.90463 coincidentally equals the historical 90.46% ten-split RBF mean but is one split with its own digest; no equivalence claimed. Review §6 and journal §11 updated; branch still not merged.
 
+**[155 | 2026-11-28] RESULTS → 4-seed dense-angle reproduction — mother (user request, complete)**
+Seeds 21/43/100/123 on DeepWeeds and ACRE, full TRAIN, 70/20/10, 5q/10ep/batch128 CPU; 8/8 runs succeeded. No repo code edited (private orchestration driver). Each run saved report.md, metrics.json, best.pt weights and paired_predictions.npz under results/dense_seeds/. DeepWeeds hybrid 0.90298±0.00411 vs paired RBF 0.90270±0.00419 → paired diff +0.0003, p_holm 0.904, inconclusive (tie). ACRE hybrid 0.97171±0.00160 vs RBF 0.97842±0.00174 → −0.671 pts on all four seeds; p_holm 0.0045 and power 0.997 but decision inconclusive because n=4 < pre-declared n=10. No advantage claim; branch still not merged. Ledger act_20261127T133228009_9f1266.
+
 **Gate rule:** a D is not accepted until the central verifier passes and a Critic audit
 returns PASS. Mother commits D-by-D after the gate.
