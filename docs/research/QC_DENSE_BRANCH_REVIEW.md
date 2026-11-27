@@ -92,7 +92,31 @@ Use `final` once per locked checkpoint, report paired fixed/broken counts and
 variability across seeds, and make **no** quantum-advantage claim unless hybrid
 beats both controls with paired power ≥ 0.8 after Holm correction.
 
-## 6. Review evidence
+## 6. User-requested full reproduction (2026-11-27)
+
+Exact command supplied by the user, run in the isolated worktree at `a034187`:
+CPU, 5 qubits, 10 epochs, batch 128, `--train-cap 0` (all 12,256 TRAIN rows),
+seed 0, split-seed 0. Artifacts in `full-q5-reproduction/`
+(`metrics.json`, `best.pt`, `paired_predictions.npz`).
+
+Validation trajectory: 87.35% → 88.81% → 89.66% → 90.09% → 90.29% →
+**90.46%** → 90.46% → 90.43% → 90.78% → 91.01%. Checkpoint selection by lowest
+validation loss chose **epoch 5** (val loss 0.2330), giving val accuracy
+**0.90463** on n=3,502.
+
+Paired PlantNet-RBF on the same rows: **0.90605**; difference **−0.143 points**,
+fixed 120, broken 125. So with the full training budget the dense-angle hybrid
+essentially matches the classical RBF baseline — a slight net loss, no advantage.
+Circuit gradient norm was 0.0037 versus adapter 0.547 (~0.7%), so the quantum
+branch still receives very little learning signal.
+
+Honest note: the selected accuracy 0.90463 coincides numerically with the
+historical 90.46% figure cited in the branch doc as a ten-split RBF mean. That is
+a coincidence between a single validation split here and a different multi-split
+benchmark — it is **not** a reproduction of that benchmark and no equivalence is
+claimed. The split here uses split-seed 0 and has its own `split_digest`.
+
+## 7. Review evidence
 
 Worktree `C:\Users\sugee\AppData\Local\Temp\opencode\qc-dense-branch` at `a034187`;
 pilot outputs `pilot-q5/`, `pilot-q5-1000/`, `pilot-q5-1000-replacement/`,

@@ -468,5 +468,8 @@ Renamed `SugeethJSA/Quantum_Classification` → `SugeethJSA/cqsv-net-weed-classi
 **[153 | 2026-11-27] REVIEW → feature/deepweeds-dense-angle — mother (colleague branch, read-only)**
 Reviewed colleague's single commit a034187 in an isolated worktree; branch NOT merged. Verified 3/3 branch tests + 26 targeted existing tests pass, demo gradients positive, real DeepWeeds pilots at 200 and 1000 training rows. Matched controls at 1000 rows: hybrid 0.81725, matched classical replacement 0.81725, classical-only 0.81896, paired RBF 0.82096 — quantum branch gives no gain at this budget. Full review in docs/research/QC_DENSE_BRANCH_REVIEW.md. Recommend n=10 multi-seed runs and higher-qubit GPU pilots before any merge/claim.
 
+**[154 | 2026-11-27] RESULTS → full dense-angle reproduction — mother (user-requested)**
+Exact params on colleague branch a034187: CPU, 5q, 10 epochs, batch 128, train-cap 0 (12,256 TRAIN rows), seed 0, split-seed 0. Val acc 0.90463 at loss-selected epoch 5 (n=3502); paired RBF 0.90605, diff −0.143 pts, fixed 120/broken 125; circuit grad 0.0037 vs adapter 0.547. Essentially ties classical RBF — no advantage. 0.90463 coincidentally equals the historical 90.46% ten-split RBF mean but is one split with its own digest; no equivalence claimed. Review §6 and journal §11 updated; branch still not merged.
+
 **Gate rule:** a D is not accepted until the central verifier passes and a Critic audit
 returns PASS. Mother commits D-by-D after the gate.
