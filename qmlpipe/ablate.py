@@ -58,7 +58,6 @@ import random
 from itertools import product
 from typing import Any, Callable, Mapping
 
-from experiments import metrics as _metrics
 
 __all__ = [
     "QUBIT_CHOICES",
@@ -350,6 +349,8 @@ def summarize_ablation(results: list[dict]) -> dict:
     ``bootstrap_ci`` (percentile, fixed seed) and ``summarize_runs``. Failed
     runs are reported, never dropped silently, and never contribute numbers.
     """
+    from experiments import metrics as _metrics
+
     summary: dict[str, Any] = {
         "n_configs": len(results),
         "n_success": 0,

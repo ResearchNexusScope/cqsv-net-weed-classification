@@ -15,7 +15,6 @@ from typing import Any, Mapping
 
 import numpy as np
 
-from experiments import metrics as _metrics
 
 __all__ = ["evaluate_qsvc", "compare_models"]
 
@@ -82,6 +81,8 @@ def evaluate_qsvc(K_test: Any, y_test: Any, svc: Any) -> dict:
         )
 
     probability = _positive_probabilities(svc, kernel)
+    from experiments import metrics as _metrics
+
     result = _metrics.binary_metrics(
         truth, predicted, y_prob=None if probability is None else probability
     )
@@ -124,6 +125,8 @@ def compare_models(results: Mapping[str, Any]) -> dict:
     recorded with a status and a reason and contains **no** test statistic or
     p-value.
     """
+    from experiments import metrics as _metrics
+
     vectors: dict[str, list[float]] = {}
     warnings: list[str] = []
     for name in sorted(results):

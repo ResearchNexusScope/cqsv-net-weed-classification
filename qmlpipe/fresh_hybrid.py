@@ -27,7 +27,12 @@ to a classifier; this model is therefore provably a hybrid rather than a
 renamed QNN.  The trainable ansatz is entangled, so this is not a
 parameter-free amplitude-embedding kernel either.
 
-Scientific scope and caveats
+The dense_angle option keeps the classical branch and fusion design. It maps
+the feature row to two angles per wire and fuses one Z reading per wire.
+This path uses a differentiable PyTorch statevector on CPU or CUDA. The
+original amplitude path described above remains the default.
+
+Scientific scope and caveats for the original amplitude protocol
 ----------------------------
 * Features are frozen and loaded once via
   ``experiments.fresh_protocol.cache_features``; no backbone is retrained.
@@ -44,6 +49,7 @@ Scientific scope and caveats
 """
 from __future__ import annotations
 
+import copy
 import json
 import os
 import platform
@@ -168,6 +174,23 @@ if nn is None:  # pragma: no cover - torch-free verifier placeholder
 
 else:
 
+    class ClassicalReplacement(nn.Module):
+        """A nonlinear ring with the same trainable parameter count as the circuit."""
+
+        def __init__(self, qubits: int, layers: int) -> None:
+            super().__init__()
+            self.qubits = qubits
+            self.weights = nn.Parameter(torch.empty(layers, qubits, 3))
+            nn.init.uniform_(self.weights, -0.3, 0.3)
+
+        def forward(self, features: "torch.Tensor") -> "torch.Tensor":
+            state, second = features.reshape(-1, self.qubits, 2).tanh().unbind(-1)
+            for depth, weights in enumerate(self.weights):
+                local, neighbor, bias = weights.unbind(-1)
+                offset = 1 + depth % (self.qubits - 1)
+                state = torch.tanh(local * state + neighbor * (state.roll(offset, 1) + second) + bias)
+            return state
+
     class HybridModel(nn.Module):  # type: ignore[no-redef]
         """Parallel classical-compression + variational-quantum hybrid."""
 
@@ -190,16 +213,37 @@ else:
             )
 
             # --- quantum branch: trainable adapter + small variational QNN ---
-            from qmlpipe.models import build_qnn  # lazy: PennyLane may be absent
+            self.arm = _cfg_get(cfg, "arm", "hybrid")
+            if self.arm not in {"hybrid", "classical", "replacement"}:
+                raise ValueError("Unknown hybrid comparison arm")
+            dense = _cfg_get(cfg, "embedding", "amplitude") == "dense_angle"
+            if dense:
+                self.register_buffer("feature_mean", torch.zeros(self.feature_dim))
+                self.register_buffer("feature_scale", torch.ones(self.feature_dim))
+            self.quantum_width = self.qubits if dense else self.n_classes
+            if self.arm == "classical":
+                self.quantum_width = 0
+                self.qnn = nn.Identity()
+            elif self.arm == "replacement":
+                if not dense:
+                    raise ValueError("The classical replacement requires dense_angle")
+                self.qnn = ClassicalReplacement(self.qubits, int(_cfg_get(cfg, "layers", 2)))
+            elif dense:
+                from qmlpipe.dense_statevector import DenseStatevector
 
-            self.qnn = build_qnn(_make_quantum_cfg(cfg))
-            qnn_in = int(getattr(self.qnn, "input_dim", 2 ** self.qubits))
-            self.quantum_adapter = nn.Linear(self.feature_dim, qnn_in)
+                self.qnn = DenseStatevector(self.qubits, int(_cfg_get(cfg, "layers", 2)))
+            else:
+                from qmlpipe.models import build_qnn
+
+                self.qnn = build_qnn(_make_quantum_cfg(cfg))
+            qnn_in = 2 * self.qubits if dense else int(getattr(self.qnn, "input_dim", 2 ** self.qubits))
+            self.quantum_adapter = nn.Linear(self.feature_dim, qnn_in) if self.quantum_width else nn.Identity()
 
             # --- fusion ---
-            self.classifier = nn.Linear(self.hidden_dim + self.n_classes, self.n_classes)
+            self.classifier = nn.Linear(self.hidden_dim + self.quantum_width, self.n_classes)
 
-            self.architecture = ARCHITECTURE["description"]
+            self.architecture = (f"{self.arm}: dense-angle hybrid experiment, {self.quantum_width} auxiliary features"
+                                 if dense else ARCHITECTURE["description"])
             # Sealed-TEST guard: incremented only by evaluate_once().  Validation
             # logits are collected through the private helper below instead.
             self._test_eval_count = 0
@@ -212,15 +256,18 @@ else:
                 raise ValueError(
                     f"hybrid expects (B, {self.feature_dim}) cached features, got {tuple(x.shape)}"
                 )
+            x = x.to(self.classifier.weight.device)
+            if hasattr(self, "feature_mean"):
+                x = (x - self.feature_mean) / self.feature_scale
             classical = self.classical(x)
-            quantum = self.qnn(self.quantum_adapter(x))
+            quantum = self.qnn(self.quantum_adapter(x)) if self.quantum_width else x[:, :0]
             if isinstance(quantum, (tuple, list)):  # defensive: QNN returns (B, 2)
                 quantum = quantum[0]
             if quantum.ndim == 1:
-                quantum = quantum.reshape(-1, self.n_classes)
-            if quantum.shape[-1] != self.n_classes:
+                quantum = quantum.reshape(-1, self.quantum_width)
+            if quantum.shape[-1] != self.quantum_width:
                 raise ValueError(
-                    f"quantum branch must emit {self.n_classes} logits, got {tuple(quantum.shape)}"
+                    f"quantum branch must emit {self.quantum_width} values, got {tuple(quantum.shape)}"
                 )
             fused = torch.cat([classical, quantum], dim=1)
             return {
@@ -284,7 +331,7 @@ def _grad_norm(parameters: Any) -> float:
 
 
 def _predict_logits(model: Any, X: Any, batch_size: int = 256) -> np.ndarray:
-    """Internal batched forward used for TRAIN/VAL only (never touches TEST guard)."""
+    """Batched forward helper. The caller owns split selection and the TEST guard."""
     _require_torch()
     X_arr = np.asarray(X, dtype=np.float32)
     if X_arr.ndim != 2:
@@ -310,11 +357,12 @@ def train_hybrid_from_features(
     cfg: Any,
     seed: int,
 ) -> tuple[Any, dict]:
-    """Train the hybrid end-to-end on cached TRAIN features; VAL is reporting-only.
+    """Train on cached TRAIN features with optional validation checkpoint selection.
 
     Returns ``(model, history)``.  Batches are bounded by
     ``cfg.max_batches_per_epoch`` (default 20) and epochs by ``cfg.epochs`` so
-    the CPU-qubit circuit stays feasible.  TEST labels are never supplied to
+    a diagnostic run can be bounded. Zero uses every batch. Positive validation
+    patience restores the checkpoint with the lowest validation loss. TEST labels are never supplied to
     this function.  Class-balanced cross entropy is available through
     ``cfg.class_weight in {'none', 'balanced'}`` (from TRAIN labels only).
     """
@@ -335,9 +383,21 @@ def train_hybrid_from_features(
         raise ValueError("TRAIN must contain both classes (single-class collapse is inadmissible)")
 
     model = build_hybrid_model(cfg, X_fit.shape[1], n_classes=2)
+    if hasattr(model, "feature_mean"):
+        # Frozen PlantNet coordinates can have very different scales. Fit on
+        # the actual training subset, and store the transform in the checkpoint.
+        scale, mean = torch.std_mean(torch.from_numpy(X_fit), dim=0, unbiased=False)
+        model.feature_mean.copy_(mean)
+        model.feature_scale.copy_(torch.where(scale > 1e-6, scale, torch.ones_like(scale)))
+    device = torch.device(_cfg_get(cfg, "torch_device", "cpu"))
+    model.to(device)
     epochs = max(1, int(_cfg_get(cfg, "epochs", 3)))
     batch_size = max(1, int(_cfg_get(cfg, "batch_size", 32)))
-    max_batches = max(1, int(_cfg_get(cfg, "max_batches_per_epoch", MAX_BATCHES_PER_EPOCH)))
+    max_batches = int(_cfg_get(cfg, "max_batches_per_epoch", MAX_BATCHES_PER_EPOCH))
+    patience = int(_cfg_get(cfg, "validation_patience", 0))
+    if max_batches < 0 or patience < 0 or (patience and not len(y_valid)):
+        raise ValueError("Invalid batch limit, patience or missing validation rows")
+    best_state, best_loss, best_epoch = None, float("inf"), -1
     lr = float(_cfg_get(cfg, "learning_rate", 1e-3))
     weight_decay = float(_cfg_get(cfg, "weight_decay", 1e-4))
     class_weight_mode = str(_cfg_get(cfg, "class_weight", "balanced")).strip().lower()
@@ -346,7 +406,7 @@ def train_hybrid_from_features(
 
     from qmlpipe.losses import class_weights_from_labels
 
-    weights = class_weights_from_labels(y_fit, n_classes=2, mode=class_weight_mode)
+    weights = class_weights_from_labels(y_fit, n_classes=2, mode=class_weight_mode).to(device)
     optimizer = torch.optim.AdamW(model.parameters(), lr=lr, weight_decay=weight_decay)
 
     generator = torch.Generator().manual_seed(int(seed))
@@ -377,14 +437,16 @@ def train_hybrid_from_features(
         model.train()
         loss_sum, n_batches = 0.0, 0
         for features, labels in loader:
-            if n_batches >= max_batches:
+            if max_batches and n_batches >= max_batches:
                 break
             optimizer.zero_grad(set_to_none=True)
             logits = model(features)
-            loss = F.cross_entropy(logits, labels, weight=weights)
+            loss = F.cross_entropy(logits, labels.to(device), weight=weights)
             loss.backward()
             if epoch == 0 and n_batches == 0:
                 history["classical_grad_norm"] = _grad_norm(model.classical.parameters())
+                history["adapter_grad_norm"] = _grad_norm(model.quantum_adapter.parameters())
+                history["circuit_grad_norm"] = _grad_norm(model.qnn.parameters())
                 history["quantum_grad_norm"] = _grad_norm(model.quantum_adapter.parameters()) + _grad_norm(
                     model.qnn.parameters()
                 )
@@ -395,7 +457,7 @@ def train_hybrid_from_features(
 
         val_loss, val_accuracy = None, None
         if len(y_valid):
-            val_logits = _predict_logits(model, X_valid)
+            val_logits = _predict_logits(model, X_valid, batch_size=batch_size)
             yv = torch.as_tensor(y_valid)
             val_loss = float(F.cross_entropy(torch.as_tensor(val_logits), yv).item())
             val_accuracy = float((val_logits.argmax(axis=1) == y_valid).mean())
@@ -410,7 +472,23 @@ def train_hybrid_from_features(
         history["train_loss"] = train_loss
         history["final_val_loss"] = val_loss
         history["final_val_accuracy"] = val_accuracy
+        if _cfg_get(cfg, "log_epochs", False):
+            print(f"Epoch {epoch + 1}/{epochs}  train loss {train_loss:.4f}  "
+                  f"validation loss {val_loss:.4f}  validation accuracy {val_accuracy:.2%}",
+                  flush=True)
 
+        if patience:
+            if np.isfinite(val_loss) and val_loss < best_loss:
+                best_loss, best_epoch = val_loss, epoch
+                best_state = copy.deepcopy(model.state_dict())
+            elif epoch - best_epoch >= patience:
+                break
+    if patience:
+        if best_state is None:
+            raise RuntimeError("Training produced no finite validation checkpoint")
+        model.load_state_dict(best_state)
+        history["selected_epoch"] = best_epoch
+        history["selected_val_loss"] = best_loss
     return model, history
 
 
@@ -463,7 +541,7 @@ def evaluate_once(model: Any, X_test: Any, y_test: Any) -> dict:
         "iou_class1": float(metrics.iou_class1),
         "macro_iou": float(metrics.macro_iou),
         "test_evaluations": int(model._test_eval_count),
-        "architecture": ARCHITECTURE["description"],
+        "architecture": getattr(model, "architecture", ARCHITECTURE["description"]),
     }
 
 

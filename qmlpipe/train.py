@@ -32,7 +32,6 @@ from typing import Any, Mapping
 
 import numpy as np
 
-from experiments import metrics as _metrics
 from qmlpipe.losses import (
     as_two_logits,
     class_weights_from_labels,
@@ -746,6 +745,8 @@ def evaluate(model: Any, loader: Any, cfg: Any) -> dict:
             "log_loss": None,
             "calibration": {"status": "N/A", "reason": "empty loader"},
         }
+
+    from experiments import metrics as _metrics
 
     result = _metrics.binary_metrics(y_true, predictions, y_prob=probabilities)
     calibration = _metrics.calibration_summary(y_true, probabilities, n_bins=n_bins)
